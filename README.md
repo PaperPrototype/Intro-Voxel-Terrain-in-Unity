@@ -19,4 +19,7 @@ The format this course uses:
  This course is licensed under MIT.
  It is open source.
  If you want to suggest a major re-write then create a new Issue under Issues.
- If you want to contribute 
+ If you want to contribute an edit just make pull request.
+
+ # Currently under development
+ this course is still ebing written as you read this. This (paragraph) will be removed once the course is finished.
