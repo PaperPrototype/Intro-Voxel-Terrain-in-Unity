@@ -7,3 +7,4 @@ To make a triangle, which is what meshes are made of we need 3 vertices.
 `
 mesh.vertices = [Vector3(-1, -1, 0), Vector3(-1, 1, 0), Vector3()]
 `
+(This isn't valid C# code but for now we're just teaching you the concept)
