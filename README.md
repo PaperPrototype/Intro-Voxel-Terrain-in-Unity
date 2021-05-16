@@ -9,6 +9,9 @@ If you don't already know how to use Unity but knwo how to code you can take our
 # Welcome
 This course is mean't to be as accelerated as possible. I won't discuss my opinions much, or what I think. Instead we will try to be as consise and to the point as much as possible. We also only teach you something if you are going to need it. This leads to an extremely fast paced course, so you never get bored.
 
+# Help and Issues
+Make a new Issue, because if your having trouble then most likely someone else is too. This allows us (and the community) to change and improve the course so new students don't have the same issue.
+
 # Lecture Format
  - Folders named "Week XXX" (XXX repesenting a number) stands for a lecture.
  - A file ending in .md is the actual text of the lecture.

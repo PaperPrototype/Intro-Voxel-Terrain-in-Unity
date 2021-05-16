@@ -3,7 +3,7 @@ If we want to make a voxel engine, we are going to need to understand what meshe
 
 
 ### Vertices
-A mesh is really just some information on how to represent a shape. Most meshes are sets of three positions in space to make triangles to represent their shape. This is because triangles can be used to make any other shape. In Unity's mesh format a triangle is made using 3 positions. Actually the "correct" word used for "positions in space" is vertices (singular is vertex). In Unity a vertex is just a Vector3. Let's make a triangle using 3 vertices.
+A mesh is really just some information on how to represent a shape. Most meshes are sets of three positions in space to make triangles to represent their shape. This is because triangles can be used to make any other shape. In Unity's mesh format a triangle is made using 3 positions. The "correct" word used for "positions in space" is vertices (singular is vertex). In Unity a vertex is just a Vector3. Let's make a triangle using 3 vertices.
 
 (This isn't valid C# code but don't worry once you get the concept you'll take off really fast)
 
@@ -89,7 +89,7 @@ Unity has a built in function for generating normals for us.
 (taken from https://forum.unity.com/threads/unity-has-a-clockwise-winding-order.129923/#post-3198466)
 ![clockwise triangle order](/Resources/assets/clockwise_triangle.png)
 
-... and counter clockwise will make it face away from us.
+... and counter-clockwise will make it face away from us.
 
 ![counter clockwise triangle](/Resources/assets/counter_clockwise_triangle.png)
 
