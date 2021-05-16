@@ -27,4 +27,4 @@ reference for anyone not wanting to have to re-read an entire lecture just to re
  If you want to contribute an edit just make pull request.
 
  # Currently under development
- this course is still ebing written as you read this. This (paragraph) will be removed once the course is finished.
+ this course is still being written as you read this. This (paragraph) will be removed once the course is finished.
