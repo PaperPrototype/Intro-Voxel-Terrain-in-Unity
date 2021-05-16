@@ -1,7 +1,7 @@
 # Vocab
 
-Vertex
-    A 3D position used to tell where the edge of a mesh triangle is
+Vertex (singular) - Vertices (plural)
+    A 3D position used to tell where a mesh's triangle corners will be.
     
-    plural - Vertices
-    
+Index (singular) - Indexes? Indices? (plural)
+    An index tells us where in a list, or array, we can find something.
