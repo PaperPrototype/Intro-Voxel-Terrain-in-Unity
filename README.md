@@ -1,5 +1,5 @@
 # Intro to Simplified Voxel Systems in Unity
-An open source course on making a voxel engine in Unity. The goal is to use the least amount of code to achieve a simple voxel system that still achieves high performance and multithreading using the C# Job System.
+An open source introductory course on making voxel engines in Unity. The goal is to use the least amount of code to achieve a simple voxel system that still achieves high performance.
 
 # Pre-requisites
 You must already be familar with coding and using Unity for simple games.
