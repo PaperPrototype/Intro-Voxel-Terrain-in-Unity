@@ -103,4 +103,7 @@ We will be making lots of micro Unity projects to test out what we learn. Make a
     |   |___Quad.cs
 ```
 
-In the scene make an empty GameObject, attach the Quad script as a component. Now open the script in Unity.
+In the scene make an empty GameObject, attach the Quad script as a component. Now open the script in VS Code or whatever you're using to code. We are going to want a Renderer component and a MeshFilter component. Lets force Unity to have these on our GameObject. Above the Quad class add:
+
+```
+    
