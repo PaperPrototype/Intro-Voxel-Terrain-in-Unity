@@ -167,7 +167,7 @@ Add a new micro project to our Unity project so that looks like this
     |   |___Voxel.cs
 ```
 
-Now open up the Voxel scene and add an empty GameObject. Open up Voxel.cs and force Unity to add our components as before. Now instead of hard coding our triangle we are going to be smart. We will make an array of all 8 possible vertices for a cube that we can always reference. We'll make a new static class that we can reference called Data.cs
+Now open up the Voxel scene and add an empty GameObject. Open up Voxel.cs and force Unity to add our components as before. Now instead of hard coding our triangle we are going to be smart. We will make an array of all 8 possible vertices for a cube that we can always reference. We'll make a new script that we can reference called Data.cs
 
 ```
     Assets/
@@ -218,4 +218,91 @@ This is all 8 possible vertices for the corners of a voxel. We need a way to fin
 
 We mark the class as well as the arrays static for a reason. Anything marked as static gets saved to a special part of our programs for data that doesn't change and therefore there is only one copy of that data. This data can be accessed really fast. Also the arrays are marked as readonly. This tells the compiler that the data can only be read and not modified. The correct word is "mutated". This allows any Thread or Job to access the arrays since there is only one copy of them and they aren't allowed to be modified. We can be sure that nothing weird will happen, and the C# Job system won't complain when we use Jobs to make our meshes.
 
-Lets now open 
+Open Voxel.cs again and create a new mesh except we are going to use our lookup tables. We are going to use a NativeArray to store the vertices and triangles. This is to get you used to using them since they are JobSystem friendly and you will need to know how to use them. 
+
+```
+using UnityEngine;
+using Unity.Collections;
+
+[RequireComponent(typeof(MeshRenderer))]
+[RequireComponent(typeof(MeshFilter))]
+public class Voxel : MonoBehaviour
+{
+    private Mesh m_mesh;
+    private NativeArray<Vector3> m_vertices;
+    private NativeArray<int> m_triangles;
+    private int m_vertexIndex = 0;
+    private int m_triangleIndex = 0;
+
+}
+```
+
+(We use the naming convention `m_memberVariable` to represent private class member variables. You don't have to, but it'll make distinguishing things apart from each other easier later on. We recommend you copy us for an optimal course experience).
+
+The m_vertexIndex is used to keep track of the current newest vertex. That way new vertices being added don't overwrite eachother, but get added on the end of the array. The m_triangleIndex serves the same purpose except for the triangles.
+
+Make a new function that uses the lookup tables to make a voxel.
+
+```
+    private void DrawVoxel()
+    {
+        for (int side = 0; side < 6; side++)
+        {
+            m_vertices[m_vertexIndex + 0] = Data.Vertices[Data.BuildOrder[side, 0]];
+            m_vertices[m_vertexIndex + 1] = Data.Vertices[Data.BuildOrder[side, 1]];
+            m_vertices[m_vertexIndex + 2] = Data.Vertices[Data.BuildOrder[side, 2]];
+            m_vertices[m_vertexIndex + 3] = Data.Vertices[Data.BuildOrder[side, 3]];
+
+            // get the correct triangle index
+            m_triangles[m_triangleIndex + 0] = m_vertexIndex + 0;
+            m_triangles[m_triangleIndex + 1] = m_vertexIndex + 1;
+            m_triangles[m_triangleIndex + 2] = m_vertexIndex + 2;
+            m_triangles[m_triangleIndex + 3] = m_vertexIndex + 2;
+            m_triangles[m_triangleIndex + 4] = m_vertexIndex + 1;
+            m_triangles[m_triangleIndex + 5] = m_vertexIndex + 3;
+
+            // increment by 4 because we only added 4 vertices
+            m_vertexIndex += 4;
+
+            // increment by 6 because we added 6 int's to our triangles array
+            m_triangleIndex += 6;
+        }
+    }
+```
+
+And now initialize all of our member variables in `Start()` and Draw the voxel. Then set the meshes data. Then set the MeshFilters mesh to our mesh. Also Calculate our normals and Bounds.
+
+```
+    private void Start()
+    {
+        m_vertices = new NativeArray<Vector3>(24, Allocator.Temp);
+        m_triangles = new NativeArray<int>(36, Allocator.Temp);
+
+        DrawVoxel();
+
+        m_mesh = new Mesh
+        {
+            vertices = m_vertices.ToArray(),
+            triangles = m_triangles.ToArray()
+        };
+
+        m_mesh.RecalculateBounds();
+        m_mesh.RecalculateNormals();
+
+        gameObject.GetComponent<MeshFilter>().mesh = m_mesh;
+    }
+```
+
+Also since we are using NativeCollections (Native meaning it uses actual pointers and not copies of everything, which is what C# normaly does to make everything "safe") we have to free our memory Manually much like in C or Rust.
+
+```
+    private void Start()
+    {
+        //... snipping out previous code ...//
+
+        m_vertices.Dispose();
+        m_triangles.Dispose();
+    }
+```
+
+And now if you hit play you should have a voxel, but make sure to set your Material. See you next week! (Or in an hour if you want, but seriously take a 5 min break).
