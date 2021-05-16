@@ -5,7 +5,7 @@ If we want to make a voxel engine are going to need to understand what meshes ar
 ### vertices
 A mesh is really just some information on how to represent a shape. Most meshes use triangles to represent their shape. This is because triangles can be used to make any other shape. In Unity's mesh format a triangle is made using 3 positions. Actually the "correct" word used for "positions" is Vertices. In unity its just a Vector3. Lets make a triangle using 3 vertices.
 
-(This isn't valid C# code but for now we're just teaching you the concept)
+(This isn't valid C# code but don't worry once you get the concept you'll take off really fast)
 
 ```
     mesh.vertices = { Vector3(-1, -1, 0), Vector3(-1, 1, 0), Vector3(1, 1 0) }
@@ -93,3 +93,14 @@ reversing the order.
 ![counter clockwise triangle](/Resources/assets/counter_clockwise_triangle.png)
 
 
+# Making the quad in Unity
+We will be making lots of micro Unity projects to test out what we learn. Make a new Unity project. Set it to 3D. Set it up like the diagram below with a folder for this micro project called Quad.
+
+```
+    Assets
+    |___Quad
+    |   |___Test.unity
+    |   |___Quad.cs
+```
+
+In the scene make an empty GameObject, attach the Quad script as a component. Now open the script in Unity.
