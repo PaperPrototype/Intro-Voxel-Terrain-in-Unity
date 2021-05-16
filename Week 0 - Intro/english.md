@@ -3,7 +3,7 @@ If we want to make a voxel engine are going to need to understand what meshes ar
 
 
 ### vertices
-A mesh is really just some information on how to represent a shape. Most meshes use triangles to represent their shape. This is because triangles can be used to make any other shape. In Unity's mesh format a triangle is made using 3 positions. Actually the "correct" word used for "positions" is Vertices. In unity its just a Vector3. Lets make a triangle using 3 vertices.
+A mesh is really just some information on how to represent a shape. Most meshes sets of three positions to make triangles to represent their shape. This is because triangles can be used to make any other shape. In Unity's mesh format a triangle is made using 3 positions. Actually the "correct" word used for "positions" is Vertices. In unity its just a Vector3. Lets make a triangle using 3 vertices.
 
 (This isn't valid C# code but don't worry once you get the concept you'll take off really fast)
 
