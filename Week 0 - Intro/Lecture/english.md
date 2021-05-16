@@ -148,7 +148,7 @@ You can now add the material to the MeshRenderer component.
 
 
 # Making a voxel in Unity
-Voxel terrains are made of the surface of thousands of small voxels (voxel means 3D pixel). If we were to make a terrain out of voxels and then slice it, it would look like this
+Voxel terrains are made of the surface of thousands of small voxels (voxel means 3D pixel). If we were to make a terrain out of straight up voxels and then slice it, it would look like this
 
 ![2D voxel terrain unoptimized]()
 
