@@ -18,9 +18,7 @@ This course is mean't to be as accelerated as possible. I won't discuss my opini
  # Contributing
  This course is licensed under MIT.
  It is open source.
- If you want to suggest a major re-write then create a new Issue under Issues.
- If you want to contribute an edit just make pull request, ill review it and add the change, or just give you permissions to edit it.
- Resource Files from Affinity Designer (Where I design the pictures and art for lectures) is in the Resources Folder.
+ If you want to contribute then read our [Guidelines](https://github.com/Nanite3D/Nanite-course-Guidelines) it shouldn't take you more than 1 minute to read. Seriously its super short.
 
  # Currently under development
  this course is still being written as you read this. This (paragraph) will be removed once the course is finished.
