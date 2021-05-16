@@ -98,10 +98,10 @@ Unity has a built in function for generating normals for us.
 We will be making lots of micro Unity projects to test out what we learn. Make a new Unity project. Set it to 3D. Set it up like the diagram below with a folder for this micro project called Quad.
 
 ```
-    Assets
-    |___Quad
-    |   |___Quad.unity
-    |   |___Quad.cs
+    Assets/
+    |___Quad/
+    |   |___Quad.unity (Scene)
+    |   |___Quad.cs (Script)
 ```
 
 In the scene make an empty GameObject. Now open the script in VS Code or whatever you're using to code. We are going to want a MeshRenderer component and a MeshFilter component. Lets force Unity to have these on our GameObject. Above the Quad class add
@@ -111,7 +111,7 @@ In the scene make an empty GameObject. Now open the script in VS Code or whateve
     [RequireComponent(typeof(MeshFilter))]
 ```
 
-Now go back to the scene and add the Quad script to the empty GameObject. It should atomatically also add the needed components. Or you can just manually add them, but if you click play and it doesn't have them Unity will warn you.
+Now go back to the scene and add the Quad script to the empty GameObject. It should automatically also add the needed components. Or you can just manually add them, but if you click play and it doesn't have them Unity will warn you.
 
 Now we make our mesh as before. In `Start()` add
 
@@ -137,11 +137,38 @@ Now hit play. Voila! (If you get an error, make sure your triangles aren't tryin
 The mesh should be colored pink. That just means we don't have a material attached. Add a material we can use for all our meshes from now on, put it in the root of the project.
 
 ```
-    Assets
+    Assets/
     |___White (Material)
-    |___Quad
+    |___Quad/
     |   |___Quad.unity
     |   |___Quad.cs
 ```
 
-You can now add that to the MeshRenderer component.
+You can now add the material to the MeshRenderer component.
+
+
+# Making a voxel in Unity
+Voxel terrains are made of the surface of thousands of small voxels (voxel means 3D pixel). If we were to make a terrain out of voxel and then slice it, it would look like this
+
+![2D voxel terrain unoptimized]()
+
+You may notice the inefficiency here. The side of a voxel that is not visible is still being made. This leads to horrible performance in a large world. To fix this we can generate only the sides of a voxel at a time and then check of the voxel has a neighbor, if it does then we just don't generate that side.
+
+![2D voxel terrain optimized]()
+
+Add a new micro project to our Unity project so that looks like this
+
+```
+    Assets/
+    |___White (Material)
+    |___Quad/
+    |___Voxel/
+    |   |___Voxel.unity
+    |   |___Voxel.cs
+```
+
+Now open up the Voxel scene and add an empty GameObject. Open up Voxel.cs and force Unity to add our components as before. Now instead of hard coding our triangle we are going to be smart. We will make an array of all 8 possible vertices for a cube.
+
+```
+
+```

@@ -12,7 +12,7 @@ This course is mean't to be as accelerated as possible. I won't discuss my opini
  - Folders named "Week XXX" (XXX repesenting a number) stands for a lecture.
  - A file ending in .md is the actual text of the lecture.
  - The file names (for .md files) are named according to the language they are written in (example english.md). This allows the course to be translated into any language.
- - Folders named Notes contain the lectures overview and vocabulary. This is to be a quick reference so you don't have to re-read an entire lecture just to remeber what a vertex or triangle is.
+ - Folders named Notes contain the lectures overview and vocabulary. This is to be a quick reference so you don't have to re-read an entire lecture just to remember what a vertex or triangle is.
 
  # Contributing
  This course is licensed under MIT.
