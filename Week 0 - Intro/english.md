@@ -26,14 +26,13 @@ Now this won't actually work. In a mesh we need sets of 3 numbers that tell us w
 
 (If you think this is pointless... then yes at this point it is. But when you want more than 1 triangle in a mesh it makes sense).
 
-in our list of "triangles" (the're just a set of 3 `int`s) we are saying, get vertex at `0` (computers count from 0 not 1) and make that the first vertex in our triangle. Then get the vertex at `1` for our second vertex. Then get vertex at `2` for our third vertex. These "triangle" ints are called indexes. An index tells us where in a list (or array) to find something.
+in our list of "triangles" (they're just a set of 3 `int`s) we are saying, get vertex at `0` (computers count from 0 not 1) and make that the first vertex in our triangle. Then get vertex at `1` for the second vertex. Then get vertex at `2` for the third vertex. These "triangle" ints are called indexes. An index tells us where in a list (or array) to find something.
 
 ![triangle mesh](/Resources/assets/triangle_mesh.png)
 
 
 ###  a quad / square (two triangles)
-To make a square shape (quad in 3D jargon) we will need 1 more vertex. We already have vertices for 3 of the corners of our square.
-
+To make a square shape (a "quad" in 3D jargon) we're going to add 1 more vertex so we have 4 vertices in position to make a square.
 ```
     mesh.vertices = { Vector3(-1, -1, 0), Vector3(-1, 1, 0), Vector3(1, 1, 0), Vector3(1, -1, 0) }
     mesh.triangles = { 0, 1, 2 }
