@@ -1,12 +1,13 @@
 # Intro to Simplified Voxel Systems in Unity
-An open source course on making a voxel engine in Unity. The goal is to use the least amount of code to achieve a simple voxel system that still achieves high performance.
+An open source course on making a voxel engine in Unity. The goal is to use the least amount of code to achieve a simple voxel system that still achieves high performance and multithreading using the C# Job System.
 
 # Pre-requisites
 You must already be familar with coding and using Unity for simple games.
-You will need a code editor. VS Code is recommended, it is much smaller than Visual Studio, and takes less time to download.
+If you don't already know how to use Unity but knwo how to code you can take our course for free
+[Intro to Coding with Unity - course still in progress](https://github.com/PaperPrototype/Intro-to-Coding-with-Unity)
 
 # Welcome
-This course is mean't to be as accelerated as possible. I won't discuss my opinions much, or what I think. Instead we will try to be as consise and to the point as much as possible. We also only teach you something if you are going to need it. This leads to an extremely fast paced course, so you never get bored. 
+This course is mean't to be as accelerated as possible. I won't discuss my opinions much, or what I think. Instead we will try to be as consise and to the point as much as possible. We also only teach you something if you are going to need it. This leads to an extremely fast paced course, so you never get bored.
 
 # Lecture Format
  - Folders named "Week XXX" (XXX repesenting a number) stands for a lecture.

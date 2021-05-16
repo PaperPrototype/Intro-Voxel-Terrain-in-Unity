@@ -167,8 +167,54 @@ Add a new micro project to our Unity project so that looks like this
     |   |___Voxel.cs
 ```
 
-Now open up the Voxel scene and add an empty GameObject. Open up Voxel.cs and force Unity to add our components as before. Now instead of hard coding our triangle we are going to be smart. We will make an array of all 8 possible vertices for a cube.
+Now open up the Voxel scene and add an empty GameObject. Open up Voxel.cs and force Unity to add our components as before. Now instead of hard coding our triangle we are going to be smart. We will make an array of all 8 possible vertices for a cube that we can always reference. We'll make a new static class that we can reference called Data.cs
 
 ```
+    Assets/
+    |___Data.cs
+    |___White (Material)
+    |___Quad/
+    |___Voxel/
+```
+
+Change Data.cs to the following
 
 ```
+public static class Data
+{
+    public static readonly Vector3[] Vertices = new Vector3[8]
+    {
+        new Vector3(0.0f, 0.0f, 0.0f),
+        new Vector3(1.0f, 0.0f, 0.0f),
+        new Vector3(1.0f, 1.0f, 0.0f),
+        new Vector3(0.0f, 1.0f, 0.0f),
+        new Vector3(0.0f, 0.0f, 1.0f),
+        new Vector3(1.0f, 0.0f, 1.0f),
+        new Vector3(1.0f, 1.0f, 1.0f),
+        new Vector3(0.0f, 1.0f, 1.0f)
+    };
+}
+```
+
+This is all 8 possible vertices for the corners of a voxel. We need a way to find all the vertices per side of the voxel. For this we'll make a lookup table (a 2D array) that gets 4 vertices based on the side of the cube we want.
+
+```
+    public static readonly int[,] BuildOrder = new int[6, 4]
+    {
+        // right, left, up, down, front, back
+
+        //0 1 2 2 1 3
+        
+        {1, 2, 5, 6},  // right face
+        {4, 7, 0, 3}, // left face
+        
+        {3, 7, 2, 6}, // up face
+        {1, 5, 0, 4}, // down face
+        
+        {5, 6, 4, 7}, // front face
+        {0, 3, 1, 2} // back face
+    };
+```
+
+We mark the class as well as the arrays static for a reason. Anything marked as static gets saved to a special part of our programs for data that doesn't change and therefore there is only one copy of that data. This data can be accessed really fast. Also the arrays are marked as readonly. This tells the compiler that the data can only be read and not modified. The correct word is "mutated". This allows any Thread or Job to access the arrays since there is only one copy of them and they aren't allowed to be modified. We can be sure that nothing weird will happen, and the C# Job system won't complain when we use Jobs to make our meshes.
+
