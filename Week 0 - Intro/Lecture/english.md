@@ -148,11 +148,11 @@ You can now add the material to the MeshRenderer component.
 
 
 # Making a voxel in Unity
-Voxel terrains are made of the surface of thousands of small voxels (voxel means 3D pixel). If we were to make a terrain out of voxel and then slice it, it would look like this
+Voxel terrains are made of the surface of thousands of small voxels (voxel means 3D pixel). If we were to make a terrain out of voxels and then slice it, it would look like this
 
 ![2D voxel terrain unoptimized]()
 
-You may notice the inefficiency here. The side of a voxel that is not visible is still being made. This leads to horrible performance in a large world. To fix this we can generate only the sides of a voxel at a time and then check of the voxel has a neighbor, if it does then we just don't generate that side.
+You may notice the inefficiency here. The side of a voxel that is not visible is still being rendered. This leads to horrible performance in a large world. To fix this we can generate the individual sides of a voxel separately and then check if the voxel has a neighbor, if it does then we just don't generate that side.
 
 ![2D voxel terrain optimized]()
 
@@ -218,3 +218,4 @@ This is all 8 possible vertices for the corners of a voxel. We need a way to fin
 
 We mark the class as well as the arrays static for a reason. Anything marked as static gets saved to a special part of our programs for data that doesn't change and therefore there is only one copy of that data. This data can be accessed really fast. Also the arrays are marked as readonly. This tells the compiler that the data can only be read and not modified. The correct word is "mutated". This allows any Thread or Job to access the arrays since there is only one copy of them and they aren't allowed to be modified. We can be sure that nothing weird will happen, and the C# Job system won't complain when we use Jobs to make our meshes.
 
+Lets now open 
