@@ -6,7 +6,7 @@ You must already be familar with coding and using Unity for simple games.
 You will need a code editor. VS Code is recommended, it is much smaller than Visual Studio, and takes less time to download.
 
 # Welcome
-This course is mean't to be as accelerated as possible. I won't discuss my opinions much, or what I think. Instead we will try to be as consise and to the point as much as possible.
+This course is mean't to be as accelerated as possible. I won't discuss my opinions much, or what I think. Instead we will try to be as consise and to the point as much as possible. We also only teach you something if you are going to need it. This leads to an extremely fast paced course, so you never get bored. 
 
 # Lecture Format
  - Folders named "Week XXX" (XXX repesenting a number) stands for a lecture.
