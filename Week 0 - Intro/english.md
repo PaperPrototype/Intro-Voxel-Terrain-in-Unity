@@ -11,4 +11,5 @@ To make a triangle, which is what meshes are made of we need 3 vertices.
 `
 
 It looks like this in 2D (ignoring z).
+
 ![list of vertices](/Resources/assets/vertices_list_3.png)
