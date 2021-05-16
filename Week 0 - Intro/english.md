@@ -44,7 +44,7 @@ We need to add another set of 3 ints (referred to as a triangle) to tell Unity w
 
 ```
     mesh.vertices = { Vector3(-1, -1, 0), Vector3(-1, 1, 0), Vector3(1, 1, 0), Vector3(1, -1, 0) }
-    mesh.triangles = { 0, 1, 2, 1, 2, 3 }
+    mesh.triangles = { 0, 1, 2, 0, 2, 3 }
 ```
 
 And voila!
@@ -67,7 +67,7 @@ The format for normals in a Unity mesh is each vertex needs a normal. We will as
 ```
     mesh.vertices = { Vector3(-1, -1, 0), Vector3(-1, 1, 0), Vector3(1, 1, 0), Vector3(1, -1, 0) }
     mesh.normals = { Vector3(0, 0, 1), Vector3(0, 0, 1), Vector3(0, 0, 1), Vector3(0, 0, 1) }
-    mesh.triangles = { 0, 1, 2, 1, 2, 3 }
+    mesh.triangles = { 0, 1, 2, 0, 2, 3 }
 ```
 
 Normals are usually a Unit Vector. Unit Vector just means that the distance from the origin (`Vector3(0, 0, 0)`) to the "position" or "end" of our Normal needs to be 1. The distance from `Vector3(0, 0, 0)` to one of our normals `Vector3(0, 0, 1)` is obviously 1, so we're fine. 
@@ -80,7 +80,7 @@ Unity has a built in function for generating normals for us.
 
 ```
     mesh.vertices = { Vector3(-1, -1, 0), Vector3(-1, 1, 0), Vector3(1, 1, 0), Vector3(1, -1, 0) }
-    mesh.triangles = { 0, 1, 2, 1, 2, 3 }
+    mesh.triangles = { 0, 1, 2, 0, 2, 3 }
     mesh.RecalculateNormals()
 ```
 
@@ -100,11 +100,48 @@ We will be making lots of micro Unity projects to test out what we learn. Make a
 ```
     Assets
     |___Quad
-    |   |___Test.unity
+    |   |___Quad.unity
     |   |___Quad.cs
 ```
 
-In the scene make an empty GameObject, attach the Quad script as a component. Now open the script in VS Code or whatever you're using to code. We are going to want a Renderer component and a MeshFilter component. Lets force Unity to have these on our GameObject. Above the Quad class add:
+In the scene make an empty GameObject. Now open the script in VS Code or whatever you're using to code. We are going to want a MeshRenderer component and a MeshFilter component. Lets force Unity to have these on our GameObject. Above the Quad class add
 
 ```
-    
+    [RequireComponent(typeof(MeshRenderer))]
+    [RequireComponent(typeof(MeshFilter))]
+```
+
+Now go back to the scene and add the Quad script to the empty GameObject. It should atomatically also add the needed components. Or you can just manually add them, but if you click play and it doesn't have them Unity will warn you.
+
+Now we make our mesh as before. In `Start()` add
+
+```
+    Mesh mesh = new Mesh
+    {
+        vertices = new Vector3[] { new Vector3(-1, -1, 0), new Vector3(-1, 1, 0), new Vector3(1, 1, 0), new Vector3(1, -1, 0) },
+        triangles = new int[] { 0, 1, 2, 0, 2, 3 }
+    };
+    mesh.RecalculateBounds();
+    mesh.RecalculateNormals();
+```
+
+Also add a `RecalculateBounds()` this tells the renderer what 3D space the mesh takes up as if it were enclosed in a Box. (A box is easy to work with and very performant). Now add the mesh to our MeshFilter in `Start()`
+
+```
+    gameObject.GetComponent<MeshFilter>().mesh = mesh;
+
+```
+
+Now hit play. Voila! (If you get an error, make sure your triangles aren't trying to access vertices that don't exist).
+
+The mesh should be colored pink. That just means we don't have a material attached. Add a material we can use for all our meshes from now on, put it in the root of the project.
+
+```
+    Assets
+    |___White (Material)
+    |___Quad
+    |   |___Quad.unity
+    |   |___Quad.cs
+```
+
+You can now add that to the MeshRenderer component.
