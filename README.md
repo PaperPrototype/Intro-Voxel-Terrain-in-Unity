@@ -1,4 +1,4 @@
-# Intro to Simplified VoxelSystems in Unity
+# Intro to Simplified Voxel Systems in Unity
 An open source course on making a voxel engine in Unity. The goal is to use the least amount of code to achieve a simple voxel system that still achieves high performance.
 
 # Pre-requisites
