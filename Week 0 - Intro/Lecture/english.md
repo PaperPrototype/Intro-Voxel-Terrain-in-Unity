@@ -152,7 +152,7 @@ Voxel terrains are made of the surface of thousands of small voxels. Voxel means
 
 ![2D voxel terrain unoptimized](/Resources/assets/2D_voxel_terrain_unoptimized.png)
 
-You may notice the inefficiency here. The side of a voxel that is not visible is still being gerneated and rendered. This leads to horrible performance in a large world. To fix this we can generate the individual sides of a voxel separately and then check if the voxel has a neighbor, if it does then we just don't generate that side.
+You may notice the inefficiency here. The side of a voxel that is not visible is still being generated and rendered. This leads to horrible performance in a large world. To fix this we can generate the individual sides of a voxel separately and then check if the voxel has a neighbor, if it does then we just don't generate that side.
 
 ![2D voxel terrain optimized](/Resources/assets/2D_voxel_terrain_optimized.png)
 
