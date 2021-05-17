@@ -150,11 +150,11 @@ You can now add the material to the MeshRenderer component.
 # Making a voxel in Unity
 Voxel terrains are made of the surface of thousands of small voxels. Voxel means 3D pixel. If we were to make a terrain out of voxels and then slice it, it would look like this
 
-![2D voxel terrain unoptimized]()
+![2D voxel terrain unoptimized](/Resources/assets/2D_voxel_terrain_unoptimized.png)
 
-You may notice the inefficiency here. The side of a voxel that is not visible is still being rendered. This leads to horrible performance in a large world. To fix this we can generate the individual sides of a voxel separately and then check if the voxel has a neighbor, if it does then we just don't generate that side.
+You may notice the inefficiency here. The side of a voxel that is not visible is still being gerneated and rendered. This leads to horrible performance in a large world. To fix this we can generate the individual sides of a voxel separately and then check if the voxel has a neighbor, if it does then we just don't generate that side.
 
-![2D voxel terrain optimized]()
+![2D voxel terrain optimized](/Resources/assets/2D_voxel_terrain_optimized.png)
 
 Add a new micro project to our Unity project so that looks like this
 
