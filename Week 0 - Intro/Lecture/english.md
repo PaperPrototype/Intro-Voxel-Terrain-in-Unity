@@ -205,7 +205,7 @@ This is all 8 possible vertices for the corners of a voxel. We need a way to fin
     {
         // right, left, up, down, front, back
 
-        //0 1 2 2 1 3
+        // 0 1 2 2 1 3 <- triangle order per side
         
         {1, 2, 5, 6},  // right face
         {4, 7, 0, 3}, // left face
@@ -218,9 +218,9 @@ This is all 8 possible vertices for the corners of a voxel. We need a way to fin
     };
 ```
 
-We mark the class as well as the arrays static for a reason. Anything marked as static gets saved to a special part of our programs for data that doesn't change and therefore there is only one copy of that data. This data can be accessed really fast. Also the arrays are marked as readonly. This tells the compiler that the data can only be read and not modified. The correct word is "mutated". This allows any Thread or Job to access the arrays since there is only one copy of them and they aren't allowed to be modified. We can be sure that nothing weird will happen, and the C# Job system won't complain when we use Jobs to make our meshes.
+We mark the class as well as the arrays `static` for a reason. Anything marked as `static` gets saved to a special part of our programs for data that doesn't change and therefore there is only one copy of that data. This data can be accessed really fast. Also the arrays are marked as `readonly`. This tells the compiler that the data can only be read and not modified. The correct word is "not mutated" or "immutable". This allows any Thread or Job to access the arrays since there is only one copy of them and they aren't allowed to be modified. As a resukt of nothing being allowed to change, the C# Job system won't complain when we use Jobs to make our meshes using the lookup tables.
 
-Open Voxel.cs again and create a new mesh except we are going to use our lookup tables. We are going to use a NativeArray to store the vertices and triangles. This is to get you used to using them since they are JobSystem friendly and you will need to know how to use them. 
+Open Voxel.cs again and create a new mesh except we are going to use our lookup tables this time. We use a NativeArray to store the vertices and triangles. This is to get you used to using them since they are JobSystem friendly and you will need to know how to use them. 
 
 ```
 using UnityEngine;
@@ -239,7 +239,7 @@ public class Voxel : MonoBehaviour
 }
 ```
 
-(We use the naming convention `m_memberVariable` to represent private class member variables. You don't have to, but it'll make distinguishing things apart from each other easier later on. We recommend you copy us for an optimal course experience).
+(We use the naming convention `m_variable` to represent private class member variables. You don't have to, but it'll make distinguishing things apart from each other easier later on. We recommend you copy us for an optimal course experience).
 
 The m_vertexIndex is used to keep track of the current newest vertex. That way new vertices being added don't overwrite eachother, but get added on the end of the array. The m_triangleIndex serves the same purpose except for the triangles.
 

@@ -1,5 +1,7 @@
-# Vocab
+# Contributing
+If anything is defined incorrectly or you have some knowledge of compiler keywords that was not covered then please make a pull request, and add / fix it.
 
+# Vocab
 Vertex (singular) - Vertices (plural)
     A 3D position used to tell where a mesh's triangle corners will be.
     
@@ -19,4 +21,20 @@ Normal(s)
 
 Unit Vector
     A vector who's magnitude is 1. The megnitude of a vector is just the distance from the start, or origin, to the "end" position that the vector is giving.
-    ![magnitude of a vector]()
+    ![magnitude of a vector](/Resources/assets/normal_magnitude.png)
+
+Immutable
+    A value that can **only** be read and not changed, AKA immutable.
+
+Mutable
+    A value that can be changed and read, AKA mutated.
+
+Keyword - `static`
+    Marks variable as a "global" and stroes it ina special part of our program.
+
+Keyword - `readonly`
+    Marks variables as "immutable". External classes can only read and not write to it.
+
+Voxel
+    Analogous to the word "pixel", vo standing for "volume" (instead of pixel's "picture") and el representing "element". Similar formations with el for "element" include the words "pixel" and "texel".
+    [Voxel Wikipedia](https://en.wikipedia.org/wiki/Voxel)
