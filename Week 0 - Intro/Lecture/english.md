@@ -180,6 +180,8 @@ Now open up the Voxel scene and add an empty GameObject. Open up Voxel.cs and fo
 Change Data.cs to the following
 
 ```
+using UnityEngine;
+
 public static class Data
 {
     public static readonly Vector3[] Vertices = new Vector3[8]
