@@ -35,7 +35,7 @@ public class Chunk : MonoBehaviour
 }
 ```
 
-To make a chunk all we have to do is place voxel's on a 3D grid. To achieve this we can copy last weeks `DrawVoxel()` function with one minor change. We will pass in a position so that we can draw the voxel wherever we want.
+To make a chunk all we have to do is place voxel's on a 3D grid. To achieve this we can copy last weeks `DrawVoxel()` function with one minor change. We will pass in a position so that we can build the voxel at whatever position we want.
 
 ```
     private void DrawVoxel(Vector3 voxelPos)
@@ -58,13 +58,16 @@ Now we can use nested for loops to place voxel's in a 3D grid next to eachother.
     public const int chunkSize = 8;
 ```
 
-We make it a `const` to make sure that the number doesn't change. Also array initalizations require that a `const` is used for telling their size, arrays aren't dynamic in size. (A readonly wouldn't work since it could be modified by an enclosing (non static) class)
+We make it a `const` to make sure that the number doesn't change. Also array initalizations require that a `const` is used for telling their size, arrays aren't dynamic in size. (A readonly wouldn't work since it could be modified by an enclosing (non static) class). 
 
-SDFGHJSDFGHJKSDFGHJKDFGHJKSDFGHJKDFGHJKLFGHJFGHJKLFGHJFGHJKFGHJKDFGHJKDFGHJKFGHJKLDFGHJKFGHJKDFGHJKDFGHJKDFG ################# --> LEFT OFF HERE <-- ################
+Our vertex and triangle arrays will need to be larger, since we will be making a chunk and not a single voxel. We can calculate the amount by multipling 24 and 36 (the size of vertex and triangle data for a single voxel) by the number of voxel we will be building in our chunk. This leads to the following code
 
 ```
     private void Start()
     {
+        m_vertices = new NativeArray<Vector3>(24 * Data.chunkSize * Data.chunkSize * Data.chunkSize, Allocator.Temp);
+        m_triangles = new NativeArray<int>(36 * Data.chunkSize * Data.chunkSize * Data.chunkSize, Allocator.Temp);
+
         for (int x = 0; x < Data.chunkSize; x++)
         {
             for (int y = 0; y < Data.chunkSize; y++)
@@ -76,7 +79,14 @@ SDFGHJSDFGHJKSDFGHJKDFGHJKSDFGHJKDFGHJKLFGHJFGHJKLFGHJFGHJKFGHJKDFGHJKDFGHJKFGHJ
                 }
             }
         }
+
+        // ... snip ... //
     }
 ```
 
-Now since
+Now the rest of the code in start is exactly the same as before! I'll let you copy paste that from Voxel.cs. 
+
+Now make a new empty gameObject in the Chunk scene (Chunk.unity) and add Chunk.cs to it as a component. Also don't foregt to set the material. If you click play you'll see a chunk drawn!
+
+# Optimized Chunk
+If you look at the inside of our current chunk you might see something like this

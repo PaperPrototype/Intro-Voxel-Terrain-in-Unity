@@ -13,7 +13,7 @@ A mesh is really just some information on how to represent a shape. Most meshes 
 
 It looks like this in 2D (ignoring z).
 
-![three vertices](/Resources/assets/three_vertices.png)
+![three vertices](/Assets/three_vertices.png)
 
 
 ### Triangles ("connecting" our vertices)
@@ -28,7 +28,7 @@ Now this won't actually work. In a mesh we need sets of 3 numbers that tell us w
 
 In our list of "triangles" (they're just a set of 3 `int`s) we are saying, get vertex at `0` (computers count from 0 not 1) and make that the first vertex in our triangle. Then get vertex at `1` for the second vertex. Then get vertex at `2` for the third vertex. These "triangle" ints are called indexes. An index tells us where in a list (or array) to find something.
 
-![triangle mesh](/Resources/assets/triangle_mesh.png)
+![triangle mesh](/Assets/triangle_mesh.png)
 
 
 ###  a quad / square (two triangles)
@@ -38,7 +38,7 @@ To make a square shape (a "quad" in 3D jargon) we're going to add 1 more vertex 
     mesh.triangles = { 0, 1, 2 }
 ```
 
-![four vertices](/Resources/assets/four_vertices.png)
+![four vertices](/Assets/four_vertices.png)
 
 We need to add another set of 3 ints (referred to as a triangle) to tell Unity which vertices to make the second triangle.
 
@@ -48,17 +48,17 @@ We need to add another set of 3 ints (referred to as a triangle) to tell Unity w
 ```
 
 And voila!
-![quad mesh](/Resources/assets/quad_mesh.png)
+![quad mesh](/Assets/quad_mesh.png)
 
 
 ### Normals (which side of the triangle to render)
 We need a "direction" to tell Unity which side of the quad is up. These are called Normals. Normals tell the exact direction that is "upwards" from a surface or triangle. Here are normals telling us which direction is "upwards" on our triangle. (we are looking at it from the top = y).
 
-![correct surface normal](/Resources/assets/correct_normal.png)
+![correct surface normal](/Assets/correct_normal.png)
 
 But what if the normal faces in a direction that is not 90 degrees angled from the surface? The renderer doesn't know anything, so it will just shade the surface's color as if it was at the angle the normal is saying its at.
 
-![incorrrect surface normal](/Resources/assets/incorrect_normal.png)
+![incorrrect surface normal](/Assets/incorrect_normal.png)
 
 This could let us make surfaces, that are made of many triangles, that are not smooth look as if they were smooth.
 
@@ -72,7 +72,7 @@ The format for normals in a Unity mesh is each vertex needs a normal. We will as
 
 Normals are usually a Unit Vector. Unit Vector just means that the distance from the origin (`Vector3(0, 0, 0)`) to the "position" or "end" of our Normal needs to be 1. The distance from `Vector3(0, 0, 0)` to one of our normals `Vector3(0, 0, 1)` is obviously 1, so we're fine. 
 
-![magnitude of normal](/Resources/assets/normal_magnitude.png)
+![magnitude of normal](/Assets/normal_magnitude.png)
 
 The distance of a vector is called it's Magnitude. Also Normals are always just giving us a direction, so they don't need to be positioned near the vertices.
 
@@ -87,11 +87,11 @@ Unity has a built in function for generating normals for us.
 `RecalculateNormals()` requires us to already have our `vertices` and `triangles` set. But there is one other thing. If we are using Unity's function it needs to know which side of the triangle/quad to render. This is because Unity only renders 1 side of a mesh. This is called backface culling. Unity uses the order we put the triangles in to determine which side to render. The way we can remember is clockwise order will make the normals face us
 
 (taken from https://forum.unity.com/threads/unity-has-a-clockwise-winding-order.129923/#post-3198466)
-![clockwise triangle order](/Resources/assets/clockwise_triangle.png)
+![clockwise triangle order](/Asets/clockwise_triangle.png)
 
 ... and counter-clockwise will make it face away from us.
 
-![counter clockwise triangle](/Resources/assets/counter_clockwise_triangle.png)
+![counter clockwise triangle](/Assets/counter_clockwise_triangle.png)
 
 
 # Making the quad in Unity
@@ -150,11 +150,11 @@ You can now add the material to the MeshRenderer component.
 # Making a voxel in Unity
 Voxel terrains are made of the surface of thousands of small voxels. Voxel means 3D pixel. If we were to make a terrain out of voxels and then slice it, it would look like this
 
-![2D voxel terrain unoptimized](/Resources/assets/2D_voxel_terrain_unoptimized.png)
+![2D voxel terrain unoptimized](/Assets/2D_voxel_terrain_unoptimized.png)
 
 You may notice the inefficiency here. The side of a voxel that is not visible is still being generated and rendered. This leads to horrible performance in a large world. To fix this we can generate the individual sides of a voxel separately and then check if the voxel has a neighbor, if it does then we just don't generate that side.
 
-![2D voxel terrain optimized](/Resources/assets/2D_voxel_terrain_optimized.png)
+![2D voxel terrain optimized](/Assets/2D_voxel_terrain_optimized.png)
 
 Add a new micro project to our Unity project so that looks like this
 
@@ -307,4 +307,4 @@ Also since we are using NativeCollections (Native meaning it uses actual pointer
     }
 ```
 
-And now if you hit play you should have a voxel, but make sure to set your Material. See you next week! (Or in an hour if you want, but seriously take a 5 min break).
+And now if you hit play you should have a voxel! (Make sure to set your Material) See you next week!
