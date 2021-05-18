@@ -52,13 +52,13 @@ To make a chunk all we have to do is place voxel's on a 3D grid. To achieve this
     }
 ```
 
-Now we can use nested for loops to place voxel's next to eachother to make a chunk. Before we do that we need to know the "size" of our chunk, how many voxel's to draw in the x, y, and z direction. We could add it manully but we will need to know the size of our chunk in many places, so add a line to Data.cs to have a centralized place for this info
+Now we can use nested for loops to place voxel's in a 3D grid next to eachother. Before we do that we need to know the "size" of our chunk, how many voxel's to draw in the x, y, and z direction. We could add it manully but we will need to reference our chunk size all over our code, so add a line to Data.cs to have a centralized place for this
 
 ```
     public const int chunkSize = 8;
 ```
 
-We make it a `const` to make sure that it doesn't change, and Array initalizations require that a `const` is used for telling their size.
+We make it a `const` to make sure that no code can change it. Also array initalizations require that a `const` is used for telling their size.
 
 SDFGHJSDFGHJKSDFGHJKDFGHJKSDFGHJKDFGHJKLFGHJFGHJKLFGHJFGHJKFGHJKDFGHJKDFGHJKFGHJKLDFGHJKFGHJKDFGHJKDFGHJKDFG ################# --> LEFT OFF HERE <-- ################
 
