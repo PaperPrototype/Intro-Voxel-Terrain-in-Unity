@@ -87,7 +87,7 @@ Unity has a built in function for generating normals for us.
 `RecalculateNormals()` requires us to already have our `vertices` and `triangles` set. But there is one other thing. If we are using Unity's function it needs to know which side of the triangle/quad to render. This is because Unity only renders 1 side of a mesh. This is called backface culling. Unity uses the order we put the triangles in to determine which side to render. The way we can remember is clockwise order will make the normals face us
 
 (taken from https://forum.unity.com/threads/unity-has-a-clockwise-winding-order.129923/#post-3198466)
-![clockwise triangle order](/Asets/clockwise_triangle.png)
+![clockwise triangle order](/Assets/clockwise_triangle.png)
 
 ... and counter-clockwise will make it face away from us.
 
