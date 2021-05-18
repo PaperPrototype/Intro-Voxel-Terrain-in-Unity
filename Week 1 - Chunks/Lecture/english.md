@@ -35,7 +35,7 @@ public class Chunk : MonoBehaviour
 }
 ```
 
-To make a chunk all we have to do is place voxel's on a 3D grid. To achieve this we can copy last weeks `DrawVoxel()` function with one minor change. We will pass in a position so that we can "draw" the voxel wherever we want.
+To make a chunk all we have to do is place voxel's on a 3D grid. To achieve this we can copy last weeks `DrawVoxel()` function with one minor change. We will pass in a position so that we can draw the voxel wherever we want.
 
 ```
     private void DrawVoxel(Vector3 voxelPos)
