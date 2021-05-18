@@ -58,7 +58,7 @@ Now we can use nested for loops to place voxel's in a 3D grid next to eachother.
     public const int chunkSize = 8;
 ```
 
-We make it a `const` to make sure that no code can change it. Also array initalizations require that a `const` is used for telling their size.
+We make it a `const` to make sure that the number doesn't change. Also array initalizations require that a `const` is used for telling their size, arrays aren't dynamic in size. (A readonly wouldn't work since it could be modified by an enclosing (non static) class)
 
 SDFGHJSDFGHJKSDFGHJKDFGHJKSDFGHJKDFGHJKLFGHJFGHJKLFGHJFGHJKFGHJKDFGHJKDFGHJKFGHJKLDFGHJKFGHJKDFGHJKDFGHJKDFG ################# --> LEFT OFF HERE <-- ################
 
