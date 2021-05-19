@@ -90,3 +90,122 @@ Now make a new empty gameObject in the Chunk scene (Chunk.unity) and add Chunk.c
 
 # Optimized Chunk
 If you look at the inside of our current chunk you might see something like this
+
+![unoptimized chunk mesh](/Assets/unoptimized_chunk_mesh.png)
+
+To make it so voxel's don't draw their side if that side has a neighboring voxel, we need an algorithm to know where we want voxel's and where we don't. For terrains the most popular option is to use Noise. Perlin Noise, Complex Noise, Value Noise... Noise is a way of getting smoothed random numbers. Most noise algorithms take in an offset in either 2D or 3D and then return a number between 0 and 1. If you saved the values of a noise function on a texure fading between black (meaning 0) and white (meaning 1) it might look like this.
+
+![TODO texture image]()
+
+We could initialize a 3D array with our data once at the beginning and then reference that when building voxels to check if they have neighbors. This saves us on processing power at the trade off of using memory. We would have to do this if we wanted editable terrain.
+
+There is a noise library in the Resources of this repositiory called FastNoiseLite.zip. It is taken from [here](https://github.com/Auburn/FastNoiseLite/tree/master/CSharp) Download our repo and open the prepared zip and drag the folder "FastNoiseLite" into your project so that your project looks like this.
+
+```
+    Assets/
+    |___FastNoiseLite/
+    |   |___FastNoiseLite.cs
+    |___Data.cs
+    |___White (Material)
+    |___Quad/
+    |___Voxel/
+    |___Chunk/
+```
+
+We will make a function that takes in a voxel's position and returns `true` or `false` using the FastNoiseLite class. First we need to add a member variable to hold an instance of FastNoiseLite
+
+```
+    private FastNoiseLite m_noise;
+```
+
+Then we need to initialize the FastNoiseLite instance in `Start()` and set the nosie type we want
+
+```
+    private void Start()
+    {
+        m_noise = new FastNoiseLite();
+        m_noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
+
+        // ... snipping irrelevant code... //
+    }
+```
+
+Now we can make our function
+
+```
+    private bool IsSolid(Vector3 voxelPos)
+    {
+        float height = m_noise.GetNoise(voxelPos.x, voxelPos.z) * Data.chunkSize;
+
+        if (voxelPos.y <= height)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+```
+
+We need to multiply the noise value by some height value so that our terrain has hills higher than 1 block. We chose to multiply by our chunk size so that the highest possible height is the same as the chunk height, and so that if we change our chunk size the max height changes to. We check if a voxel's y position is less than the noise value, if it is then return true.
+
+Now when drawing voxel's in our for loop we can check if we should draw the voxel or not.
+
+```
+        for (int x = 0; x < Data.chunkSize; x++)
+        {
+            for (int y = 0; y < Data.chunkSize; y++)
+            {
+                for (int z = 0; z < Data.chunkSize; z++)
+                {
+                    Vector3 pos = new Vector3(x, y, z);
+                    if (IsSolid(pos))
+                    {
+                        DrawVoxel(pos);
+                    }
+                }
+            }
+        }
+```
+
+And we have terrain!
+
+![first noise chunk](/Assets/first_noise_chunk.png)
+
+But we still aren't checking if a voxel has a neighbor! 
+
+To do neigbor check for each voxel we will make a lookup table of offset positions that we will use in our for loop in the DrawVoxel function. Add the following to Data.cs
+
+```
+    public static readonly Vector3[] NeighborOffset = new Vector3[6]
+    {
+        new Vector3(1.0f, 0.0f, 0.0f),  // right
+        new Vector3(-1.0f, 0.0f, 0.0f), // left
+        new Vector3(0.0f, 1.0f, 0.0f),  // up
+        new Vector3(0.0f, -1.0f, 0.0f), // down
+        new Vector3(0.0f, 0.0f, 1.0f),  // front
+        new Vector3(0.0f, 0.0f, -1.0f), // back
+    };
+```
+
+Now change the `DrawVoxel()` function to this
+
+```
+    private void DrawVoxel(Vector3 voxelPos)
+    {
+        for (int side = 0; side < 6; side++)
+        {
+            if (!IsSolid(Data.NeighborOffset[side] + voxelPos))
+            {
+                // ... snipping irrelevant code ... //
+            }
+        }
+    }
+```
+
+And now you should see this! Yay!
+
+![optimized noise chunk](/Assets/optimized_noise_chunk.png)
+
+# Jobified Chunk

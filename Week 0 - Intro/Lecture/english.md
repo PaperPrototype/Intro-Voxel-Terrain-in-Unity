@@ -220,7 +220,7 @@ This is all 8 possible vertices for the corners of a voxel. We need a way to fin
 
 We mark the class as well as the arrays `static` for a reason. Anything marked as `static` gets saved to a special part of our programs for data that doesn't change and therefore there is only one copy of that data. This data can be accessed really fast. Also the arrays are marked as `readonly`. This tells the compiler that the data can only be read and not modified. The correct word is "not mutated" or "immutable". This allows any Thread or Job to access the arrays since there is only one copy of them and they aren't allowed to be modified. As a resukt of nothing being allowed to change, the C# Job system won't complain when we use Jobs to make our meshes using the lookup tables.
 
-Open Voxel.cs again and create a new mesh except we are going to use our lookup tables this time. We use a NativeArray to store the vertices and triangles. This is to get you used to using them since they are JobSystem friendly and you will need to know how to use them. 
+Open Voxel.cs again and create a new mesh except we are going to use our lookup tables this time. We use a NativeArray to store the vertices and triangles. This is to get you used to using them since they are JobSystem friendly and you will need to know how to use them to use the JobSystem.
 
 ```
 using UnityEngine;
@@ -272,7 +272,7 @@ Make a new function that uses the lookup tables to make a voxel.
     }
 ```
 
-And now initialize all of our member variables in `Start()` and Draw the voxel. Then set the meshes data. Then set the MeshFilters mesh to our mesh. Also Calculate our normals and Bounds.
+And now initialize all of our member variables in `Start()` and Draw the voxel. Then set the meshes data, and convert our NativeArray to an Array using `.ToArray()`. Then set the MeshFilters mesh to our mesh. Also Calculate our normals and Bounds.
 
 ```
     private void Start()
@@ -295,7 +295,7 @@ And now initialize all of our member variables in `Start()` and Draw the voxel. 
     }
 ```
 
-Also since we are using NativeCollections (Native meaning it uses actual pointers and not copies of everything, which is what C# normaly does to make everything "safe") we have to free our memory Manually much like in C or Rust.
+Also since we are using NativeCollections (Native meaning it uses actual pointers and not copies of everything. C# normaly makes copies of everything to make our code "safe") we have to manually free our memory, much like in C or C++.
 
 ```
     private void Start()

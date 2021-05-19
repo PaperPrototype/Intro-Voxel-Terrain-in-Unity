@@ -1,7 +1,7 @@
 # Contributing
 If anything is defined incorrectly or you have some knowledge of compiler keywords that was not covered then please make a pull request, and add / fix it.
 
-# Vocab
+# Lecture Vocab
 Vertex (singular) - Vertices (plural)
     A 3D position used to tell where a mesh's triangle corners will be.
     
