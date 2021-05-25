@@ -3,9 +3,9 @@ If we want to make a voxel engine, we are going to need to understand what meshe
 
 
 ### Vertices
-A mesh is really just some information on how to represent a shape. Most meshes are sets of three positions in space to make triangles to represent their shape. This is because triangles can be used to make any other shape. In Unity's mesh format a triangle is made using 3 positions. The "correct" word used for "positions in space" is vertices (singular is vertex). In Unity a vertex is just a Vector3. Let's make a triangle using 3 vertices.
+A mesh is really just some information on how to represent a shape. Most meshes are sets of three positions in space to make triangles to represent their shape. This is because triangles can be used to make any other shape. In Unity's mesh format a triangle is made using 3 positions. The correct term for "positions in space" in the context of meshes is, vertices (singular is vertex). In Unity a vertex is just a Vector3. Let's make a triangle using 3 vertices.
 
-(This isn't valid C# code but don't worry once you get the concept you'll take off really fast)
+(This isn't valid C# code, the techinical name would be "pseudo code" meaning its just to show a concept or express "to be" code)
 
 ```
     mesh.vertices = { Vector3(-1, -1, 0), Vector3(-1, 1, 0), Vector3(1, 1 0) }
@@ -41,11 +41,6 @@ To make a square shape (a "quad" in 3D jargon) we're going to add 1 more vertex 
 ![four vertices](/Assets/four_vertices.png)
 
 We need to add another set of 3 ints (referred to as a triangle) to tell Unity which vertices to make the second triangle.
-
-```
-    mesh.vertices = { Vector3(-1, -1, 0), Vector3(-1, 1, 0), Vector3(1, 1, 0), Vector3(1, -1, 0) }
-    mesh.triangles = { 0, 1, 2, 0, 2, 3 }
-```
 
 And voila!
 ![quad mesh](/Assets/quad_mesh.png)
@@ -125,7 +120,7 @@ Now we make our mesh as before. In `Start()` add
     mesh.RecalculateNormals();
 ```
 
-Also add a `RecalculateBounds()` this tells the renderer what 3D space the mesh takes up as if it were enclosed in a Box. (A box is easy to work with and very performant). Now add the mesh to our MeshFilter in `Start()`
+Also add a `RecalculateBounds()` this tells the renderer what 3D space the mesh takes up as if it were enclosed in a Box. (A box is easy to work with and very performant for volume calculations). Now add the mesh to our MeshFilter in `Start()`
 
 ```
     gameObject.GetComponent<MeshFilter>().mesh = mesh;
@@ -145,6 +140,80 @@ The mesh should be colored pink. That just means we don't have a material attach
 ```
 
 You can now add the material to the MeshRenderer component.
+
+
+# UV's and textures
+Almost all terrains have textures for grass, dirt, and rocks. A texture is just an image. The renderer will take care of 'warping' the textures onto our triangles, all we have to do is tell it that a specific part of our texture should "map" to a specific vertex. A textures "UV size" in Unity is always from 0 to 1, regardless of its size in pixels.
+
+![2D uv texture](/Assets/2D_uv_texture.png)
+
+A UV in Unity's mesh format is a `Vector2`, and each vertex in the mesh gets a UV. A Value of `Vector2(0, 0)` in a UV would get the bottom left corner of our texture.
+
+![2D uv texture coordinate](/Assets/2D_uv_texture_coordinate.png)
+
+Making a UV at 0 index of the meshes UV array would correspond to the first vertex in the mesh.
+
+```
+    mesh.vertices = { Vector3(-1, -1, 0) }
+    mesh.uv = { Vector2(0, 0) }
+```
+
+Any subsequent UV's would reference the vertex at its same corresponding index.
+
+```
+    mesh.vertices = { Vector3(-1, -1, 0), Vector3(-1, 1, 0), Vector3(1, 1, 0) }
+    mesh.uv = { Vector2(0, 0), Vector2(0, 1), Vector2(1, 1) }
+```
+
+To texture our triangle we could change the pseudo code to the following.
+
+```
+    mesh.vertices = { Vector3(-1, -1, 0), Vector3(-1, 1, 0), Vector3(1, 1, 0) }
+    mesh.uv = { Vector2(0, 0), Vector2(0, 1), Vector2(1, 1) }
+    mesh.triangles = { 0, 1, 2 }
+```
+
+This would yield the following
+
+![2D textured triangle](/Assets/2D_textured_triangle.png)
+
+To texture the quad we only have to add one more UV, since there is one UV per vertex
+
+```
+    mesh.vertices = { Vector3(-1, -1, 0), Vector3(-1, 1, 0), Vector3(1, 1, 0), Vector3(1, -1, 0) }
+    mesh.uv = { Vector2(0, 0), Vector2(0, 1), Vector2(1, 1), Vector2(1, 0) }
+    mesh.triangles = { 0, 1, 2, 0, 2, 3 }
+```
+
+![2D textured quad](/Assets/2D_textured_quad.png)
+
+
+# Adding uv's to the quad in Unity
+From the Resources folder of this course get the file called "Texture.png.zip" unzip it and place it in the root of the Project.
+
+```
+    Assets/
+    |___Texture.png
+    |___White (Material)
+    |___Quad/
+```
+
+Now in the "White" material set its albedo (color) to be Texture.png. You can drag Texture.png onto the square next to the word "albedo" on the material. Also set the materials smoothness to be 0. This will make it less shiny. 
+
+Change the mesh code in Quad.cs to the following
+
+```
+    Mesh mesh = new Mesh
+    {
+        vertices = new Vector3[] { new Vector3(-1, -1, 0), new Vector3(-1, 1, 0), new Vector3(1, 1, 0), new Vector3(1, -1, 0) },
+        uv = new Vector2[] { new Vector2(0, 0), new Vector2(0, 1), new Vector2(1, 1), new Vector2(1, 0) },
+        triangles = new int[] { 0, 1, 2, 0, 2, 3 }
+    };
+```
+
+Run this new code and you should see the following
+
+![textured quad screenshot](/Assets/textured_quad_screenshot.png)
 
 
 # Making a voxel in Unity
@@ -167,7 +236,7 @@ Add a new micro project to our Unity project so that looks like this
     |   |___Voxel.cs
 ```
 
-Now open up the Voxel scene and add an empty GameObject. Open up Voxel.cs and force Unity to add our components as before. Now instead of hard coding our triangle we are going to be smart. We will make an array of all 8 possible vertices for a cube that we can always reference. We'll make a new script that we can reference called Data.cs
+Now open up the Voxel scene and add an empty GameObject. Open up Voxel.cs and force Unity to add our components as before. Now instead of hard coding our triangle we are going to be smart. We will make an array of all 8 possible vertices for a cube, that we can always reference. We'll make a new script to contain al this called Data.cs
 
 ```
     Assets/
@@ -177,7 +246,7 @@ Now open up the Voxel scene and add an empty GameObject. Open up Voxel.cs and fo
     |___Voxel/
 ```
 
-Change Data.cs to the following
+Change Data.cs to the following.
 
 ```
 using UnityEngine;
@@ -198,7 +267,7 @@ public static class Data
 }
 ```
 
-This is all 8 possible vertices for the corners of a voxel. We need a way to find all the vertices per side of the voxel. For this we'll make a lookup table (a 2D array) that gets 4 vertices based on the side of the cube we want.
+This is all 8 possible vertices for the corners of a voxel. We need a way to find all the vertices per each side of the voxel. For this we'll make a lookup table (a 2D array) that gets 4 vertices based on the side of the cube we want.
 
 ```
     public static readonly int[,] BuildOrder = new int[6, 4]
@@ -218,7 +287,7 @@ This is all 8 possible vertices for the corners of a voxel. We need a way to fin
     };
 ```
 
-We mark the class as well as the arrays `static` for a reason. Anything marked as `static` gets saved to a special part of our programs for data that doesn't change and therefore there is only one copy of that data. This data can be accessed really fast. Also the arrays are marked as `readonly`. This tells the compiler that the data can only be read and not modified. The correct word is "not mutated" or "immutable". This allows any Thread or Job to access the arrays since there is only one copy of them and they aren't allowed to be modified. As a resukt of nothing being allowed to change, the C# Job system won't complain when we use Jobs to make our meshes using the lookup tables.
+We mark the class as well as the arrays `static` for a reason. Anything marked as `static` gets saved to a special part of our programs for data that will be accessed a lot and doesn't change. A result of this is there is only one copy of that data and data can be accessed really fast. Also the arrays are marked as `readonly`. This tells the compiler that the data can only be read and not modified. The correct word is "not mutated" or "immutable". This allows any Thread or Job to access the arrays since there is only one copy of them and they aren't allowed to be modified. A result of nothing being allowed to change is that the C# Job system won't complain when we use a Job to make our meshes using the lookup tables.
 
 Open Voxel.cs again and create a new mesh except we are going to use our lookup tables this time. We use a NativeArray to store the vertices and triangles. This is to get you used to using them since they are JobSystem friendly and you will need to know how to use them to use the JobSystem.
 
