@@ -31,7 +31,7 @@ In our list of "triangles" (they're just a set of 3 `int`s) we are saying, get v
 ![triangle mesh](/Assets/triangle_mesh.png)
 
 
-###  a quad / square (two triangles)
+### A quad / square (two triangles)
 To make a square shape (a "quad" in 3D jargon) we're going to add 1 more vertex so we have 4 vertices in position to make a square.
 ```
     mesh.vertices = { Vector3(-1, -1, 0), Vector3(-1, 1, 0), Vector3(1, 1, 0), Vector3(1, -1, 0) }
@@ -236,7 +236,7 @@ Add a new micro project to our Unity project so that looks like this
     |   |___Voxel.cs
 ```
 
-Now open up the Voxel scene and add an empty GameObject. Open up Voxel.cs and force Unity to add our components as before. Now instead of hard coding our triangle we are going to be smart. We will make an array of all 8 possible vertices for a cube, that we can always reference. We'll make a new script to contain al this called Data.cs
+Now open up the Voxel scene and add an empty GameObject. Open up Voxel.cs and force Unity to add our components as before. Now instead of hard coding our triangle we are going to be smart. We will make an array of all 8 possible vertices for a cube, that we can always reference. We'll make a new script to contain all this called Data.cs
 
 ```
     Assets/
@@ -302,15 +302,16 @@ public class Voxel : MonoBehaviour
     private Mesh m_mesh;
     private NativeArray<Vector3> m_vertices;
     private NativeArray<int> m_triangles;
+    private NativeArray<Vector2> m_uvs;
     private int m_vertexIndex = 0;
     private int m_triangleIndex = 0;
 
 }
 ```
 
-(We use the naming convention `m_variable` to represent private class member variables. You don't have to, but it'll make distinguishing things apart from each other easier later on. We recommend you copy us for an optimal course experience).
+(We use the naming convention `m_variable` to represent private member class variables, this helps to distiniguish them the meshes variable names. We recommend you copy us for an optimal course experience.
 
-The m_vertexIndex is used to keep track of the current newest vertex. That way new vertices being added don't overwrite eachother, but get added on the end of the array. The m_triangleIndex serves the same purpose except for the triangles.
+The m_vertexIndex is used to keep track of the current newest vertex. That way new vertices being added don't overwrite eachother, but get added on to the end of the m_vertices array. The m_triangleIndex serves the same purpose except for the triangles.
 
 Make a new function that uses the lookup tables to make a voxel.
 
@@ -332,6 +333,12 @@ Make a new function that uses the lookup tables to make a voxel.
             m_triangles[m_triangleIndex + 4] = m_vertexIndex + 1;
             m_triangles[m_triangleIndex + 5] = m_vertexIndex + 3;
 
+            // set the uv's (different than the quad uv's due to the order of the lookup tables in Data.cs)
+            m_uvs[m_vertexIndex + 0] = new Vector2(0, 0);
+            m_uvs[m_vertexIndex + 1] = new Vector2(0, 1);
+            m_uvs[m_vertexIndex + 2] = new Vector2(1, 0);
+            m_uvs[m_vertexIndex + 3] = new Vector2(1, 1);
+
             // increment by 4 because we only added 4 vertices
             m_vertexIndex += 4;
 
@@ -348,21 +355,29 @@ And now initialize all of our member variables in `Start()` and Draw the voxel. 
     {
         m_vertices = new NativeArray<Vector3>(24, Allocator.Temp);
         m_triangles = new NativeArray<int>(36, Allocator.Temp);
+        m_uvs = new NativeArray<Vector2>(24, Allocator.Temp);
 
         DrawVoxel();
 
         m_mesh = new Mesh
         {
             vertices = m_vertices.ToArray(),
-            triangles = m_triangles.ToArray()
+            triangles = m_triangles.ToArray(),
+            uv = m_uvs.ToArray()
         };
 
         m_mesh.RecalculateBounds();
         m_mesh.RecalculateNormals();
 
         gameObject.GetComponent<MeshFilter>().mesh = m_mesh;
+
+        m_vertices.Dispose();
+        m_triangles.Dispose();
+        m_uvs.Dispose();
     }
 ```
+
+You should notice the line `Allocator.Temp`. This gets us the memory we need realy fast, but it can only exist for 4 frames (ever heard of fps? (frames per second)). The other `Allocator.Persistent` allows us to have the memroy for as long as we want, but it takes longer to find that memory. `Allocator.TempJob` is a special allocator for Job's and multithreading.
 
 Also since we are using NativeCollections (Native meaning it uses actual pointers and not copies of everything. C# normaly makes copies of everything to make our code "safe") we have to manually free our memory, much like in C or C++.
 
