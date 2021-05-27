@@ -15,9 +15,9 @@ Triangle(s)
     [Polygon Mesh Wikpedia](https://en.wikipedia.org/wiki/Polygon_mesh)
 
 Normal(s)
-    The direction that is 90 degrees "upwards" from a surface, for lighting purposes. Also the side of a triangle to render. Each vertex has a normal.
-    [Normals Wikpiedia](https://en.wikipedia.org/wiki/Normal_(geometry))
-    [Vertex Normal Wikipedia](https://en.wikipedia.org/wiki/Vertex_normal)
+ > The direction that is 90 degrees "upwards" from a surface, for lighting purposes. Also the side of a triangle to render. Each vertex has a normal.
+ > [Normals Wikpiedia](https://en.wikipedia.org/wiki/Normal_(geometry))
+ > [Vertex Normal Wikipedia](https://en.wikipedia.org/wiki/Vertex_normal)
 
 UV(s)
 
