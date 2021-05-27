@@ -352,7 +352,7 @@ Since the `vertexIndex` is stored in a `NativeArray` we have to use `[0]` to acc
                 triangles[triangleIndex[0] + 3] = vertexIndex[0] + 2;
                 triangles[triangleIndex[0] + 4] = vertexIndex[0] + 1;
                 triangles[triangleIndex[0] + 5] = vertexIndex[0] + 3;
-                
+
                 uvs[vertexIndex[0] + 0] = new Vector2(0, 0);
                 uvs[vertexIndex[0] + 1] = new Vector2(0, 1);
                 uvs[vertexIndex[0] + 2] = new Vector2(1, 0);
@@ -429,7 +429,6 @@ Now the rest of the code is much the same as past times
     }
 ```
 
-If you run this you should see a chunk as before! YESSSSS!!!!!!!!!! Now even though we haven't actually benefited from using the JobSystem in this example, it lays the groundwork for week 4, where we will be drawing a lot of chunks using the job system.
+If you run this you should see a chunk as before! YESSSSS!!!!!!!!!! Now even though we haven't actually benefited from using the JobSystem in this example, it lays the groundwork for the next section in this weeks lecture, where we will be drawing a lot of chunks using the job system.
 
-# NOTE TO SELF
-thinking of just doing week 4 right here.
+# JobWorld
