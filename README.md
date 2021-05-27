@@ -4,6 +4,8 @@ An open source introductory course on making a simple voxel engine in Unity. The
 # Tutorials after a lecture to test out what you learned!
 Instead of Excercises we use community made tutorials for each lecture in place of having Exercises. No nowledge outside of the Tutorial for that lecture should be assumed.
 
+
+
 # Pre-requisites
 You must already be familar with coding and using Unity for simple games.
 If you don't already know how to use Unity but knwo how to code you can take our course for free
