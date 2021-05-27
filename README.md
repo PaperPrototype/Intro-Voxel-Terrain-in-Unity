@@ -1,6 +1,8 @@
 # Intro to Simplified Voxel Systems in Unity
 An open source introductory course on making a simple voxel engine in Unity. The goal is to use the least amount of code to achieve a simple voxel system that still achieves high performance. 
+
 Join our Discord for announcements when we release new lectures! https://discord.gg/Gp7YEUkVHC
+
 You can view the source code of the final projects results here https://github.com/PaperPrototype/VoxelSystem
 
 # Format
