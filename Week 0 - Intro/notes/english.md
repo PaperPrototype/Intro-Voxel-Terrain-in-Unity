@@ -9,7 +9,7 @@ Index (singular) - Indexes? Indices? (plural)
  An index tells us where in a list, or array, we can find something.
 
 Triangle(s)
- A set of 3 numbers telling us which vertices to use to make one corner of a triangle.
+ - A set of 3 numbers telling us which vertices to use to make one corner of a triangle.
     The order that you put these ints affects the direction of the normals.
     [Triangle Mesh Wikipedia](https://en.wikipedia.org/wiki/Triangle_mesh)
     [Polygon Mesh Wikpedia](https://en.wikipedia.org/wiki/Polygon_mesh)
