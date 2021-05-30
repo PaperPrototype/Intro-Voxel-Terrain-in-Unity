@@ -51,7 +51,7 @@ We need a "direction" to tell Unity which side of the quad is up. These are call
 
 ![correct surface normal](/Assets/correct_normal.png)
 
-But what if the normal faces in a direction that is not 90 degrees angled from the surface? The renderer doesn't know anything, so it will just shade the surface's color as if it was at the angle the normal is saying its at.
+But what if the normals face in a direction that is not 90 degrees angled from the surface? The renderer doesn't know anything, so it will just shade the surface's color as if it was at the angle the normal is saying its at.
 
 ![incorrrect surface normal](/Assets/incorrect_normal.png)
 
