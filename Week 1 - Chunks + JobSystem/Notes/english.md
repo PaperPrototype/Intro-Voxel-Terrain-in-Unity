@@ -1,4 +1,4 @@
-# Lecture Vocab
+# Definitions
 Noise
     Perlin noise, Complex Noise, Fractal Brownian motion, // TODO
 

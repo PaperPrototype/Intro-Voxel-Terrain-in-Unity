@@ -1,7 +1,7 @@
 # Contributing
 If anything is defined incorrectly or you have some knowledge of compiler keywords that was not covered then please make a pull request, and add / fix it.
 
-# Lecture Vocab
+# Definitions
 Vertex (singular) - Vertices (plural)
 > A 3D position used to tell where a mesh's triangle corners will be.
 
@@ -37,7 +37,7 @@ Voxel
 > Analogous to the word "pixel", vo standing for "volume" (instead of pixel's "picture") and el representing "element". Similar formations with el for "element" include the words "pixel" and "texel".
 > [Voxel Wikipedia](https://en.wikipedia.org/wiki/Voxel)
 
-Pseudo code
+Pseudo-code
 > commented code 
 > 
 > ```
