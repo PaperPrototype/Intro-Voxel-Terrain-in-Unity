@@ -423,8 +423,46 @@ and we can instantiate the chunk and draw it in start.
     }
 ```
 
+now make a new gameObject in JobWorld.unity and add `JobWorld` as a component to the gameObject. Make sure to set the material property in the JobWorld component.
+
 and... Yay! 
 
 ![job chunk](/Assets/optimized_noise_chunk.png)
 
 ## World generation
+Now we will be instantiating chunks in a grid much like the 1DRecycle code. Change the code to hold a 2D array of `JobWorldChunk`'s. We multiply the x and z by the chunkSize to make sure that chunks are positioned apart from eachother by their size, otherwise they would be overlapping eachother.
+
+```cs
+public class JobWorld : MonoBehaviour
+{
+    // ... snipping unchanged code ... //
+    public JobWorldChunk[,] chunks = new JobWorldChunk[Data.chunkSize, Data.chunkSize];
+
+    private void Start()
+    {
+        for (int x = 0; x < Data.worldSize; x++) 
+        {
+            for (int z = 0; z < Data.worldSize; z++) 
+            {
+                Vector3 position = new Vector3(x * Data.chunkSize, 0, z * Data.chunkSize);
+                chunks[x, z] = new JobWorldChunk(material, position);
+            }
+        }
+    }
+}
+```
+
+We will also need to add a new constant in Data.cs that tells the number of chunks we will want in the x and z.
+
+```cs
+public class Data
+{
+    public const int worldSize = 8;
+
+    // ... snipping unchanged code ... //
+}
+```
+
+In the same `for` loop as the instantiation we could schedule and complete the drawing. This would not be taking advantage of multithreading though.
+
+TODO Show detailed example of single chunk job, then show multiple chunk jobs relative to the main thread, and how multi-threading saves us time --> Then explain how games always have a time budget of 16 ms per frame for 60fps and 30 ms for 30 fps. And multithreading increases the amount of work we can accomplish in a certain amount of time.
