@@ -1,1 +1,1 @@
-Coming soon (for now join our Discord (link in README.md) to be updated when I release this lecture (Probably a week or 2))
+Coming soon (for now join our Discord https://discord.gg/Gp7YEUkVHC to be updated when I release this lecture (Probably a week or 2))
