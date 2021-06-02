@@ -547,7 +547,7 @@ public class JobWorld : MonoBehaviour
 }
 ```
 
-Now add the recycling code from the cubes example adjusted to work with chunk sizes (Don't worry about redrawing the chunks just yet).
+Now add the recycling (really just moving the chunks) code from the cubes example adjusted to work with chunk sizes (Don't worry about redrawing the chunks just yet).
 
 ```cs
 public class JobWorld : MonoBehaviour
@@ -588,10 +588,165 @@ public class JobWorld : MonoBehaviour
 }
 ```
 
-The offset is half of the world size, now you may think just `Data.worldSize / 2` will work but remember `Data.worldSize` is the number of chunks, not the actual world's size. Change the name to `Data.chunkNum` for clarity from now on.
+The offset in this case is half of the total world size, now you may think just `Data.worldSize / 2` will work but remember `Data.worldSize` is the number of chunks, not the actual world's size. Change the name to `Data.chunkNum` for clarity from now on.
 
-And if you make a new gameObject and set it as the "center" for the JobWorld script then hit play you should be able to have a working recycling chunk system! Move the centetr around to see the chunks follow!
+If you make a new gameObject and set it as the "center" property for the `JobWorld` script then hit play you should be able to have a working recycling chunk system! Move the center around to see the chunks follow!
 
 ![screenshot chunk recycling](/Assets/screenshot_chunk_recycling.png)
 
-You will not see choppy mismatched meshes because we aren't redrawing them.
+You will see choppy mismatched meshes because we aren't redrawing them.
+
+Move all the recycling code into its own function, and then call that function in `Update()`.
+
+```cs
+public class JobWorld : MonoBehaviour
+{
+    // ... snipping unchanged code ... //
+
+    private void Update()
+    {
+        RecycleChunks();
+    }
+
+    private void RecycleChunks()
+    {
+        for (int x = 0; x < Data.chunkNum; x++)
+        {
+            for (int z = 0; z < Data.chunkNum; z++)
+            {
+                // x
+                if (GetRoundedPos().x + offset < chunks[x, z].gameObject.transform.position.x)
+                {
+                    chunks[x, z].gameObject.transform.position -= new Vector3(Data.chunkNum * Data.chunkSize, 0, 0);
+                }
+                if (GetRoundedPos().x - offset > chunks[x, z].gameObject.transform.position.x)
+                {
+                    chunks[x, z].gameObject.transform.position += new Vector3(Data.chunkNum * Data.chunkSize, 0, 0);
+                }
+
+                // z
+                if (GetRoundedPos().z + offset < chunks[x, z].gameObject.transform.position.z)
+                {
+                    chunks[x, z].gameObject.transform.position -= new Vector3(0, 0, Data.chunkNum * Data.chunkSize);
+                }
+                if (GetRoundedPos().z - offset > chunks[x, z].gameObject.transform.position.z)
+                {
+                    chunks[x, z].gameObject.transform.position += new Vector3(0, 0, Data.chunkNum * Data.chunkSize);
+                }
+            }
+        }
+    }
+
+    // ... snipping unchanged code ... //
+}
+```
+
+# Redrawing
+To ensure that a chunk get's drawn after it is moved we can just redraw all the chunks each frame.
+
+```cs
+    private void Update()
+    {
+        RecycleChunks();
+
+        for (int x = 0; x < Data.chunkNum; x++)
+        {
+            for (int z = 0; z < Data.chunkNum; z++)
+            {
+                chunks[x, z].ScheduleDraw();
+            }
+        }
+
+        for (int x = 0; x < Data.chunkNum; x++)
+        {
+            for (int z = 0; z < Data.chunkNum; z++)
+            {
+                chunks[x, z].CompleteDraw();
+            }
+        }
+    }
+```
+
+And this will actually work pretty well! (It ran at 20 fps for me). How is this possible? To redraw all the chunks each frame with decent frame rates? Multithreading. If you remember from the timeline diagrams we can get a lot of work done in a small amount of time by using multithreadng, in this case through the C# JobSystem.
+
+How could we go about only redrawing the chunks that have been recycled? We could add all the chunks that have been moved to a queue. A queue is like a list that except it lets us add items to the front end and take from back of the list. This was what I have done in the past, but there is a simpler solution. We can add a variable to the chunk class called `needsDrawn`, that we set to true whenever we move a chunk. And then in the `ScheduleDraw()` and `CompleteDraw()` functions have an if statement that check's if `needsDrawn` is true.
+
+```cs
+public class JobWorldChunk
+{
+    // .. snip .. //
+
+    public bool needsDrawn;
+
+    // .. snip .. //
+
+    public JobWorldChunk(Material m_material, Vector3 m_position)
+    {
+        m_mesh = new Mesh();
+        needsDrawn = true; // this makes sure we draw the chunk at the beginning
+
+        // .. snip .. //
+    }
+
+    public void ScheduleDraw()
+    {
+        if (needsDrawn == true)
+        {
+            // scheduling code goes here
+        }
+    }
+
+    public void CompleteDraw()
+    {
+        if (needsDrawn == true)
+        {
+            // completion code goes here
+
+            needsDrawn = false;
+        }
+    }
+}
+```
+
+If `needsDrawn` was true we schedule a draw then complete a draw. Then in the completion we set `nnedsDrawn` to false so that we don't draw the mesh over and over.
+
+Now in the `JobWorld` class in the `RecycleChunks()` function we can simply set `needsDrawn` to true if the chunk was recycled.
+
+```cs
+    private void RecycleChunks()
+    {
+        for (int x = 0; x < Data.chunkNum; x++)
+        {
+            for (int z = 0; z < Data.chunkNum; z++)
+            {
+                // x
+                if (GetRoundedPos().x + offset < chunks[x, z].gameObject.transform.position.x)
+                {
+                    chunks[x, z].gameObject.transform.position -= new Vector3(Data.chunkNum * Data.chunkSize, 0, 0);
+                    chunks[x, z].needsDrawn = true;
+                }
+                if (GetRoundedPos().x - offset > chunks[x, z].gameObject.transform.position.x)
+                {
+                    chunks[x, z].gameObject.transform.position += new Vector3(Data.chunkNum * Data.chunkSize, 0, 0);
+                    chunks[x, z].needsDrawn = true;
+                }
+
+                // z
+                if (GetRoundedPos().z + offset < chunks[x, z].gameObject.transform.position.z)
+                {
+                    chunks[x, z].gameObject.transform.position -= new Vector3(0, 0, Data.chunkNum * Data.chunkSize);
+                    chunks[x, z].needsDrawn = true;
+                }
+                if (GetRoundedPos().z - offset > chunks[x, z].gameObject.transform.position.z)
+                {
+                    chunks[x, z].gameObject.transform.position += new Vector3(0, 0, Data.chunkNum * Data.chunkSize);
+                    chunks[x, z].needsDrawn = true;
+                }
+            }
+        }
+    }
+```
+
+And if you hit play you should only have the chunks redrawing when they are recycled! Try setting the `chunkNum` in Data.cs as high as you can for stress testing!
+
+And thats week 2! See you next week! Make sure to check out the Tutorials folder!
