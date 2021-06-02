@@ -38,8 +38,8 @@ or
 so we can think of a 2D array like this
 
 ```
-level 1 =  [   1   ][   2   ][   3   ]
-level 2 =  [1][2][3][1][2][3][1][2][3]
+level 1 (x) =  [   1   ][   2   ][   3   ]
+level 2 (y) =  [1][2][3][1][2][3][1][2][3]
 ```
 
 when we index into the first iterator (`x` would be the first iterator) we are just accessing level 1
@@ -66,14 +66,22 @@ array2D = [[1, 2, 3], [1, 2, 3], [1, 2, 3]]
 array2D[x, y]
 ```
 
-Hope this tutorial helps any of you out there! The difference between 2D array indexing and doing the 2D indexing ourselves is that either we are doing the math, or the compiler is doing it for us. That said, is doing the indexing ourselves faster? Probably not. And it only m akes our code harder to read, which is why I've decided to leave it out of the course.
-
 3D indexing?
 
 ```
-level 1 =  [            1            ][            2            ][            3            ]
-level 2 =  [   1   ][   2   ][   3   ][   1   ][   2   ][   3   ][   1   ][   2   ][   3   ]
-level 2 =  [1][2][3][1][2][3][1][2][3][1][2][3][1][2][3][1][2][3][1][2][3][1][2][3][1][2][3]
+level 1 (x) =  [            1            ][            2            ][            3            ]
+level 2 (y) =  [   1   ][   2   ][   3   ][   1   ][   2   ][   3   ][   1   ][   2   ][   3   ]
+level 2 (z) =  [1][2][3][1][2][3][1][2][3][1][2][3][1][2][3][1][2][3][1][2][3][1][2][3][1][2][3]
 ```
 
 the compiler jumps 3 * 3 (which is 9) times every time x is increased. And the compiler jumps 3 times every time y is increased, and 1 time every time z is increased.
+
+```
+array1D[(x * 3 * 3) + (y * 3) + z]
+
+array3D[x, y, z]
+```
+
+and so on and so forth.
+
+I hope this tutorial helps any of you out there! The difference between 2D array indexing and doing the 2D indexing ourselves is that either we are doing the math, or the compiler is doing it for us. That said, is doing the indexing ourselves faster? Probably not. And it only makes our code harder to read, which is why I've decided to leave it out of the course.
