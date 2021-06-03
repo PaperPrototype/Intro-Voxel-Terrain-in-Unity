@@ -7,8 +7,15 @@ Octree
 Pool
 > TODO
 
-Initializer Function (! will correct this when I find out what the correct word is)
+Constructor (AKA Initializer Function)
 > TODO
 
+Queue
+> A list of items (classes, types, any data), that adds items on the bottom, and when getting an item it removes it from the top. Much like a waitng line in a store.
+
+Multithreading
+> Saves us time by doing work on other threads.
+
 # Code
-GameObject.CreatePrimitive
+GameObject.CreatePrimitive()
+> A handy function for creating primitive gameObjects (Cube, Quad, Plane, Cone, Capsule).

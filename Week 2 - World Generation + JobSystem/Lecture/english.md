@@ -301,15 +301,15 @@ Don't worry you should be able to understand it. The `gameObject` variable will 
 
 Also notice that the `JobWorldChunk` does not inherit from `MonoBehaviour` since it will not be a component of the chunk gameObject. Inheritince is denoted by the `:` followed by a class. The example `OurClass : AnotherClass` can be read as, `OurClass` inherits from `AnotherClass`. 
 
-We will create an initialiozer function (? a little help here, I forgot what the correct word was for "initalizer functions", an Issue or pull request will suffice). These functions are special. They get called when we put the `new` keyword in front of a class or struct. For example if we say 
+We will create a constructor. Constructors are functions that are special. They get called when we put the `new` keyword in front of a class or struct. For example if we say 
 
 ```
 JobWorldChunk chunk = new JobWorldChunk()
 ``` 
 
-the `JobWorldChunk()` with the parenthesis is an intializer function.
+the `JobWorldChunk()` with the parenthesis is the constructor. Constrcutor function have the same name as the class that holds them.
 
-Make an initializer function for `JobWorldChunk` with all of our initalization code. (Notice how the type the function returns is not there, since, the type it returns is itself!)
+Make an constructor for `JobWorldChunk` with all of our initalization code.
 
 ```cs
 public class JobWorldChunk
@@ -332,7 +332,7 @@ public class JobWorldChunk
 }
 ```
 
-The initializer function takes in a Material and a position (Vector3) to place the chunk at. Then we instantiate a gameObject and add a meshFilter and meshRenderer to it, then set up the member variable references to the meshFilter and meshRenderer, and set the meshFilters mesh reference to our `m_mesh` member variable.
+The constructor takes in a Material and a position (Vector3) to place the chunk at. Then we instantiate a gameObject and add a meshFilter and meshRenderer to it, then set up the member variable references to the meshFilter and meshRenderer, and set the meshFilters mesh reference to our `m_mesh` member variable.
 
 Now we will create a function to schedule the Job for drawing the chunk's mesh. This uses the same Job created in last weeks lecture.
 
@@ -414,7 +414,7 @@ public class JobWorld : MonoBehaviour
 }
 ```
 
-and we can instantiate the chunk and draw it in start. You will notice the initializer function is being used.
+and we can instantiate the chunk and draw it in start. You will notice the constructor is being used.
 
 ```cs
     private void Start()
@@ -528,7 +528,7 @@ And it turns out that Unity provides us with a live timeline viewer! To open it 
 You will notice the record button at the top, this is for recording data for the profiler to use, the thing is a dropdown, by default you will be in Hierarchy mode click on the dropdown to change it to Timeline mode. In timeline mode you shoul dbe able to see worker threads under "Jobs".
 
 # Recycling chunks
-Before we can make the recycling systrem we used in the cubes example we have to address the `GetRoundedPos()` function. Before we were rounding to the 1's place (since the cubes were only 1 x 1 x 1), but now we need to round to whatever `Data.chunkSize` is, so that `GetRoundedPos()` will return multiples of 16 (assuming `Data.chunkSize` was 16). 
+Before we can make the recycling system we used in the cubes example we have to address the `GetRoundedPos()` function. Before we were rounding to the 1's place (since the cubes were only 1 x 1 x 1), but now we need to round to whatever `Data.chunkSize` is, so that `GetRoundedPos()` will return multiples of 16 (assuming `Data.chunkSize` was 16) that can correspond to a chunk position.
 
 The `Mathf.Round()` function will only round to the nearest 1's place. We can reduce the players chunk position to become multiples of 1 by simply dividing the players position by 16 (therefore reducing the players chunk position to multiples of 1) rounding it, and then multiplying again by 16 to get back to a multiple of 16.
 
@@ -669,7 +669,7 @@ To ensure that a chunk get's drawn after it is moved we can just redraw all the 
 
 And this will actually work pretty well! (It ran at 20 fps for me). How is this possible? To redraw all the chunks each frame with decent frame rates? Multithreading. If you remember from the timeline diagrams we can get a lot of work done in a small amount of time by using multithreadng, in this case through the C# JobSystem.
 
-How could we go about only redrawing the chunks that have been recycled? We could add all the chunks that have been moved to a queue. A queue is like a list that except it lets us add items to the front end and take from back of the list. This was what I have done in the past, but there is a simpler solution. We can add a variable to the chunk class called `needsDrawn`, that we set to true whenever we move a chunk. And then in the `ScheduleDraw()` and `CompleteDraw()` functions have an if statement that check's if `needsDrawn` is true.
+How could we go about only redrawing the chunks that have been recycled? We could add all the chunks that have been moved to a queue. A queue is like a list that lets us add items to the bottom and when getting items gets them from the top and removes them, the same way "waiting in line" works. This was what I have done in the past, but this is not as performant and gets complicated. Thankfully there is a simpler solution. We can add a variable to the chunk class called `needsDrawn`, that we set to true whenever we move a chunk. And then in the `ScheduleDraw()` and `CompleteDraw()` functions have an if statement that check's if `needsDrawn` is true.
 
 ```cs
 public class JobWorldChunk
@@ -708,7 +708,7 @@ public class JobWorldChunk
 }
 ```
 
-If `needsDrawn` was true we schedule a draw then complete a draw. Then in the completion we set `nnedsDrawn` to false so that we don't draw the mesh over and over.
+If `needsDrawn` was true we schedule a draw then complete a draw and then set `nnedsDrawn` to false so that we don't draw the mesh over and over.
 
 Now in the `JobWorld` class in the `RecycleChunks()` function we can simply set `needsDrawn` to true if the chunk was recycled.
 
