@@ -1,3 +1,19 @@
+Pixel's make up 2D pictures and worlds. The idea of Voxel's is to make everything in a game out of 3D pixel's or "voxel". 
+
+Minecraft, Astroneer, SpaceEngineers, and NoMansSky are all games that use voxel systems for their terrain
+The biggest problem's facing voxel technology have been
+- storing voxels takes a lot of space (picture formats are large enough)
+- most graphis cards have hardware triangle rasterization (rasterization means filling in three points to make a triangle) which is extremely fast. On the other hand there is no (or little) support for hardware voxel rasterization. Instead we have to use software voxel rasterization or make the voxels out of triangles. Most voxel engines use triangles.
+
+Worthy mentions of pioneers in voxel technology are
+- VoxelBee - [Youtube (TODO)]()
+- VoxelFarm - [Blog](https://procworld.blogspot.com/), [Website (TODO)]()
+- Eucludean - Youtube TODO, Website TODO
+- Vox the game
+- 
+
+Modern video games rendering systems don't support 3D picture (voxel) formats. 
+
 # Meshes Concept
 If we want to make a voxel engine, we are going to need to understand what meshes are, since we will be manipulating meshes a lot.
 
@@ -217,7 +233,7 @@ Run this new code and you should see the following
 
 
 # Making a voxel in Unity
-Voxel terrains are made of the surface of thousands of small voxels. Voxel means 3D pixel. If we were to make a terrain out of voxels and then slice it, it would look like this
+Voxel terrains are made of the surface of thousands of small voxels. If we were to make a terrain out of voxels and then slice it, it would look like this
 
 ![2D voxel terrain unoptimized](/Assets/2D_voxel_terrain_unoptimized.png)
 
