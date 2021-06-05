@@ -28,3 +28,5 @@ If you want to contribute then read our [Guidelines](https://github.com/Nanite3D
 
  # Currently under development
  this course is still being written as you read this. This (paragraph) will be removed once the course is finished.
+
+Showcase video https://www.youtube.com/watch?v=HvpDE3eM6v4
