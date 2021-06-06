@@ -10,16 +10,11 @@ Worthy mentions of pioneers in voxel technology are
 - VoxelFarm - [Blog](https://procworld.blogspot.com/), [Website (TODO)]()
 - Eucludean - Youtube TODO, Website TODO
 - Vox the game
-- 
 
-Modern video games rendering systems don't support 3D picture (voxel) formats. 
-
-# Meshes Concept
-If we want to make a voxel engine, we are going to need to understand what meshes are, since we will be manipulating meshes a lot.
-
+Most modern game engine rendering systems don't support 3D picture (voxel) formats. So we will be using many triangles put together to represent the voxel's. When we hold many triangles together this is often called a "Mesh". We will be learning about meshes in this lecture.
 
 ### Vertices
-A mesh is really just some information on how to represent a shape. Most meshes are sets of three positions in space to make triangles to represent their shape. This is because triangles can *approximately* make any shape. For example you can make a square using 2 triangles, and you can make a *pretty good* circle using triangles. In Unity's mesh format a triangle is made using 3 positions. The correct term for "positions in space" in the context of meshes is, vertices (singular is vertex). In Unity a vertex is just a Vector3. Let's make a triangle using 3 vertices.
+A mesh is really just contains information on how to represent a shape. Most meshes use a sets of three positions (called "points") in space to construct the triangles. Triangles can *approximately* make any shape. For example you can make a square using 2 triangles, and you can make a *pretty good* circle using triangles. We often refer to "points in space" (in the context of meshes) as vertices (singular is vertex). Let's make a triangle using 3 vertices.
 
 (This isn't valid C# code, the techinical name would be "pseudo code" meaning its just to show a concept or express "to be" code)
 
@@ -27,28 +22,28 @@ A mesh is really just some information on how to represent a shape. Most meshes 
     mesh.vertices = { Vector3(-1, -1, 0), Vector3(-1, 1, 0), Vector3(1, 1 0) }
 ```
 
-It looks like this in 2D (ignoring z).
+In Unity we can use a `Vector3` to represent any set of 3 decimal numbers. For vertices we use `Vector3`'s. And the points would look like this in 2D (ignoring z).
 
 ![three vertices](/Assets/three_vertices.png)
 
 
 ### Triangles ("connecting" our vertices)
-Now this won't actually work. In a mesh we need sets of 3 numbers that tell us which vertices to use to make a our triangle. 
+Now this won't actually work because in a mesh we need to know what 3 vertices we should use to make a triangle, since there will be many vertices and triangles in a mesh.
 
 ```
     mesh.vertices = { Vector3(-1, -1, 0), Vector3(-1, 1, 0), Vector3(1, 1, 0) }
     mesh.triangles = { 0, 1, 2 }
 ```
 
-(If you think this is pointless... then yes at this point it is. But when you want more than 1 triangle in a mesh it makes sense).
-
-In our list of "triangles" (they're just a set of 3 `int`s) we are saying, get vertex at `0` (computers count from 0 not 1) and make that the first vertex in our triangle. Then get vertex at `1` for the second vertex. Then get vertex at `2` for the third vertex. These "triangle" ints are called indexes. An index tells us where in a list (or array) to find something.
+In the list of "triangles" (they're just a set of 3 `int`s) we are saying, get the vertex at `0` in the array and make that the first vertex in our triangle. Then get vertex at `1` and use it for the second vertex of the triangle. Then get vertex at `2` for the third vertex. These "triangle" ints are called indexes. An index tells us where in a list (or array) to find something. Triangle ints (usually just called "triangles") have to be in sets of 3, if they are not we will get an error.
 
 ![triangle mesh](/Assets/triangle_mesh.png)
 
+(If you think this is pointless... then yes, at this point it is. But when you want more than 1 triangle in a mesh it makes sense).
 
 ### A quad / square (two triangles)
-To make a square shape (a "quad" in 3D jargon) we're going to add 1 more vertex so we have 4 vertices in position to make a square.
+To make a square shape (a "quad" in 3D jargon) we're going to add 1 more vertex so we have 4 vertices in the positions we need to make a square. We don't have to add 3 more vertices, since vertices can be referenced by any triangle, and therefore reused.
+
 ```
     mesh.vertices = { Vector3(-1, -1, 0), Vector3(-1, 1, 0), Vector3(1, 1, 0), Vector3(1, -1, 0) }
     mesh.triangles = { 0, 1, 2 }
@@ -56,7 +51,12 @@ To make a square shape (a "quad" in 3D jargon) we're going to add 1 more vertex 
 
 ![four vertices](/Assets/four_vertices.png)
 
-We need to add another set of 3 ints (referred to as a triangle) to tell Unity which vertices to make the second triangle.
+We need to add another set of 3 ints (referred to as a triangle) to tell Unity which vertices to use to make the second triangle.
+
+```
+    mesh.vertices = { Vector3(-1, -1, 0), Vector3(-1, 1, 0), Vector3(1, 1, 0), Vector3(1, -1, 0) }
+    mesh.triangles = { 0, 1, 2, 0, 2, 3 }
+```
 
 And voila!
 ![quad mesh](/Assets/quad_mesh.png)

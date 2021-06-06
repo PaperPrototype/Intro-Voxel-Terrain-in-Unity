@@ -10,4 +10,4 @@ Interface
 
 # Keywords
 `const`
-    Sets a number to not be ahcngeable. Arrays require to be initialized with a const.
+    Sets a number to not be change-able. Arrays require to be initialized with a const.
