@@ -3,9 +3,9 @@ To make a large open world of voxels we can divide up the world into chunks. Thi
 
 But now we have to manage the chunks. To have a player that can walk around the a terrain "forever" in any direction we have to keep making chunks appear in front of the player. Most systems delete old chunks and then instantiate new ones. But allocations and deletions are slow. We can make this significantly faster if we "recycle" chunks. 
 
-A system like this is usually called a "pool", where we have a pool of objects, that when we "delete" we really jsut add it to the pool, and when we instantiate we just get one from the pool. If the pool is empty we just allocate a new one.
+A system like this is usually called a "pool", where we have a pool of objects, that when we want to an object "delete" we really just add it back to the pool for use later. If the pool is empty we just allocate a new object.
 
-But pool's are complicated to write. Instead we will do something super simple yet fast. We will move old chunks into the position where new chunks are needed and then rebuild their meshes.
+But pool's are complicated to write. Instead we will do something super simple yet fast. We will move old chunks into the position where new chunks are needed and then rebuild their meshes. Hehe, way easier.
 
 ## Recycle system in Unity
 As an example we will use cubes. If the player's position moves past one of the cubes we will move the cube to the other side of the row.
@@ -196,28 +196,25 @@ The round function has changed slightly to include z.
     }
 ```
 
-Instantiating the cubes in a grid changes as well. We also change the name of each cube according to its index and position. We provide the method for indexing a 1D array using 2D coordinates `(x * numCubes) + z`. (There is a tutorial explaining how to index a 1D array as a 2D or 3D array in this week's tutorials).
+Instantiating the cubes in a grid changes as well, now the grid is 2D.
 
 ```cs
     private void Start()
     {
-        int i = 0;
         for (int x = (int)GetRoundedPos().x; x < numCubes + (int)GetRoundedPos().x; x++)
         {
             for (int z = (int)GetRoundedPos().z; z < numCubes + (int)GetRoundedPos().z; z++)
             {
                 cubes[x, z] = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 cubes[x, z].GetComponent<Transform>().position = new Vector3(x, 0, z);
-                cubes[x, z].gameObject.name = "(" + x + " " + z + ") " + "2D index conversion: " + ((x * numCubes) + z) + " actual index: " + i;
-                i++;
             }
         }
     }
 ```
 
-We also center the the creating of the cubes by using the GetRoundedPos() in the for loop declaration.
+We center the the creating of the cubes by using the GetRoundedPos() in the for loop declaration.
 
-The recycling code changes with an additional for loop and, includes code checking for the z coordinate, which is the exactly the same code as the x coordinate.
+The recycling code changes with an additional for loop and, includes code to check the z coordinate, which is the exactly the same code as the x coordinate.
 
 ```cs
     private void Update()
@@ -271,7 +268,7 @@ To have a chunk handling system for chunks we need a "handle" for each chunk tha
         |___JobWorld.cs
 ```
 
-We will manually do the instantiation of the chunk gameObject through the `JobWorldChunk` class. Paste this boiler plate code into `JobWorldChunk`.
+We will do the instantiation of the chunk gameObject manually through the `JobWorldChunk`. Paste this boiler plate code into `JobWorldChunk`.
 
 ```cs
 using UnityEngine;
@@ -297,19 +294,17 @@ public class JobWorldChunk
 }
 ```
 
-Don't worry you should be able to understand it. The `gameObject` variable will hold a reference to the actual gameObject, the `m_meshFilter` and `m_meshRenderer` hold references to the gameObjects Meshfilter and MeshRenderer. The `m_handle` is our chunks JobHandle and the `m_chunkJob` is the chunks Job.
+The `gameObject` variable will hold a reference to the actual gameObject, the `m_meshFilter` and `m_meshRenderer` hold references to the gameObjects Meshfilter and MeshRenderer components. The `m_handle` is the chunks JobHandle and the `m_chunkJob` is the chunks Job.
 
 Also notice that the `JobWorldChunk` does not inherit from `MonoBehaviour` since it will not be a component of the chunk gameObject. Inheritince is denoted by the `:` followed by a class. The example `OurClass : AnotherClass` can be read as, `OurClass` inherits from `AnotherClass`. 
 
 We will create a constructor. Constructors are functions that are special. They get called when we put the `new` keyword in front of a class or struct. For example if we say 
 
-```
+```cs
 JobWorldChunk chunk = new JobWorldChunk()
 ``` 
 
-the `JobWorldChunk()` with the parenthesis is the constructor. Constrcutor function have the same name as the class that holds them.
-
-Make an constructor for `JobWorldChunk` with all of our initalization code.
+the `JobWorldChunk()` with the parenthesis is the constructor. Constrcutor function have the same name as the class that holds them. Make a constructor function for `JobWorldChunk` with all of the initalization code.
 
 ```cs
 public class JobWorldChunk
@@ -332,7 +327,7 @@ public class JobWorldChunk
 }
 ```
 
-The constructor takes in a Material and a position (Vector3) to place the chunk at. Then we instantiate a gameObject and add a meshFilter and meshRenderer to it, then set up the member variable references to the meshFilter and meshRenderer, and set the meshFilters mesh reference to our `m_mesh` member variable.
+The constructor takes in a Material and a position (Vector3) to place the chunk at. We then instantiate a gameObject and set the `gameObject` refernce to it. Then we add a meshFilter and meshRenderer to the gameObject, then set up the member variable references to the meshFilter and meshRenderer.
 
 Now we will create a function to schedule the Job for drawing the chunk's mesh. This uses the same Job created in last weeks lecture.
 
@@ -398,7 +393,7 @@ public class JobWorldChunk
 }
 ```
 
-Once the job is completed we know that the mesh data arrays are ready and we set the `m_mesh`'s data. Now we will instantiate the chunk through the `JobWorld` class. Paste in this boiler plate code.
+We purposefully make 2 separate functions for Schedule and Complete. We will explain this in a bit. Once the job is completed we know that the mesh data arrays are ready and we set the `m_mesh`'s data. Now we will instantiate the chunk through the `JobWorld` class, which will be the chunk manager. Paste in this boiler plate code.
 
 ```cs
 using UnityEngine;
@@ -414,7 +409,7 @@ public class JobWorld : MonoBehaviour
 }
 ```
 
-and we can instantiate the chunk and draw it in start. You will notice the constructor is being used.
+We can instantiate the chunk using the constructor and draw it in start.
 
 ```cs
     private void Start()
@@ -425,32 +420,32 @@ and we can instantiate the chunk and draw it in start. You will notice the const
     }
 ```
 
-now make a new gameObject in JobWorld.unity and add `JobWorld` as a component to the gameObject. Make sure to set the material property in the JobWorld component.
+Now make a new gameObject in the JobWorld.unity scene and add the `JobWorld` script as a component to the gameObject. Make sure to set the material property in the JobWorld component.
 
 and... Yay! 
 
 ![job chunk](/Assets/optimized_noise_chunk.png)
 
-If we use a timeline to see what is happening on threads we can see that time wise nothing was gained.
+If we use a timeline diagram to visualize what is happening on threads we can see that we have gained very little by multi-threading.
 
 ![threading timeline single](/Assets/threading_timeline_single.png)
 
-Why is multithreading so important for video games? In a game that needs to run at 60 fps, we end up with only 16 ms for each frame! Multithreading when used correctly can increase the amount of work we can get done in a small amount of time. Read on to see how!
+Why is multithreading so important for video games? In a game that needs to run at 60 fps, we end up with only 16 ms to do run all of our code each frame! Multithreading, when used correctly, can increase the amount of work we can get done in a small amount of time. Read on to see how!
 
 ## World generation
-Now we will be instantiating chunks in a grid much like the 1DRecycle code. Change the code to hold a 2D array of `JobWorldChunk`'s. We multiply the x and z values for the position by the chunkSize to make sure that chunks are positioned apart from eachother by their size, otherwise they would be overlapping eachother (only being spaced apart by 1 voxel).
+Now we will be instantiating chunks in a grid much like the 1DRecycle code. Change the code to hold a 2D array of `JobWorldChunk`'s. We multiply the `x` and `z` by the `Data.chunkSize` to make sure the chunks are positioned apart by their size.
 
 ```cs
 public class JobWorld : MonoBehaviour
 {
     public Material material;
-    public JobWorldChunk[,] chunks = new JobWorldChunk[Data.worldSize, Data.worldSize];
+    public JobWorldChunk[,] chunks = new JobWorldChunk[Data.chunkNum, Data.chunkNum];
 
     private void Start()
     {
-        for (int x = 0; x < Data.worldSize; x++) 
+        for (int x = 0; x < Data.chunkNum; x++) 
         {
-            for (int z = 0; z < Data.worldSize; z++) 
+            for (int z = 0; z < Data.chunkNum; z++) 
             {
                 Vector3 position = new Vector3(x * Data.chunkSize, 0, z * Data.chunkSize);
                 chunks[x, z] = new JobWorldChunk(material, position);
@@ -460,12 +455,12 @@ public class JobWorld : MonoBehaviour
 }
 ```
 
-We will also need to add a new constant in Data.cs that tells the number of chunks we will want in the x and z directions.
+We will also need to add a new constant in Data.cs that tells the number of chunks we will want in the x and z directions. We use this constant in the above code.
 
 ```cs
 public class Data
 {
-    public const int worldSize = 8;
+    public const int chunkNum = 8;
 
     // ... snipping unchanged code ... //
 }
@@ -476,9 +471,9 @@ In the same `for` loop as the instantiation we could schedule and complete the d
 ```cs
     private void Start()
     {
-        for (int x = 0; x < Data.worldSize; x++) 
+        for (int x = 0; x < Data.chunkNum; x++) 
         {
-            for (int z = 0; z < Data.worldSize; z++) 
+            for (int z = 0; z < Data.chunkNum; z++) 
             {
                 Vector3 position = new Vector3(x * Data.chunkSize, 0, z * Data.chunkSize);
                 chunks[x, z] = new JobWorldChunk(material, position);
@@ -525,12 +520,12 @@ And it turns out that Unity provides us with a live timeline viewer! To open it 
 
 ![screenshot threading timeline](/Assets/screenshot_threading_timeline.png)
 
-You will notice the record button at the top, this is for recording data for the profiler to use, the thing is a dropdown, by default you will be in Hierarchy mode click on the dropdown to change it to Timeline mode. In timeline mode you shoul dbe able to see worker threads under "Jobs".
+You will notice the record button at the top, this is for recording data for the profiler to use. The other highlighted thing is a dropdown, by default you will be in Hierarchy mode click on the dropdown to change it to Timeline mode. In timeline mode you should be able to see worker threads under "Jobs". But first you will have to hit play and record some data.
 
 # Recycling chunks
-Before we can make the recycling system we used in the cubes example we have to address the `GetRoundedPos()` function. Before we were rounding to the 1's place (since the cubes were only 1 x 1 x 1), but now we need to round to whatever `Data.chunkSize` is, so that `GetRoundedPos()` will return multiples of 16 (assuming `Data.chunkSize` was 16) that can correspond to a chunk position.
+Before we can make the recycling system we used in the cubes example we have to address the `GetRoundedPos()` function. Before we were rounding to the 1's place (since the cubes were only 1 x 1 x 1), but now we need to round from whatever `Data.chunkSize` is to the one's place, so that `GetRoundedPos()` will return multiples of 1 which can be used for indexing into the `chunks` array.
 
-The `Mathf.Round()` function will only round to the nearest 1's place. We can reduce the players chunk position to become multiples of 1 by simply dividing the players position by 16 (therefore reducing the players chunk position to multiples of 1) rounding it, and then multiplying again by 16 to get back to a multiple of 16.
+We can find the current chunk index the player is at by dividing the players position by 16 (assuming that `Data.chunkSize` is 16) therefore getting chunk indexes. But we need to round the indexes because they won't always be . The `Mathf.Round()` function will only round to the nearest 1's place. 
 
 ```cs
 public class JobWorld : MonoBehaviour
@@ -547,7 +542,7 @@ public class JobWorld : MonoBehaviour
 }
 ```
 
-Now add the recycling (really just moving the chunks) code from the cubes example adjusted to work with chunk sizes (Don't worry about redrawing the chunks just yet).
+Now add the recycling (really just moving the chunks) code from the cubes example (Don't worry about redrawing the chunks just yet).
 
 ```cs
 public class JobWorld : MonoBehaviour

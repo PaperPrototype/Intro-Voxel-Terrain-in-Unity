@@ -117,7 +117,7 @@ We will be making lots of micro Unity projects to test out what we learn. Make a
 
 In the scene make an empty GameObject. Now open the script in VS Code or whatever you're using to code. We are going to want a MeshRenderer component and a MeshFilter component. Lets force Unity to have these on our GameObject. Above the Quad class add
 
-```
+```cs
     [RequireComponent(typeof(MeshRenderer))]
     [RequireComponent(typeof(MeshFilter))]
 ```
@@ -126,7 +126,7 @@ Now go back to the scene and add the Quad script to the empty GameObject. It sho
 
 Now we make our mesh as before. In `Start()` add
 
-```
+```cs
     Mesh mesh = new Mesh
     {
         vertices = new Vector3[] { new Vector3(-1, -1, 0), new Vector3(-1, 1, 0), new Vector3(1, 1, 0), new Vector3(1, -1, 0) },
@@ -138,9 +138,8 @@ Now we make our mesh as before. In `Start()` add
 
 Also add a `RecalculateBounds()` this tells the renderer what 3D space the mesh takes up as if it were enclosed in a Box. (A box is easy to work with and very performant for volume calculations). Now add the mesh to our MeshFilter in `Start()`
 
-```
+```cs
     gameObject.GetComponent<MeshFilter>().mesh = mesh;
-
 ```
 
 Now hit play. Voila! (If you get an error, make sure your triangles aren't trying to access vertices that don't exist).
@@ -218,7 +217,7 @@ Now in the "White" material set its albedo (color) to be Texture.png. You can dr
 
 Change the mesh code in Quad.cs to the following
 
-```
+```cs
     Mesh mesh = new Mesh
     {
         vertices = new Vector3[] { new Vector3(-1, -1, 0), new Vector3(-1, 1, 0), new Vector3(1, 1, 0), new Vector3(1, -1, 0) },
@@ -264,28 +263,28 @@ Now open up the Voxel scene and add an empty GameObject. Open up Voxel.cs and fo
 
 Change Data.cs to the following.
 
-```
+```cs
 using UnityEngine;
 
 public static class Data
 {
     public static readonly Vector3[] Vertices = new Vector3[8]
     {
-        new Vector3(0.0f, 0.0f, 0.0f),
-        new Vector3(1.0f, 0.0f, 0.0f),
-        new Vector3(1.0f, 1.0f, 0.0f),
-        new Vector3(0.0f, 1.0f, 0.0f),
-        new Vector3(0.0f, 0.0f, 1.0f),
-        new Vector3(1.0f, 0.0f, 1.0f),
-        new Vector3(1.0f, 1.0f, 1.0f),
-        new Vector3(0.0f, 1.0f, 1.0f)
+        new Vector3(-0.5f, -0.5f, -0.5f),
+        new Vector3(0.5f, -0.5f, -0.5f),
+        new Vector3(0.5f, 0.5f, -0.5f),
+        new Vector3(-0.5f, 0.5f, -0.5f),
+        new Vector3(-0.5f, -0.5f, 0.5f),
+        new Vector3(0.5f, -0.5f, 0.5f),
+        new Vector3(0.5f, 0.5f, 0.5f),
+        new Vector3(-0.5f, 0.5f, 0.5f)
     };
 }
 ```
 
 This is all 8 possible vertices for the corners of a voxel. We need a way to find all the vertices per each side of the voxel. For this we'll make a lookup table (a 2D array) that gets 4 vertices based on the side of the cube we want.
 
-```
+```cs
     public static readonly int[,] BuildOrder = new int[6, 4]
     {
         // right, left, up, down, front, back
@@ -307,7 +306,7 @@ We mark the class as well as the arrays `static` for a reason. Anything marked a
 
 Open Voxel.cs again and create a new mesh except we are going to use our lookup tables this time. We use a NativeArray to store the vertices and triangles. This is to get you used to using them since they are JobSystem friendly and you will need to know how to use them to use the JobSystem.
 
-```
+```cs
 using UnityEngine;
 using Unity.Collections;
 
@@ -329,9 +328,9 @@ public class Voxel : MonoBehaviour
 
 The m_vertexIndex is used to keep track of the current newest vertex. That way new vertices being added don't overwrite eachother, but get added on to the end of the m_vertices array. The m_triangleIndex serves the same purpose except for the triangles.
 
-Make a new function that uses the lookup tables to make a voxel.
+Make a new function that uses the lookup tables to make a voxel. The `side` variable looks up each side of the voxel in the lookup table. Also a voxel (AKA cube) has six sides.
 
-```
+```cs
     private void DrawVoxel()
     {
         for (int side = 0; side < 6; side++)
@@ -364,9 +363,9 @@ Make a new function that uses the lookup tables to make a voxel.
     }
 ```
 
-And now initialize all of our member variables in `Start()` and Draw the voxel. Then set the meshes data, and convert our NativeArray to an Array using `.ToArray()`. Then set the MeshFilters mesh to our mesh. Also Calculate our normals and Bounds.
+Now initialize all of the member variables in `Start()` and Draw the voxel. Then set the meshes data, and convert our NativeArray to an Array using `.ToArray()`. Then set the MeshFilters mesh to our mesh. Also Calculate our normals and Bounds.
 
-```
+```cs
     private void Start()
     {
         m_vertices = new NativeArray<Vector3>(24, Allocator.Temp);
@@ -397,7 +396,7 @@ You should notice the line `Allocator.Temp`. This gets us the memory we need rea
 
 Also since we are using NativeCollections (Native meaning it uses actual pointers and not copies of everything. C# normaly makes copies of everything to make our code "safe") we have to manually free our memory, much like in C or C++.
 
-```
+```cs
     private void Start()
     {
         //... snipping out previous code ...//

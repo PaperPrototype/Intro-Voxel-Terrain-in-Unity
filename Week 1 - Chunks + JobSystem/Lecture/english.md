@@ -36,19 +36,21 @@ public class Chunk : MonoBehaviour
 }
 ```
 
-To make a chunk all we have to do is place voxel's on a 3D grid. To achieve this we can copy last weeks `DrawVoxel()` function with one minor change. We will pass in a position so that we can build the voxel at whatever position we want.
+To make a chunk all we have to do is place voxel's on a 3D grid. To achieve this we can copy last weeks `DrawVoxel()` function with one minor change. We will pass in a grid positon so that we can place the voxel at whatever positon we want. This position is added to the voxel's vertices which are used to position the mesh.
 
 ```cs
-    private void DrawVoxel(Vector3 voxelPos)
+    private void DrawVoxel(int x, int y, int z)
     {
+        Vector3 pos = new Vector3(x, y, z);
+
         for (int side = 0; side < 6; side++)
         {
-            m_vertices[m_vertexIndex + 0] = Data.Vertices[Data.BuildOrder[side, 0]] + voxelPos;
-            m_vertices[m_vertexIndex + 1] = Data.Vertices[Data.BuildOrder[side, 1]] + voxelPos;
-            m_vertices[m_vertexIndex + 2] = Data.Vertices[Data.BuildOrder[side, 2]] + voxelPos;
-            m_vertices[m_vertexIndex + 3] = Data.Vertices[Data.BuildOrder[side, 3]] + voxelPos;
+            m_vertices[m_vertexIndex + 0] = Data.Vertices[Data.BuildOrder[side, 0]] + pos;
+            m_vertices[m_vertexIndex + 1] = Data.Vertices[Data.BuildOrder[side, 1]] + pos;
+            m_vertices[m_vertexIndex + 2] = Data.Vertices[Data.BuildOrder[side, 2]] + pos;
+            m_vertices[m_vertexIndex + 3] = Data.Vertices[Data.BuildOrder[side, 3]] + pos;
 
-            // ... snipping unchanged code ... //
+            // ... snipping unchanged code ...
         }
     }
 ```
@@ -56,12 +58,12 @@ To make a chunk all we have to do is place voxel's on a 3D grid. To achieve this
 Now we can use nested for loops to place voxel's in a 3D grid next to eachother. Before we do that we need to know the "size" of our chunk, how many voxel's to draw in the x, y, and z direction. We could add it manully but we will need to reference our chunk size all over our code, so add a line to Data.cs to have a centralized place for this
 
 ```cs
-    public const int chunkSize = 8;
+    public const int chunkSize = 16;
 ```
 
-We make it a `const` to make sure that the number doesn't change. Also array initalizations require that a `const` is used for telling their size, arrays aren't dynamic in size. (A readonly wouldn't work since it could be modified by an enclosing class). 
+We make it a `const` to make sure that the number doesn't change. Also array initalizations require that a `const` is used for telling their size. Arrays, once created, cannot have anything "added" to them. (A readonly wouldn't work since it could be modified by its enclosing class). 
 
-Our vertex and triangle arrays will need to be larger, since we will be making a chunk and not a single voxel. We can calculate the amount by multipling 24 and 36 (the size of vertex / uv and triangle data for a single voxel) by the number of voxels we will be building in our chunk. This leads to the following code
+Our vertex and triangle arrays will need to be larger, since we will be making a chunk and not a single voxel, and a chunks's mesh has more data. We can calculate the amount by multipling 24 and 36 (the size of vertex / uv and triangle data for a single voxel) by the number of voxels we will be building in our chunk. This leads to the following code for generationg a chunk.
 
 ```cs
     private void Start()
@@ -76,8 +78,7 @@ Our vertex and triangle arrays will need to be larger, since we will be making a
             {
                 for (int z = 0; z < Data.chunkSize; z++)
                 {
-                    Vector3 pos = new Vector3(x, y, z);
-                    DrawVoxel(pos);
+                    DrawVoxel(x, y, z);
                 }
             }
         }
@@ -86,16 +87,16 @@ Our vertex and triangle arrays will need to be larger, since we will be making a
     }
 ```
 
-Now the rest of the code in start is exactly the same as before! I'll let you copy paste that from Voxel.cs. 
+Tada! Now the rest of the code is exactly the same as before! I'll let you copy paste that from Voxel.cs. 
 
-Now make a new empty gameObject in the Chunk scene (Chunk.unity) and add Chunk.cs to it as a component. Also don't forget to set the material. If you click play you'll see a chunk drawn!
+Make a new empty gameObject in the Chunk scene (Chunk.unity) and add Chunk.cs to it as a component. Also don't forget to set the material. If you click play you'll see a chunk drawn!
 
 # Optimized Chunk
-If you look at the inside of our current chunk you might see something like this
+If you look at the inside of the current chunk you will see something like this
 
 ![unoptimized chunk mesh](/Assets/unoptimized_chunk_mesh.png)
 
-To make it so voxel's don't draw their side if that side has a neighboring voxel, we need an algorithm to calculate where we want and don't want voxel's. For terrains the most popular option is to use Noise. Perlin Noise, Complex Noise, Value Noise... Noise is a way of getting smoothed random numbers. Most noise algorithms take in an offset in either 2D or 3D and then return a number between 0 and 1. If you saved the values of a noise function on a texture fading between black (0) and white (1) it might look like this.
+To make it so voxel's don't draw their side if that side has a neighboring voxel, we need an algorithm to calculate where we want and don't want voxel's. For terrains the most popular option is to use Noise. Perlin Noise, Complex Noise, Value Noise... Noise is a way of getting smoothed random numbers. Most noise algorithms take in an offset in either 2D or 3D and then return a number between -1 to 1 (sometimes 0 to +1). If you saved the values of a noise function on a texture fading between black (-1) and white (1) it might look like this.
 
 ![TODO textured greyscale perlin noise image]()
 
@@ -115,7 +116,7 @@ There is a noise library in the Resources of this repositiory called FastNoiseLi
     |___Chunk/
 ```
 
-We will make a function that takes in a voxel's position and returns `true` or `false` using the FastNoiseLite class. First we need to add a member variable to the Chunk class to hold an instance of FastNoiseLite (kind of how we hold an instance to our vertex arrays)
+We will make a function that takes in a voxel's position and returns `true` or `false` using the FastNoiseLite class. First we need to add a member variable to the Chunk class to hold an instance of a FastNoiseLite.
 
 ```cs
     private FastNoiseLite m_noise;
@@ -133,14 +134,14 @@ Then we need to initialize the FastNoiseLite instance in `Start()` and set the n
     }
 ```
 
-Now we can make our function
+Now we can make our function for checking if a voxel should exist or not exist
 
 ```cs
-    private bool IsSolid(Vector3 voxelPos)
+    private bool IsSolid(int x, int y, int z)
     {
-        float height = m_noise.GetNoise(voxelPos.x, voxelPos.z) * Data.chunkSize;
+        float height = (m_noise.GetNoise(x, z) + 1) / 2 * Data.chunkSize;
 
-        if (voxelPos.y <= height)
+        if (y <= height)
         {
             return true;
         }
@@ -151,9 +152,13 @@ Now we can make our function
     }
 ```
 
-We need to multiply the noise value by some height value so that our terrain has hills higher than 1 voxel. We chose to multiply by our chunk size so that the highest possible height is the same as the chunk height, and so that if we change our chunk size the max height changes to. We check if a voxel's y position is less than the noise value, if it is then return true.
+The `FastNoiseLite`'s `GetNoise()` function gives us values between -1 and 1 depending on what position we use to get the noise. We add 1 to shift us up to get values between 0 and 2. Then divide it by 2 to get values between 0 and 1.
 
-Now when drawing voxel's in our for loop we can check if we should draw the voxel or not.
+We multiply the noise value by a height value so the terrain doesn't stay within the height of 0 and 1. We chose to multiply by our chunk size so that the highest possible height is the same as the chunks height. 
+
+Then to check if a voxel should exist check if the y position is below (less) than the noise value. If it is then there should be voxel's there.
+
+Now when drawing voxel's in the for loop we can check if we should draw it or not.
 
 ```cs
         for (int x = 0; x < Data.chunkSize; x++)
@@ -162,33 +167,32 @@ Now when drawing voxel's in our for loop we can check if we should draw the voxe
             {
                 for (int z = 0; z < Data.chunkSize; z++)
                 {
-                    Vector3 pos = new Vector3(x, y, z);
-                    if (IsSolid(pos))
+                    if (IsSolid(x, y, z))
                     {
-                        DrawVoxel(pos);
+                        DrawVoxel(x, y, z);
                     }
                 }
             }
         }
 ```
 
-And we have terrain! (Yours will have uv's this is an old picture (maybe take an updated screenshot and add it to the repo?))
+And we have terrain!
 
 ![first noise chunk](/Assets/first_noise_chunk.png)
 
 But we still aren't checking if a voxel has a neighbor! 
 
-To do neigbor check's for each voxel we will make a lookup table of offset positions that we will use to check for an offset voxel from the current voxel position. Add the following to Data.cs
+To check if a voxel has a neighbor we will make a lookup table of offset grid positions. We will then check each voxel's neighbor using this. Add the following to Data.cs
 
 ```cs
-    public static readonly Vector3[] NeighborOffset = new Vector3[6]
+    public static readonly int3[] NeighborOffset = new int3[6]
     {
-        new Vector3(1.0f, 0.0f, 0.0f),  // right
-        new Vector3(-1.0f, 0.0f, 0.0f), // left
-        new Vector3(0.0f, 1.0f, 0.0f),  // up
-        new Vector3(0.0f, -1.0f, 0.0f), // down
-        new Vector3(0.0f, 0.0f, 1.0f),  // front
-        new Vector3(0.0f, 0.0f, -1.0f), // back
+        new int3(1, 0, 0),  // right
+        new int3(-1, 0, 0), // left
+        new int3(0, 1, 0),  // up
+        new int3(0, -1, 0), // down
+        new int3(0, 0, 1),  // front
+        new int3(0, 0, -1), // back
     };
 ```
 
@@ -199,7 +203,7 @@ Now change the `DrawVoxel()` function to this
     {
         for (int side = 0; side < 6; side++)
         {
-            if (!IsSolid(Data.NeighborOffset[side] + voxelPos))
+            if (!IsSolid(x + Data.NeighborOffset[side].x, y + Data.NeighborOffset[side].y, z + Data.NeighborOffset[side].z))
             {
                 // ... snipping irrelevant code ... //
             }
@@ -207,11 +211,17 @@ Now change the `DrawVoxel()` function to this
     }
 ```
 
+The lookup table uses the `side` variable index to look up the offset for the side of the voxel we are building, to, check if that side of the voxel should be built. We made sure to put the offsets in the same order that we build the sides.
+
 And now you should see this! Yay!
 
 ![optimized noise chunk](/Assets/optimized_noise_chunk.png)
 
-One thing to note is that since we are not usually filling our vertex and triangle arrays all the way we can use the `m_vertexIndex` to find out how much of the array we are actually filling and make a "Slice" of the portion of the array that we are using.
+One thing to note is that since we are not usually filling our vertex and triangle arrays all the way we can use the `m_vertexIndex` to find out how much of the array we are actually filling, since it stores the current number of vertices, and make a "Slice" of the portion of the array that we are using.
+
+Making a "slice" of an array can be visualized with the following diagram.
+
+![slice of array](Assets/slice_of_array.png)
 
 ```cs
     m_mesh = new Mesh
@@ -221,11 +231,11 @@ One thing to note is that since we are not usually filling our vertex and triang
     };
 ```
 
-Making a "slice" of an array can be visualized with the following diagram.
+The last thing to note is that since we are checking for neighboring voxels, we will never use more than half of the `m_vertices` array. Imagine a case where the most possible number of voxels are drawn (using neighbor checking), this would be perfectly alternating voxels in a checkered pattern.
 
-![slice of array](Assets/slice_of_array.png)
+![2D voxel terrain checkered](/Assets/2D_voxel_terrain_checkered.png)
 
-The last thing to note is that since we are checking for neighboring voxels will only ever use half of the `m_vertices` array at its max. So we can divide its allocation size by 2.
+So, we can divide its allocation size by 2.
 
 ```cs
     private void Start()
@@ -237,9 +247,6 @@ The last thing to note is that since we are checking for neighboring voxels will
     }
 ```
 
-If you're wondering why, then imagine a case where the most possible voxels are drawn (using neighbor checking), this would be perfectly alternating voxels, making a "checkered" pattern
-
-![2D voxel terrain checkered](/Assets/2D_voxel_terrain_checkered.png)
 
 # Jobified Chunk
 Make a new micro project called JobChunk so that our project looks like this
@@ -281,7 +288,7 @@ public class JobChunk : MonoBehaviour
 }
 ```
 
-You might notice that the all our member variables have been changed to be stored in a `NativeArray`. This is because after a Job finishes running we will need `m_vertexIndex` to call the `Slice<T>()` function when setting our mesh, if we didn't use a NativeArray we would get zero back from the vertexIndex of our Job. Remember how C# makes copies of everything? NativeArrays allow us to access the same memory / instance from different places, rather than making copies of it every time. So to access any data outside a Job we need to use a NativeArray. 
+You might notice that the all our member variables have been changed to be stored in a `NativeArray`. Remember how C# makes copies of everything? NativeArrays allow us to access the same memory / instance from different places, rather than making copies of it every time. So to access any data outside a Job we need to use a NativeArray. 
 
 Make a new Job (which is just a struct) that inherits from `IJob` below the `JobChunk` class
 
@@ -299,7 +306,7 @@ public struct ChunkJob : IJob
 }
 ```
 
-`IJob` is an interface. Interfaces are just a bunch of functions that a class or struct, that uses that interface, has to implement. In this case `IJob` makes us use `Execute()`. The execute function will be called when the "job" gets "Executed" or "called", the same way we call a function, so we can treat it similar to the way we've treated the `Start()` function.
+`IJob` is an interface. Interfaces are a bunch of functions that a class or struct, that uses that interface, has to implement. In this case `IJob` makes us use `Execute()`. The execute function will be called when the "job" gets "Executed" or "called", so we can treat it similar to the way we've treated the `Start()` function in the past.
 
 ```cs
 public struct ChunkJob : IJob
@@ -320,11 +327,9 @@ public struct ChunkJob : IJob
             {
                 for (int z = 0; z < Data.chunkSize; z++)
                 {
-                    Vector3 position = new Vector3(x, y, z);
-
-                    if (IsSolid(noise, position))
+                    if (IsSolid(noise, x, y, z))
                     {
-                        DrawVoxel(noise, position);
+                        DrawVoxel(noise, x, y, z);
                     }
                 }
             }
@@ -333,21 +338,25 @@ public struct ChunkJob : IJob
 }
 ```
 
-Because the `vertexIndex` is stored in a `NativeArray` (Remember we use `m_vertexIndex` when setting our mesh in the `Slice<T>()` function) we have to use `[0]` to access the first element in the array `m_vertexIndex`.
+Because the `vertexIndex` is stored in a `NativeArray` we have to use `[0]` to access the first element in the array which is the `vertexIndex`.
 
-One note is that Jobs are not allowed to hold "reference types" (classes are always a reference to the same memory and not a copy), so the FastNoiseLite class instance cannot live as a member variable of the Job. Instead we will have to declare and initialize it in the `Execute()` function of the Job. Paste in the `DrawVoxel()` and `IsSolid()` functions from before, and change them so that they take in the `FastNoiseLite` instance as a parameter. 
+One note is that Jobs are not allowed to hold "reference types" (classes are always a reference to the same memory and not a copy, much like a NativeArray), so the FastNoiseLite reference cannot live as a member variable of the Job. Instead we will have to declare and initialize it in the `Execute()` function of the Job.
+
+You might notice that the `DrawVoxel()` and `IsSolid()` functions have changed. Paste them in from before, and change them so that they take in the `FastNoiseLite` instance as a parameter. This is because we cannot hol a reference memebr variable, and so we have to keep the FastNoiseLiteInstance within our functions.
 
 ```cs
-    private void DrawVoxel(FastNoiseLite noise, Vector3 position)
+    private void DrawVoxel(FastNoiseLite noise, int x, int y, int z)
     {
+        Vector3 pos = new Vector3(x, y, z);
+
         for (int face = 0; face < 6; face++)
         {
-            if (!IsSolid(noise, Data.NeighborOffset[face] + position))
+            if (!IsSolid(noise, Data.NeighborOffset[face].x + x, Data.NeighborOffset[face].y + y, Data.NeighborOffset[face].z + z))
             {
-                vertices[vertexIndex[0] + 0] = position + Data.Vertices[Data.BuildOrder[face, 0]];
-                vertices[vertexIndex[0] + 1] = position + Data.Vertices[Data.BuildOrder[face, 1]];
-                vertices[vertexIndex[0] + 2] = position + Data.Vertices[Data.BuildOrder[face, 2]];
-                vertices[vertexIndex[0] + 3] = position + Data.Vertices[Data.BuildOrder[face, 3]];
+                vertices[vertexIndex[0] + 0] = pos + Data.Vertices[Data.BuildOrder[face, 0]];
+                vertices[vertexIndex[0] + 1] = pos + Data.Vertices[Data.BuildOrder[face, 1]];
+                vertices[vertexIndex[0] + 2] = pos + Data.Vertices[Data.BuildOrder[face, 2]];
+                vertices[vertexIndex[0] + 3] = pos + Data.Vertices[Data.BuildOrder[face, 3]];
 
                 // get the correct triangle index
                 triangles[triangleIndex[0] + 0] = vertexIndex[0] + 0;
@@ -376,11 +385,11 @@ One note is that Jobs are not allowed to hold "reference types" (classes are alw
 We also make sure to add the current chunks position to the `GetNoise` function...
 
 ```cs
-    private bool IsSolid(FastNoiseLite noise, Vector3 voxelPos)
+    private bool IsSolid(FastNoiseLite noise, int x, int y, int z)
     {
-        float height = noise.GetNoise(voxelPos.x + chunkPos.x, voxelPos.z + chunkPos.z) * Data.chunkSize;
+        float height = noise.GetNoise(x + chunkPos.x, z + chunkPos.z) * Data.chunkSize;
 
-        if (voxelPos.y <= height)
+        if (y <= height)
         {
             return true;
         }
@@ -391,11 +400,11 @@ We also make sure to add the current chunks position to the `GetNoise` function.
     }
 ```
 
-otherwise you will get this horror
+otherwise you will get this horrifying monstrocity
 
 ![repetitive chunks same noise](/Assets/repetitive_chunks_same_noise.png)
 
-In start allocate our mesh's data arrays and then setup the `ChunkJob`.
+In start allocate our mesh's data arrays and then setup the `ChunkJob` variables.
 
 ```cs
     private void Start() {
@@ -416,11 +425,11 @@ In start allocate our mesh's data arrays and then setup the `ChunkJob`.
 
         JobHandle handle = job.Schedule();
 
-        // ...
+        // ... to be continued
     }
 ```
 
-When we schedule the job it returns a `JobHandle`. This lets us have a "handle" to hold on to our Job. Since the Job will be running on a differrent thread, we can't know when it will finish running, so we just have to wait until it completes, and that is exactly what the `Complete()` function does.
+When we schedule the job it returns a `JobHandle`. This lets us have a "handle" to hold on to our Job. Since the Job will be running on a differrent thread, we can't know when it will finish running, so we just have to wait until it completes, and that is exactly what the `Complete()` function does. It makes the code wait until 
 
 ```cs
     private void Start()
@@ -430,7 +439,7 @@ When we schedule the job it returns a `JobHandle`. This lets us have a "handle" 
         JobHandle handle = job.Schedule();
         handle.Complete();
 
-        // ...
+        // ... to be continued
     }
 ```
 
@@ -463,4 +472,4 @@ Now the rest of the code is much the same as past times
     }
 ```
 
-If you run this you should see a chunk as before! YESSSSS!!!!!!!!!! Now even though we haven't actually benefited from using the JobSystem in this example, it lays the groundwork for the next weeks lecture, where we will be drawing a lot of chunks using the JobSystem!
+If you run this you should see a chunk as before! YESSSSS!!!!!!!!!! Now even though we haven't actually benefited from using the JobSystem in this example, it lays the groundwork for the next weeks lecture, where we will be drawing an entire terrain with chunks using the JobSystem!
