@@ -185,6 +185,12 @@ But we still aren't checking if a voxel has a neighbor!
 To check if a voxel has a neighbor we will make a lookup table of offset grid positions. We will then check each voxel's neighbor using this. Add the following to Data.cs
 
 ```cs
+using Unity.Mathematics;
+
+public class Data
+{
+    // ... snipping unchanged code ... //
+
     public static readonly int3[] NeighborOffset = new int3[6]
     {
         new int3(1, 0, 0),  // right
@@ -194,6 +200,7 @@ To check if a voxel has a neighbor we will make a lookup table of offset grid po
         new int3(0, 0, 1),  // front
         new int3(0, 0, -1), // back
     };
+}
 ```
 
 Now change the `DrawVoxel()` function to this
@@ -246,7 +253,6 @@ So, we can divide its allocation size by 2.
         // ... snipping irrelevant code ... //
     }
 ```
-
 
 # Jobified Chunk
 Make a new micro project called JobChunk so that our project looks like this

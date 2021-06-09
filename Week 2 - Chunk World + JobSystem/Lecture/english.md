@@ -110,39 +110,30 @@ public class Recycle1D : MonoBehaviour
 }
 ```
 
-the function `GameObject.CreatePrimitive(Primitive.Cube)` is a shortcut for instantiating (creating) a built-in cube (Called a primitive). (This makes it so we don't have to manually add a renderer component, and mesh filter, and material, and mesh).
+The function `GameObject.CreatePrimitive(Primitive.Cube)` is a shortcut for instantiating (creating) a built-in cube (Called a primitive). (This makes it so we don't have to manually add a renderer component, and mesh filter, and material, and mesh).
 
-We will round the center position (the player's position).
+We offset the postion of the cube by `offset` to place the cubes so that the player is in the center of them. 
 
-```cs
-public class Recycle1D : MonoBehaviour
-{
-    // ... snipping unchanged code ... //
+Also the numCubes has to be an even number that is divisible by 2. Otherwise we will end up with a decimal `.5` that will just get chopped off. Say we set numCubes to `5` and then divide by `2`. This gives us back `2` which is wrong. This is because we chopped off the `.5`, so the answer should have been `2.5` but we are storing it in an `int` and int's don't have decimals.
 
-    private Vector3 GetRoundedPos()
-    {
-        return new Vector3(Mathf.Round(center.position.x), 0, 0);
-    }
-}
-```
+Why not use a `float` since they can have decimals? Because then the cubes will not be in a grid and will have positions like `2.5`. You could use floats but we will be using `int`'s.
 
-and now we can write the code to move the cubes.
+Now we can write the code to move the cubes.
 
 ```cs
     void Update()
     {
         for (int i = 0; i < numCubes; i++)
         {
-            if (GetRoundedPos().x + offset < cubes[i].transform.position.x)
+            if (center.position.x + offset < cubes[i].transform.position.x)
             {
                 cubes[i].transform.position -= new Vector3(numCubes, 0, 0);
             }
-            if (GetRoundedPos().x - offset > cubes[i].transform.position.x)
+            if (center.position.x - offset > cubes[i].transform.position.x)
             {
                 cubes[i].transform.position += new Vector3(numCubes, 0, 0);
             }
         }
-
     }
 ```
 
@@ -170,7 +161,7 @@ Now make another micro project called 2D in the Recycling folder
             |___2D.cs
 ```
 
-The code will be the same except that we will use a 2D array to hold our cubes, and we will instantiate them in a grid, much like we will for the terrain later. We use a 2D array so that the for loop's are easier to write, and we don't have to convert from 1D array indexing to 2D indexing, which is not that hard but will make this example a bit involved (complex). (There is a tutorial for this in the tutorials of this lecture)
+The code will be the same except that we will use a 2D array to hold our cubes, and we will instantiate them in a grid, much like we will for the terrain later. We use a 2D array so that the for loop's are easier to write, and we don't have to convert from 1D array indexing to 2D indexing, which is not that hard but will make this example a bit involved (complex). (There is a tutorial for this in the tutorials of this week)
 
 paste this boiler plate code in.
 
@@ -187,32 +178,23 @@ public class Recycle2D : MonoBehaviour
 
 ```
 
-The round function has changed slightly to include z.
-
-```cs
-    private Vector3 GetRoundedPos()
-    {
-        return new Vector3(Mathf.Round(center.position.x), 0, Mathf.Round(center.position.z));
-    }
-```
-
-Instantiating the cubes in a grid changes as well, now the grid is 2D.
+Instantiating the cubes in a grid changes, now the grid is 2D.
 
 ```cs
     private void Start()
     {
-        for (int x = (int)GetRoundedPos().x; x < numCubes + (int)GetRoundedPos().x; x++)
+        for (int x = 0; x < numCubes; x++)
         {
-            for (int z = (int)GetRoundedPos().z; z < numCubes + (int)GetRoundedPos().z; z++)
+            for (int z = 0; z < numCubes; z++)
             {
                 cubes[x, z] = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                cubes[x, z].GetComponent<Transform>().position = new Vector3(x, 0, z);
+                cubes[x, z].GetComponent<Transform>().position = new Vector3(x - offset, 0, z - offset);
             }
         }
     }
 ```
 
-We center the the creating of the cubes by using the GetRoundedPos() in the for loop declaration.
+We center the the creating of the cubes by using the subtracting the `offset` in the position for the cubes.
 
 The recycling code changes with an additional for loop and, includes code to check the z coordinate, which is the exactly the same code as the x coordinate.
 
@@ -224,21 +206,23 @@ The recycling code changes with an additional for loop and, includes code to che
             for (int z = 0; z < numCubes; z++)
             {
                 // x
-                if (GetRoundedPos().x + offset < cubes[x, z].transform.position.x)
+                if (center.position.x + offset < cubes[x, z].transform.position.x)
                 {
                     cubes[x, z].transform.position += new Vector3(-numCubes, 0, 0);
                 }
-                if (GetRoundedPos().x - offset > cubes[x, z].transform.position.x)
+                else
+                if (center.position.x - offset > cubes[x, z].transform.position.x)
                 {
                     cubes[x, z].transform.position += new Vector3(numCubes, 0, 0);
                 }
 
                 // z
-                if (GetRoundedPos().z + offset < cubes[x, z].transform.position.z)
+                if (center.position.z + offset < cubes[x, z].transform.position.z)
                 {
                     cubes[x, z].transform.position += new Vector3(0, 0, -numCubes);
                 }
-                if (GetRoundedPos().z - offset > cubes[x, z].transform.position.z)
+                else
+                if (center.position.z - offset > cubes[x, z].transform.position.z)
                 {
                     cubes[x, z].transform.position += new Vector3(0, 0, numCubes);
                 }
@@ -304,7 +288,7 @@ We will create a constructor. Constructors are functions that are special. They 
 JobWorldChunk chunk = new JobWorldChunk()
 ``` 
 
-the `JobWorldChunk()` with the parenthesis is the constructor. Constrcutor function have the same name as the class that holds them. Make a constructor function for `JobWorldChunk` with all of the initalization code.
+the `JobWorldChunk()` with the parenthesis is the constructor. Constructor function have the same name as the class that holds them. Make a constructor function for `JobWorldChunk` with all of the initalization code.
 
 ```cs
 public class JobWorldChunk
@@ -393,7 +377,9 @@ public class JobWorldChunk
 }
 ```
 
-We purposefully make 2 separate functions for Schedule and Complete. We will explain this in a bit. Once the job is completed we know that the mesh data arrays are ready and we set the `m_mesh`'s data. Now we will instantiate the chunk through the `JobWorld` class, which will be the chunk manager. Paste in this boiler plate code.
+We purposefully make 2 separate functions for Schedule and Complete. This allows us to Schedule many chunks to draw and then Complete them all at once. Once the job is completed we know that the mesh data arrays are ready and we set the `m_mesh`'s data. 
+
+Now we will instantiate the chunk through the `JobWorld` class, which will be the chunk manager. Paste in this boiler plate code.
 
 ```cs
 using UnityEngine;
@@ -495,17 +481,17 @@ But if we have a separate loop for scheduling and then another loop for completi
     {
         // ... snipping unchanged code ... //
 
-        for (int x = 0; x < Data.worldSize; x++) 
+        for (int x = 0; x < Data.chunkNum; x++) 
         {
-            for (int z = 0; z < Data.worldSize; z++) 
+            for (int z = 0; z < Data.chunkNum; z++) 
             {
                 chunks[x, z].ScheduleDraw();
             }
         }
 
-        for (int x = 0; x < Data.worldSize; x++) 
+        for (int x = 0; x < Data.chunkNum; x++) 
         {
-            for (int z = 0; z < Data.worldSize; z++) 
+            for (int z = 0; z < Data.chunkNum; z++) 
             {
                 chunks[x, z].CompleteDraw();
             }
@@ -523,26 +509,7 @@ And it turns out that Unity provides us with a live timeline viewer! To open it 
 You will notice the record button at the top, this is for recording data for the profiler to use. The other highlighted thing is a dropdown, by default you will be in Hierarchy mode click on the dropdown to change it to Timeline mode. In timeline mode you should be able to see worker threads under "Jobs". But first you will have to hit play and record some data.
 
 # Recycling chunks
-Before we can make the recycling system we used in the cubes example we have to address the `GetRoundedPos()` function. Before we were rounding to the 1's place (since the cubes were only 1 x 1 x 1), but now we need to round from whatever `Data.chunkSize` is to the one's place, so that `GetRoundedPos()` will return multiples of 1 which can be used for indexing into the `chunks` array.
-
-We can find the current chunk index the player is at by dividing the players position by 16 (assuming that `Data.chunkSize` is 16) therefore getting chunk indexes. But we need to round the indexes because they won't always be . The `Mathf.Round()` function will only round to the nearest 1's place. 
-
-```cs
-public class JobWorld : MonoBehaviour
-{
-    // ... snipping unchanged code ... //
-    public Transform center;
-
-    // ... snipping unchanged code ... //
-
-    private Vector3 GetRoundedPos()
-    {
-        return new Vector3(Mathf.Round(center.position.x / Data.chunkSize), 0, Mathf.Round(center.position.z / Data.chunkSize)) * Data.chunkSize;
-    }
-}
-```
-
-Now add the recycling (really just moving the chunks) code from the cubes example (Don't worry about redrawing the chunks just yet).
+Add the recycling code from the cubes example. We move chunks over to the other side of the world as in the cubes example.
 
 ```cs
 public class JobWorld : MonoBehaviour
@@ -552,30 +519,30 @@ public class JobWorld : MonoBehaviour
 
     // ... snipping unchanged code ... //
 
-    private void Update()
+    private void RecycleChunks()
     {
-        for (int x = 0; x < Data.worldSize; x++)
+        for (int x = 0; x < Data.chunkNum; x++)
         {
-            for (int z = 0; z < Data.worldSize; z++)
+            for (int z = 0; z < Data.chunkNum; z++)
             {
                 // x
-                if (GetRoundedPos().x + offset < chunks[x, z].gameObject.transform.position.x)
+                if (center.position.x + offset < chunks[x, z].gameObject.transform.position.x)
                 {
-                    chunks[x, z].gameObject.transform.position -= new Vector3(Data.worldSize * Data.chunkSize, 0, 0);
+                    chunks[x, z].gameObject.transform.position -= new Vector3(Data.chunkNum * Data.chunkSize, 0, 0);
                 }
-                if (GetRoundedPos().x - offset > chunks[x, z].gameObject.transform.position.x)
+                if (center.position.x - offset > chunks[x, z].gameObject.transform.position.x)
                 {
-                    chunks[x, z].gameObject.transform.position += new Vector3(Data.worldSize * Data.chunkSize, 0, 0);
+                    chunks[x, z].gameObject.transform.position += new Vector3(Data.chunkNum * Data.chunkSize, 0, 0);
                 }
 
                 // z
-                if (GetRoundedPos().z + offset < chunks[x, z].gameObject.transform.position.z)
+                if (center.position.z + offset < chunks[x, z].gameObject.transform.position.z)
                 {
-                    chunks[x, z].gameObject.transform.position -= new Vector3(0, 0, Data.worldSize * Data.chunkSize);
+                    chunks[x, z].gameObject.transform.position -= new Vector3(0, 0, Data.chunkNum * Data.chunkSize);
                 }
-                if (GetRoundedPos().z - offset > chunks[x, z].gameObject.transform.position.z)
+                if (center.position.z - offset > chunks[x, z].gameObject.transform.position.z)
                 {
-                    chunks[x, z].gameObject.transform.position += new Vector3(0, 0, Data.worldSize * Data.chunkSize);
+                    chunks[x, z].gameObject.transform.position += new Vector3(0, 0, Data.chunkNum * Data.chunkSize);
                 }
             }
         }
@@ -583,13 +550,13 @@ public class JobWorld : MonoBehaviour
 }
 ```
 
-The offset in this case is half of the total world size, now you may think just `Data.worldSize / 2` will work but remember `Data.worldSize` is the number of chunks, not the actual world's size. Change the name to `Data.chunkNum` for clarity from now on.
+The offset in this case is half of the total world size, now you may think just `Data.worldSize / 2` will work but remember `Data.worldSize` is the number of chunks, not the actual world's size.
 
 If you make a new gameObject and set it as the "center" property for the `JobWorld` script then hit play you should be able to have a working recycling chunk system! Move the center around to see the chunks follow!
 
 ![screenshot chunk recycling](/Assets/screenshot_chunk_recycling.png)
 
-You will see choppy mismatched meshes because we aren't redrawing them.
+You will see the chunks being recycled byt their meshes will not be redrawn.
 
 Move all the recycling code into its own function, and then call that function in `Update()`.
 
@@ -610,23 +577,27 @@ public class JobWorld : MonoBehaviour
             for (int z = 0; z < Data.chunkNum; z++)
             {
                 // x
-                if (GetRoundedPos().x + offset < chunks[x, z].gameObject.transform.position.x)
+                if (center.position.x + offset < chunks[x, z].gameObject.transform.position.x)
                 {
                     chunks[x, z].gameObject.transform.position -= new Vector3(Data.chunkNum * Data.chunkSize, 0, 0);
+                    chunks[x, z].needsDrawn = true;
                 }
-                if (GetRoundedPos().x - offset > chunks[x, z].gameObject.transform.position.x)
+                if (center.position.x - offset > chunks[x, z].gameObject.transform.position.x)
                 {
                     chunks[x, z].gameObject.transform.position += new Vector3(Data.chunkNum * Data.chunkSize, 0, 0);
+                    chunks[x, z].needsDrawn = true;
                 }
 
                 // z
-                if (GetRoundedPos().z + offset < chunks[x, z].gameObject.transform.position.z)
+                if (center.position.z + offset < chunks[x, z].gameObject.transform.position.z)
                 {
                     chunks[x, z].gameObject.transform.position -= new Vector3(0, 0, Data.chunkNum * Data.chunkSize);
+                    chunks[x, z].needsDrawn = true;
                 }
-                if (GetRoundedPos().z - offset > chunks[x, z].gameObject.transform.position.z)
+                if (center.position.z - offset > chunks[x, z].gameObject.transform.position.z)
                 {
                     chunks[x, z].gameObject.transform.position += new Vector3(0, 0, Data.chunkNum * Data.chunkSize);
+                    chunks[x, z].needsDrawn = true;
                 }
             }
         }
@@ -662,9 +633,11 @@ To ensure that a chunk get's drawn after it is moved we can just redraw all the 
     }
 ```
 
-And this will actually work pretty well! (It ran at 20 fps for me). How is this possible? To redraw all the chunks each frame with decent frame rates? Multithreading. If you remember from the timeline diagrams we can get a lot of work done in a small amount of time by using multithreadng, in this case through the C# JobSystem.
+And this will actually work pretty well! (It ran at 20 fps for me). How is this possible? To redraw all the chunks each frame with decent frame rates? Multithreading. If you remember from the timeline diagrams we can get a lot of work done in a small amount of time by using multithreadng, in this case we are multi-threading through the C# JobSystem.
 
-How could we go about only redrawing the chunks that have been recycled? We could add all the chunks that have been moved to a queue. A queue is like a list that lets us add items to the bottom and when getting items gets them from the top and removes them, the same way "waiting in line" works. This was what I have done in the past, but this is not as performant and gets complicated. Thankfully there is a simpler solution. We can add a variable to the chunk class called `needsDrawn`, that we set to true whenever we move a chunk. And then in the `ScheduleDraw()` and `CompleteDraw()` functions have an if statement that check's if `needsDrawn` is true.
+How could we go about only redrawing the chunks that have been recycled? We could add all the chunks that have been moved to a queue. A queue is like a list that lets us add items to the bottom and when getting items gets them from the top and removes them, the same way "waiting in line" works. This was what I have done in the past, but this is not as performant and gets complicated. 
+
+Thankfully there is a simpler solution. We can add a variable to the chunk class called `needsDrawn`, that we set to true whenever we move a chunk. And then in the `ScheduleDraw()` and `CompleteDraw()` functions have an if statement that check's if `needsDrawn` is true.
 
 ```cs
 public class JobWorldChunk
@@ -703,7 +676,7 @@ public class JobWorldChunk
 }
 ```
 
-If `needsDrawn` was true we schedule a draw then complete a draw and then set `nnedsDrawn` to false so that we don't draw the mesh over and over.
+If `needsDrawn` was true we schedule a draw then complete a draw and then set `needsDrawn` to false so that we don't draw the mesh over and over.
 
 Now in the `JobWorld` class in the `RecycleChunks()` function we can simply set `needsDrawn` to true if the chunk was recycled.
 
@@ -715,24 +688,24 @@ Now in the `JobWorld` class in the `RecycleChunks()` function we can simply set 
             for (int z = 0; z < Data.chunkNum; z++)
             {
                 // x
-                if (GetRoundedPos().x + offset < chunks[x, z].gameObject.transform.position.x)
+                if (center.position.x + offset < chunks[x, z].gameObject.transform.position.x)
                 {
                     chunks[x, z].gameObject.transform.position -= new Vector3(Data.chunkNum * Data.chunkSize, 0, 0);
                     chunks[x, z].needsDrawn = true;
                 }
-                if (GetRoundedPos().x - offset > chunks[x, z].gameObject.transform.position.x)
+                if (center.position.x - offset > chunks[x, z].gameObject.transform.position.x)
                 {
                     chunks[x, z].gameObject.transform.position += new Vector3(Data.chunkNum * Data.chunkSize, 0, 0);
                     chunks[x, z].needsDrawn = true;
                 }
 
                 // z
-                if (GetRoundedPos().z + offset < chunks[x, z].gameObject.transform.position.z)
+                if (center.position.z + offset < chunks[x, z].gameObject.transform.position.z)
                 {
                     chunks[x, z].gameObject.transform.position -= new Vector3(0, 0, Data.chunkNum * Data.chunkSize);
                     chunks[x, z].needsDrawn = true;
                 }
-                if (GetRoundedPos().z - offset > chunks[x, z].gameObject.transform.position.z)
+                if (center.position.z - offset > chunks[x, z].gameObject.transform.position.z)
                 {
                     chunks[x, z].gameObject.transform.position += new Vector3(0, 0, Data.chunkNum * Data.chunkSize);
                     chunks[x, z].needsDrawn = true;
