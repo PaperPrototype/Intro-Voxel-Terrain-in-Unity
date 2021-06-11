@@ -456,16 +456,17 @@ You should notice that when setting the triangles we set them to
 = m_triangleIndex + 1;
 = m_triangleIndex + 3;
 
-// not, which is wrong in 2 ways
+// not
 = m_vertexIndex + 0;
 = m_vertexIndex + 1;
 = m_vertexIndex + 2;
 = m_vertexIndex + 3; 
 = m_vertexIndex + 4;
 = m_vertexIndex + 5;
+// ...which is wrong in 2 ways
 ```
 
-which corresponds to the comment in the `BuildOrder` lookup table
+which is the order that corresponds to the comment in the `BuildOrder` lookup table
 
 ```cs
     // 0 1 2 2 1 3 <- triangle order per side
