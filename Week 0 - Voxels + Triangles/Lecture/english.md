@@ -503,3 +503,97 @@ Also since we are using NativeCollections we have to manually free our memory, m
 ```
 
 And now if you hit play you should have a voxel! (Make sure to set your Material) See you next week!
+
+```cs
+
+    public static readonly Vector3[] Verticies = new Vector3[8]
+    {
+        new Vector3(-0.5f, -0.5f, -0.5f),
+        new Vector3(0.5f, -0.5f, -0.5f),
+        new Vector3(0.5f, 0.5f, -0.5f),
+        new Vector3(-0.5f, 0.5f, -0.5f),
+        new Vector3(-0.5f, -0.5f, 0.5f),
+        new Vector3(0.5f, -0.5f, 0.5f),
+        new Vector3(0.5f, 0.5f, 0.5f),
+        new Vector3(-0.5f, 0.5f, 0.5f)
+    };
+
+    public static readonly int[,] BuildOrder = new int[6, 4]
+    {
+        // right, left, up, down, front, back
+
+        // 0 1 2 2 1 3 <- triangle order per side
+
+        {1, 2, 5, 6},       //right face
+        {4, 7, 0, 3},      //left face
+
+        {3, 7, 2, 6},    //up face
+        {1, 5, 0, 4},   //down face
+
+        {5, 6, 4, 7}, //front face
+        {0, 3, 1, 1} //back face
+    };
+
+    private void Start()
+    {
+        m_vertices = new NativeArray<Vector3>(24 * Data.chunkSize * Data.chunkSize * Data.chunkSize, Allocator.Temp);
+        m_triangles = new NativeArray<int>(36 * Data.chunkSize * Data.chunkSize * Data.chunkSize, Allocator.Temp);
+        m_uvs = new NativeArray<Vector2>(24 * Data.chunkSize * Data.chunkSize * Data.chunkSize, Allocator.Temp);
+
+        for (int x = 0; x < Data.chunkSize; x++)
+        {
+            for (int y = 0; y < Data.chunkSize; y++)
+            {
+                for (int z = 0; z < Data.chunkSize; z++)
+                {
+                    DrawVoxel(x, y, z);
+                }
+            }
+        }
+
+        m_mesh = new Mesh
+        {
+            vertices = m_vertices.ToArray(),
+            triangles = m_triangles.ToArray(),
+            uv = m_uvs.ToArray()
+        };
+
+        m_mesh.RecalculateBounds();
+        m_mesh.RecalculateNormals();
+
+        gameObject.GetComponent<MeshFilter>().mesh = m_mesh;
+
+        m_vertices.Dispose();
+        m_triangles.Dispose();
+        m_uvs.Dispose();
+
+    }
+
+    private void DrawVoxel()
+    {
+        for (int side = 0; side < 6; side++)
+        {
+            m_vertices[m_vertexIndex + 0] = Data.Verticies[Data.BuildOrder[side, 0]];
+            m_vertices[m_vertexIndex + 1] = Data.Verticies[Data.BuildOrder[side, 1]];
+            m_vertices[m_vertexIndex + 2] = Data.Verticies[Data.BuildOrder[side, 2]];
+            m_vertices[m_vertexIndex + 3] = Data.Verticies[Data.BuildOrder[side, 3]];
+
+            m_triangles[m_triangleIndex + 0] = m_vertexIndex + 0;
+            m_triangles[m_triangleIndex + 1] = m_vertexIndex + 1;
+            m_triangles[m_triangleIndex + 2] = m_vertexIndex + 2;
+            m_triangles[m_triangleIndex + 3] = m_vertexIndex + 2;
+            m_triangles[m_triangleIndex + 4] = m_vertexIndex + 1;
+            m_triangles[m_triangleIndex + 5] = m_vertexIndex + 3;
+
+            m_uvs[m_vertexIndex + 0] = new Vector2(0, 0);
+            m_uvs[m_vertexIndex + 1] = new Vector2(0, 1);
+            m_uvs[m_vertexIndex + 2] = new Vector2(1, 0);
+            m_uvs[m_vertexIndex + 3] = new Vector2(1, 1);
+
+            m_vertexIndex += 4;
+
+            m_triangleIndex += 6;
+        }
+    }
+
+```
