@@ -405,8 +405,8 @@ The m_vertexIndex is used to keep track of the current newest vertex. That way n
 ```
 vertexIndex = 4
 
-                  \/ <- vertexIndex
-[v0, v1, v2, v3, null, null, null, null]
+                            \/ <- vertexIndex
+vertices = [v0, v1, v2, v3, null, null, null, null]
 ```
 
 The m_triangleIndex serves the same purpose except for the triangles.
