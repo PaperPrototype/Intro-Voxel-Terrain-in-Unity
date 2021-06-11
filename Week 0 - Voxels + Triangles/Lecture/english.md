@@ -289,7 +289,7 @@ Now we need a way to find all the vertices per each side of the voxel. For this 
 ```cs
     public static readonly int[,] BuildOrder = new int[6, 4]
     {
-        // 0 1 2 2 1 3 <- triangle order per side
+        // 0 1 2 2 1 3 <- triangle order
 
         // right, left, up, down, front, back
         
@@ -304,11 +304,81 @@ Now we need a way to find all the vertices per each side of the voxel. For this 
     };
 ```
 
-We've made the lookup table to get the vertices so that the triangles for each side of a voxel will always be `0, 1, 2, 2, 1, 3`.
+We've made the `BuildOrder` lookup table for getting the vertices so that the triangles for each side of a voxel will always be the same `0, 1, 2, 2, 1, 3`.
 
-We mark the class as well as the arrays `static` for a reason. Anything marked as `static` gets saved to a special part of our programs for data that will be accessed a lot and doesn't change. A result of this is there is only one copy of that data and data can be accessed really fast. Also the arrays are marked as `readonly`. This tells the compiler that the data can only be read and not modified. The correct word is "not mutated" or "immutable". This allows any Thread or Job to access the arrays since there is only one copy of them and they aren't allowed to be modified. A result of nothing being allowed to change is that the C# Job system won't complain when we use a Job to make our meshes using the lookup tables.
+We mark the class as well as the arrays `static` for a reason. Anything marked as `static` gets saved to a special part of our programs for data that will be accessed a lot and doesn't change. A result of this is there is only one copy of that data and data can be accessed really fast. Also the arrays are marked as `readonly`. This tells the compiler that the data can only be read and not modified. The correct word is "not mutated" or "immutable". This allows any Thread or Job to access the arrays since there is only one copy of them and they aren't allowed to be modified. A result of nothing being allowed to change is that the C# Job system won't complain when we use the lookup tables in a Job.
 
-Open Voxel.cs again and create a new mesh except we are going to use our lookup tables this time. We use a NativeArray to store the vertices and triangles. This is to get you used to using them since they are JobSystem friendly and you will need to know how to use them to use the JobSystem.
+We will start simple and use the lookup tables to make one side of a voxel (AKA a quad). Open up the Quad.cs code and change it to use the lookup tables to make the quad.
+
+```cs
+// ... snipping header stuff ... //
+    void Start()
+    {
+        Mesh mesh = new Mesh
+        {
+            vertices = new Vector3[]
+            {
+                DataDefs.Vertices[DataDefs.BuildOrder[0, 0]],
+                DataDefs.Vertices[DataDefs.BuildOrder[0, 1]],
+                DataDefs.Vertices[DataDefs.BuildOrder[0, 2]],
+                DataDefs.Vertices[DataDefs.BuildOrder[0, 3]],
+            },
+            uv = new Vector2[]
+            {
+                new Vector2(0, 0),
+                new Vector2(0, 1),
+                new Vector2(1, 0),
+                new Vector2(1, 1)
+            },
+            triangles = new int[]
+            {
+                0, 1, 2, 2, 1, 3
+            }
+        };
+        mesh.RecalculateBounds();
+        mesh.RecalculateNormals();
+
+        gameObject.GetComponent<MeshFilter>().mesh = mesh;
+    }
+
+```
+
+The vertices array uses the `DataDefs.BuildOrder` lookup table to get the vertices out of the `Vertices` table for side 0 of a voxel. You will notice all the first array indexes are 0, this gets the first dimension of the array...
+
+```
+// 1D array
+BuildOrder = int[]
+{
+    first dimension,
+    first dimension,
+};
+```
+
+which contains the indexes to use to lookup the correct vertices to use in the `DataDefs.Vertices` table. Then the `0, 1, 2, 3` numbers get the individual indexes from the second dimension in the lookup table.
+
+```
+// 2D array      \/ notice the `,`
+BuildOrder = int[,]
+{
+    {
+        second_dimension, 
+        second_dimension, 
+        second_dimension, 
+        second_dimension
+    },
+    // or
+    { second_dimension, second_dimension, second_dimension, second_dimension },
+};
+```
+
+Then the triangles have to change from `0, 1, 2, 0, 2, 3` to `0, 1, 2, 2, 1, 3`, which will get the vertices from and build the triangles. The reason for this is that the `BuildOrder` table gets vertices from the `Vertices` table in a specific order, and the triangles have to be able to access the vertices in a pattern that can work with the order that the `BuildOrder` table gives us vertices.
+
+Also the uv's change from `(0, 0), (0, 1), (1, 1), (1, 0)` to `(0, 0), (0, 1), (1, 0), (1, 1)` since the positions of the vertices that they refer to have changed.
+
+Now if you run this it should still work!
+
+# Actually making a voxel
+Open Voxel.cs and create a new mesh except we are going to use our lookup tables this time. We use a NativeArray to store the vertices and triangles. This is to get you used to using them since they are JobSystem friendly and you will need to know how to use them to use the JobSystem.
 
 ```cs
 using UnityEngine;
@@ -328,11 +398,20 @@ public class Voxel : MonoBehaviour
 }
 ```
 
-(We use the naming convention `m_variable` to represent private member class variables, this helps to distiniguish them the meshes variable names. We recommend you copy us for an optimal course experience.
+(We use the naming convention `m_variable` to represent private member class variables, this helps to distiniguish them from the meshes variable names. We recommend you copy us for an optimal course experience.)
 
-The m_vertexIndex is used to keep track of the current newest vertex. That way new vertices being added don't overwrite eachother, but get added on to the end of the m_vertices array. The m_triangleIndex serves the same purpose except for the triangles.
+The m_vertexIndex is used to keep track of the current newest vertex. That way new vertices being added don't overwrite eachother, but get added on after the already added vertices. You can visualize this as
 
-Make a new function that uses the lookup tables to make a voxel. The `side` variable looks up each side of the voxel in the lookup table. Also a voxel (AKA cube) has six sides.
+```
+vertexIndex = 4
+
+                  \/ <- vertexIndex
+[v0, v1, v2, v3, null, null, null, null]
+```
+
+The m_triangleIndex serves the same purpose except for the triangles.
+
+Make a new function that uses the lookup tables to make a voxel. The `side` variable looks up each side of the voxel in the lookup table. Also a voxel (AKA cube) has 6 sides.
 
 ```cs
     private void DrawVoxel()
@@ -345,12 +424,12 @@ Make a new function that uses the lookup tables to make a voxel. The `side` vari
             m_vertices[m_vertexIndex + 3] = DataDefs.Vertices[DataDefs.BuildOrder[side, 3]];
 
             // get the correct triangle index
-            m_triangles[m_triangleIndex + 0] = m_vertexIndex + 0;
-            m_triangles[m_triangleIndex + 1] = m_vertexIndex + 1;
-            m_triangles[m_triangleIndex + 2] = m_vertexIndex + 2;
-            m_triangles[m_triangleIndex + 3] = m_vertexIndex + 2;
-            m_triangles[m_triangleIndex + 4] = m_vertexIndex + 1;
-            m_triangles[m_triangleIndex + 5] = m_vertexIndex + 3;
+            m_triangles[m_triangleIndex + 0] = m_triangleIndex + 0;
+            m_triangles[m_triangleIndex + 1] = m_triangleIndex + 1;
+            m_triangles[m_triangleIndex + 2] = m_triangleIndex + 2;
+            m_triangles[m_triangleIndex + 3] = m_triangleIndex + 2;
+            m_triangles[m_triangleIndex + 4] = m_triangleIndex + 1;
+            m_triangles[m_triangleIndex + 5] = m_triangleIndex + 3;
 
             // set the uv's (different than the quad uv's due to the order of the lookup tables in DataDefs.cs)
             m_uvs[m_vertexIndex + 0] = new Vector2(0, 0);
@@ -370,13 +449,21 @@ Make a new function that uses the lookup tables to make a voxel. The `side` vari
 You should notice that when setting the triangles we set them to 
 
 ```cs
+= m_triangleIndex + 0;
+= m_triangleIndex + 1;
+= m_triangleIndex + 2;
+= m_triangleIndex + 2;
+= m_triangleIndex + 1;
+= m_triangleIndex + 3;
+
+// not, which is wrong in 2 ways
 = m_vertexIndex + 0;
 = m_vertexIndex + 1;
 = m_vertexIndex + 2;
-= m_vertexIndex + 2;
-= m_vertexIndex + 1;
 = m_vertexIndex + 3;
-``` 
+= m_vertexIndex + 4;
+= m_vertexIndex + 5;
+```
 
 which corresponds to the comment in the `BuildOrder` lookup table
 
