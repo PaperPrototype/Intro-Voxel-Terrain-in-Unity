@@ -460,7 +460,7 @@ You should notice that when setting the triangles we set them to
 = m_vertexIndex + 0;
 = m_vertexIndex + 1;
 = m_vertexIndex + 2;
-= m_vertexIndex + 3;
+= m_vertexIndex + 3; 
 = m_vertexIndex + 4;
 = m_vertexIndex + 5;
 ```
