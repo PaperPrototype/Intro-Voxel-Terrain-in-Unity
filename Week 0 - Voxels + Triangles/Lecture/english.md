@@ -270,6 +270,8 @@ public static class DataDefs
 {
     public static readonly Vector3[] Vertices = new Vector3[8]
     {
+        // 0 1 2 2 1 3 <- triangle order per side
+
         new Vector3(-0.5f, -0.5f, -0.5f),
         new Vector3(0.5f, -0.5f, -0.5f),
         new Vector3(0.5f, 0.5f, -0.5f),
@@ -282,14 +284,14 @@ public static class DataDefs
 }
 ```
 
-This is all 8 possible vertices for the corners of a voxel. We need a way to find all the vertices per each side of the voxel. For this we'll make a lookup table (a 2D array) that gets 4 vertices based on the side of the cube we want.
+This is all 8 possible vertices for the corners of a voxel. We've made the lookup table so the triangles will always be `0, 1, 2, 2, 1, 3`. 
+
+Now we need a way to find all the vertices per each side of the voxel. For this we'll make a lookup table (a 2D array) that gets 4 vertices based on the side of the cube we want.
 
 ```cs
     public static readonly int[,] BuildOrder = new int[6, 4]
     {
         // right, left, up, down, front, back
-
-        // 0 1 2 2 1 3 <- triangle order per side
         
         {1, 2, 5, 6},  // right face
         {4, 7, 0, 3}, // left face
@@ -374,7 +376,7 @@ You should notice that when setting the triangles we set them to
 = m_vertexIndex + 3;
 ``` 
 
-which corresponds to the `BuildOrder` lookup table's comment I added
+which corresponds to the comment in the `Vertices` lookup table
 
 ```cs
     // 0 1 2 2 1 3 <- triangle order per side
