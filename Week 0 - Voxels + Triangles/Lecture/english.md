@@ -463,11 +463,7 @@ which is the order that corresponds to the comment in the `BuildOrder` lookup ta
     // 0 1 2 2 1 3 <- triangle order per side
 ```
 
-We also use the vertexIndex to change the position that we put the UV's in the UV array.
-
-The `m_triangleIndex` is used to change the position that we place each triangle in the  triangle array to make sure that they are don't overlap eachother when we place them.
-
-We also use the vertexIndex to make sure 
+We also add the vertexIndex when setting our triangles to make sure that the triangles are refering to their set of vertices and not the previous set. 
 
 Now we can initialize all of the member variables in `Start()` and Draw the voxel using the `DrawVoxel()` function. Then set the meshes data, and convert our NativeArray to an Array using `.ToArray()`. Then set the MeshFilters mesh to our mesh. Also Calculate our normals and Bounds.
 
