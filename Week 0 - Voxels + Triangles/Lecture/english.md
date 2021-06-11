@@ -457,13 +457,7 @@ You should notice that when setting the triangles we set them to
 = m_vertexIndex + 3;
 ```
 
-which is the order that corresponds to the comment in the `BuildOrder` lookup table
-
-```cs
-    // 0 1 2 2 1 3 <- triangle order per side
-```
-
-We add the vertexIndex to the triangles when setting the triangles to make sure that the triangles are refering to their set of vertices and not the previous set.
+We add the current vertexIndex to the triangles when setting the triangles to make sure that the triangles are refering to their set of vertices and not the previous set.
 
 Now we can initialize all of the member variables in `Start()` and Draw the voxel using the `DrawVoxel()` function. Then set the meshes data, and convert our NativeArray to an Array (since the mesh takes in a regular array) using `.ToArray()`. We set the MeshFilters mesh to `m_mesh`. Also make sure to Calculate the normals and Bounds.
 
