@@ -490,7 +490,7 @@ Now we can initialize all of the member variables in `Start()` and Draw the voxe
 
 You should notice the line `Allocator.Temp`. This gets us memory really fast, but it can only exist for 4 frames (ever heard of fps? (frames per second)). The other `Allocator.Persistent` lets us have the memory we want for as long as we need, but it takes longer to find that memory. `Allocator.TempJob` is a special allocator for Job's and multithreading.
 
-Also since we are using NativeCollections (Native meaning it uses actual pointers and not copies of everything. C# normaly makes copies of everything to make our code "safe") we have to manually free our memory, much like in C or C++.
+Also since we are using NativeCollections we have to manually free our memory, much like in C or C++. Native means it uses actual pointers (AKA references) to memory and not copies of everything. C# normaly makes copies of everything to make our code "safe".
 
 ```cs
     private void Start()
