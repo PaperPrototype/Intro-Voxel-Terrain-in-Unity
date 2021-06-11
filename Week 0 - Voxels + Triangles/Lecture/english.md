@@ -424,12 +424,12 @@ Make a new function that uses the lookup tables to make a voxel. The `side` vari
             m_vertices[m_vertexIndex + 3] = DataDefs.Vertices[DataDefs.BuildOrder[side, 3]];
 
             // get the correct triangle index
-            m_triangles[m_triangleIndex + 0] = m_triangleIndex + 0;
-            m_triangles[m_triangleIndex + 1] = m_triangleIndex + 1;
-            m_triangles[m_triangleIndex + 2] = m_triangleIndex + 2;
-            m_triangles[m_triangleIndex + 3] = m_triangleIndex + 2;
-            m_triangles[m_triangleIndex + 4] = m_triangleIndex + 1;
-            m_triangles[m_triangleIndex + 5] = m_triangleIndex + 3;
+            m_triangles[m_triangleIndex + 0] = m_vertexIndex + 0;
+            m_triangles[m_triangleIndex + 1] = m_vertexIndex + 1;
+            m_triangles[m_triangleIndex + 2] = m_vertexIndex + 2;
+            m_triangles[m_triangleIndex + 3] = m_vertexIndex + 2;
+            m_triangles[m_triangleIndex + 4] = m_vertexIndex + 1;
+            m_triangles[m_triangleIndex + 5] = m_vertexIndex + 3;
 
             // set the uv's (different than the quad uv's due to the order of the lookup tables in DataDefs.cs)
             m_uvs[m_vertexIndex + 0] = new Vector2(0, 0);
@@ -449,21 +449,12 @@ Make a new function that uses the lookup tables to make a voxel. The `side` vari
 You should notice that when setting the triangles we set them to 
 
 ```cs
-= m_triangleIndex + 0;
-= m_triangleIndex + 1;
-= m_triangleIndex + 2;
-= m_triangleIndex + 2;
-= m_triangleIndex + 1;
-= m_triangleIndex + 3;
-
-// not
 = m_vertexIndex + 0;
 = m_vertexIndex + 1;
 = m_vertexIndex + 2;
-= m_vertexIndex + 3; 
-= m_vertexIndex + 4;
-= m_vertexIndex + 5;
-// ...which is wrong in 2 ways
+= m_vertexIndex + 2;
+= m_vertexIndex + 1;
+= m_vertexIndex + 3;
 ```
 
 which is the order that corresponds to the comment in the `BuildOrder` lookup table
@@ -472,7 +463,13 @@ which is the order that corresponds to the comment in the `BuildOrder` lookup ta
     // 0 1 2 2 1 3 <- triangle order per side
 ```
 
-Now initialize all of the member variables in `Start()` and Draw the voxel. Then set the meshes data, and convert our NativeArray to an Array using `.ToArray()`. Then set the MeshFilters mesh to our mesh. Also Calculate our normals and Bounds.
+We also use the vertexIndex to change the position that we put the UV's in the UV array.
+
+The `m_triangleIndex` is used to change the position that we place each triangle in the  triangle array to make sure that they are don't overlap eachother when we place them.
+
+We also use the vertexIndex to make sure 
+
+Now we can initialize all of the member variables in `Start()` and Draw the voxel using the `DrawVoxel()` function. Then set the meshes data, and convert our NativeArray to an Array using `.ToArray()`. Then set the MeshFilters mesh to our mesh. Also Calculate our normals and Bounds.
 
 ```cs
     private void Start()
