@@ -3,7 +3,7 @@ Most voxel terrain systems split up all the voxels into "chunks". You may find t
 
 ```
     Assets/
-    |___Data.cs
+    |___DataDefs.cs
     |___White (Material)
     |___Quad/
     |___Voxel/
@@ -45,17 +45,17 @@ To make a chunk all we have to do is place voxel's on a 3D grid. To achieve this
 
         for (int side = 0; side < 6; side++)
         {
-            m_vertices[m_vertexIndex + 0] = Data.Vertices[Data.BuildOrder[side, 0]] + pos;
-            m_vertices[m_vertexIndex + 1] = Data.Vertices[Data.BuildOrder[side, 1]] + pos;
-            m_vertices[m_vertexIndex + 2] = Data.Vertices[Data.BuildOrder[side, 2]] + pos;
-            m_vertices[m_vertexIndex + 3] = Data.Vertices[Data.BuildOrder[side, 3]] + pos;
+            m_vertices[m_vertexIndex + 0] = DataDefs.Vertices[DataDefs.BuildOrder[side, 0]] + pos;
+            m_vertices[m_vertexIndex + 1] = DataDefs.Vertices[DataDefs.BuildOrder[side, 1]] + pos;
+            m_vertices[m_vertexIndex + 2] = DataDefs.Vertices[DataDefs.BuildOrder[side, 2]] + pos;
+            m_vertices[m_vertexIndex + 3] = DataDefs.Vertices[DataDefs.BuildOrder[side, 3]] + pos;
 
             // ... snipping unchanged code ...
         }
     }
 ```
 
-Now we can use nested for loops to place voxel's in a 3D grid next to eachother. Before we do that we need to know the "size" of our chunk, how many voxel's to draw in the x, y, and z direction. We could add it manully but we will need to reference our chunk size all over our code, so add a line to Data.cs to have a centralized place for this
+Now we can use nested for loops to place voxel's in a 3D grid next to eachother. Before we do that we need to know the "size" of our chunk, how many voxel's to draw in the x, y, and z direction. We could add it manully but we will need to reference our chunk size all over our code, so add a line to DataDefs.cs to have a centralized place for this
 
 ```cs
     public const int chunkSize = 16;
@@ -68,15 +68,15 @@ Our vertex and triangle arrays will need to be larger, since we will be making a
 ```cs
     private void Start()
     {
-        m_vertices = new NativeArray<Vector3>(24 * Data.chunkSize * Data.chunkSize * Data.chunkSize, Allocator.Temp);
-        m_triangles = new NativeArray<int>(36 * Data.chunkSize * Data.chunkSize * Data.chunkSize, Allocator.Temp);
-        m_uvs = new NativeArray<Vector2>(24 * Data.chunkSize * Data.chunkSize * Data.chunkSize, Allocator.Temp);
+        m_vertices = new NativeArray<Vector3>(24 * DataDefs.chunkSize * DataDefs.chunkSize * DataDefs.chunkSize, Allocator.Temp);
+        m_triangles = new NativeArray<int>(36 * DataDefs.chunkSize * DataDefs.chunkSize * DataDefs.chunkSize, Allocator.Temp);
+        m_uvs = new NativeArray<Vector2>(24 * DataDefs.chunkSize * DataDefs.chunkSize * DataDefs.chunkSize, Allocator.Temp);
 
-        for (int x = 0; x < Data.chunkSize; x++)
+        for (int x = 0; x < DataDefs.chunkSize; x++)
         {
-            for (int y = 0; y < Data.chunkSize; y++)
+            for (int y = 0; y < DataDefs.chunkSize; y++)
             {
-                for (int z = 0; z < Data.chunkSize; z++)
+                for (int z = 0; z < DataDefs.chunkSize; z++)
                 {
                     DrawVoxel(x, y, z);
                 }
@@ -109,7 +109,7 @@ There is a noise library in the Resources of this repositiory called FastNoiseLi
     |___FastNoiseLite/
     |   |___FastNoiseLite.cs
     |   |___LICENSE.md
-    |___Data.cs
+    |___DataDefs.cs
     |___White (Material)
     |___Quad/
     |___Voxel/
@@ -139,7 +139,7 @@ Now we can make our function for checking if a voxel should exist or not exist
 ```cs
     private bool IsSolid(int x, int y, int z)
     {
-        float height = (m_noise.GetNoise(x, z) + 1) / 2 * Data.chunkSize;
+        float height = (m_noise.GetNoise(x, z) + 1) / 2 * DataDefs.chunkSize;
 
         if (y <= height)
         {
@@ -161,11 +161,11 @@ Then to check if a voxel should exist check if the y position is below (less) th
 Now when drawing voxel's in the for loop we can check if we should draw it or not.
 
 ```cs
-        for (int x = 0; x < Data.chunkSize; x++)
+        for (int x = 0; x < DataDefs.chunkSize; x++)
         {
-            for (int y = 0; y < Data.chunkSize; y++)
+            for (int y = 0; y < DataDefs.chunkSize; y++)
             {
-                for (int z = 0; z < Data.chunkSize; z++)
+                for (int z = 0; z < DataDefs.chunkSize; z++)
                 {
                     if (IsSolid(x, y, z))
                     {
@@ -182,12 +182,12 @@ And we have terrain!
 
 But we still aren't checking if a voxel has a neighbor! 
 
-To check if a voxel has a neighbor we will make a lookup table of offset grid positions. We will then check each voxel's neighbor using this. Add the following to Data.cs
+To check if a voxel has a neighbor we will make a lookup table of offset grid positions. We will then check each voxel's neighbor using this. Add the following to DataDefs.cs
 
 ```cs
 using Unity.Mathematics;
 
-public class Data
+public static class DataDefs
 {
     // ... snipping unchanged code ... //
 
@@ -210,7 +210,7 @@ Now change the `DrawVoxel()` function to this
     {
         for (int side = 0; side < 6; side++)
         {
-            if (!IsSolid(x + Data.NeighborOffset[side].x, y + Data.NeighborOffset[side].y, z + Data.NeighborOffset[side].z))
+            if (!IsSolid(x + DataDefs.NeighborOffset[side].x, y + DataDefs.NeighborOffset[side].y, z + DataDefs.NeighborOffset[side].z))
             {
                 // ... snipping irrelevant code ... //
             }
@@ -247,8 +247,8 @@ So, we can divide its allocation size by 2.
 ```cs
     private void Start()
     {
-        m_vertices = new NativeArray<Vector3>(24 * Data.chunkSize * Data.chunkSize * Data.chunkSize / 2, Allocator.Temp);
-        m_triangles = new NativeArray<int>(36 * Data.chunkSize * Data.chunkSize * Data.chunkSize / 2, Allocator.Temp);
+        m_vertices = new NativeArray<Vector3>(24 * DataDefs.chunkSize * DataDefs.chunkSize * DataDefs.chunkSize / 2, Allocator.Temp);
+        m_triangles = new NativeArray<int>(36 * DataDefs.chunkSize * DataDefs.chunkSize * DataDefs.chunkSize / 2, Allocator.Temp);
     
         // ... snipping irrelevant code ... //
     }
@@ -260,7 +260,7 @@ Make a new micro project called JobChunk so that our project looks like this
 ```
     Assets/
     |___FastNoiseLite/
-    |___Data.cs
+    |___DataDefs.cs
     |___White (Material)
     |___Quad/
     |___Voxel/
@@ -268,6 +268,7 @@ Make a new micro project called JobChunk so that our project looks like this
     |___JobChunk/
     |   |___JobChunk.unity
     |   |___JobChunk.cs
+    |___JobDefs.cs
 ```
 
 Now open up JobChunk.cs and add this boiler plate code. It's different from our previous code
@@ -296,46 +297,54 @@ public class JobChunk : MonoBehaviour
 
 You might notice that the all our member variables have been changed to be stored in a `NativeArray`. Remember how C# makes copies of everything? NativeArrays allow us to access the same memory / instance from different places, rather than making copies of it every time. So to access any data outside a Job we need to use a NativeArray. 
 
-Make a new Job (which is just a struct) that inherits from `IJob` below the `JobChunk` class
+Now open up JobDefs.cs and change the code to make the class static and add a new Job (which is just a struct).
 
 ```cs
-// ... JobChunk class ends here ... //
+using UnityEngine;
+using Unity.Jobs;
+using Unity.Collections;
 
-public struct ChunkJob : IJob
+public static class JobDefs
 {
-    public Vector3 chunkPos;
-    public NativeArray<Vector3> vertices;
-    public NativeArray<int> triangles;
-    public NativeArray<Vector2> uvs;
-    public NativeArray<int> vertexIndex;
-    public NativeArray<int> triangleIndex;
+    public struct ChunkJob : IJob
+    {
+        public Vector3 chunkPos;
+        public NativeArray<Vector3> vertices;
+        public NativeArray<int> triangles;
+        public NativeArray<Vector2> uvs;
+        public NativeArray<int> vertexIndex;
+        public NativeArray<int> triangleIndex;
+    }
 }
 ```
 
-`IJob` is an interface. Interfaces are a bunch of functions that a class or struct, that uses that interface, has to implement. In this case `IJob` makes us use `Execute()`. The execute function will be called when the "job" gets "Executed" or "called", so we can treat it similar to the way we've treated the `Start()` function in the past.
+Jobs are structs that hold the data they will need and they inherit from the `IJob` interface. An interface is a bunch functions (or in our case just one function) that a class or struct that inherits from the interface has to implement. In this case `IJob` makes us implement the `Execute()` function, so that the JobSYstem can have a function to call when it should "run" or execute the job. We can treat the `Execute()` function it similar to the way we've treated the `Start()` function in the past.
 
 ```cs
-public struct ChunkJob : IJob
+public static class JobDefs
 {
-    // ... snipping irrelevant code ... //
-
-    public void Execute()
+    public struct ChunkJob : IJob
     {
-        FastNoiseLite noise = new FastNoiseLite();
-        noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
+        // ... snipping irrelevant code ... //
 
-        vertexIndex[0] = 0;
-        triangleIndex[0] = 0;
-
-        for (int x = 0; x < Data.chunkSize; x++)
+        public void Execute()
         {
-            for (int y = 0; y < Data.chunkSize; y++)
+            FastNoiseLite noise = new FastNoiseLite();
+            noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
+
+            vertexIndex[0] = 0;
+            triangleIndex[0] = 0;
+
+            for (int x = 0; x < DataDefs.chunkSize; x++)
             {
-                for (int z = 0; z < Data.chunkSize; z++)
+                for (int y = 0; y < DataDefs.chunkSize; y++)
                 {
-                    if (IsSolid(noise, x, y, z))
+                    for (int z = 0; z < DataDefs.chunkSize; z++)
                     {
-                        DrawVoxel(noise, x, y, z);
+                        if (IsSolid(noise, x, y, z))
+                        {
+                            DrawVoxel(noise, x, y, z);
+                        }
                     }
                 }
             }
@@ -351,57 +360,66 @@ One note is that Jobs are not allowed to hold "reference types" (classes are alw
 You might notice that the `DrawVoxel()` and `IsSolid()` functions have changed. Paste them in from before, and change them so that they take in the `FastNoiseLite` instance as a parameter. This is because we cannot hol a reference memebr variable, and so we have to keep the FastNoiseLiteInstance within our functions.
 
 ```cs
-    private void DrawVoxel(FastNoiseLite noise, int x, int y, int z)
+    public struct ChunkJob : IJob
     {
-        Vector3 pos = new Vector3(x, y, z);
+        // ... snipping irrelevant code ... //
 
-        for (int face = 0; face < 6; face++)
+        private void DrawVoxel(FastNoiseLite noise, int x, int y, int z)
         {
-            if (!IsSolid(noise, Data.NeighborOffset[face].x + x, Data.NeighborOffset[face].y + y, Data.NeighborOffset[face].z + z))
+            Vector3 pos = new Vector3(x, y, z);
+
+            for (int face = 0; face < 6; face++)
             {
-                vertices[vertexIndex[0] + 0] = pos + Data.Vertices[Data.BuildOrder[face, 0]];
-                vertices[vertexIndex[0] + 1] = pos + Data.Vertices[Data.BuildOrder[face, 1]];
-                vertices[vertexIndex[0] + 2] = pos + Data.Vertices[Data.BuildOrder[face, 2]];
-                vertices[vertexIndex[0] + 3] = pos + Data.Vertices[Data.BuildOrder[face, 3]];
+                if (!IsSolid(noise, DataDefs.NeighborOffset[face].x + x, DataDefs.NeighborOffset[face].y + y, DataDefs.NeighborOffset[face].z + z))
+                {
+                    vertices[vertexIndex[0] + 0] = pos + DataDefs.Vertices[DataDefs.BuildOrder[face, 0]];
+                    vertices[vertexIndex[0] + 1] = pos + DataDefs.Vertices[DataDefs.BuildOrder[face, 1]];
+                    vertices[vertexIndex[0] + 2] = pos + DataDefs.Vertices[DataDefs.BuildOrder[face, 2]];
+                    vertices[vertexIndex[0] + 3] = pos + DataDefs.Vertices[DataDefs.BuildOrder[face, 3]];
 
-                // get the correct triangle index
-                triangles[triangleIndex[0] + 0] = vertexIndex[0] + 0;
-                triangles[triangleIndex[0] + 1] = vertexIndex[0] + 1;
-                triangles[triangleIndex[0] + 2] = vertexIndex[0] + 2;
-                triangles[triangleIndex[0] + 3] = vertexIndex[0] + 2;
-                triangles[triangleIndex[0] + 4] = vertexIndex[0] + 1;
-                triangles[triangleIndex[0] + 5] = vertexIndex[0] + 3;
+                    // get the correct triangle index
+                    triangles[triangleIndex[0] + 0] = vertexIndex[0] + 0;
+                    triangles[triangleIndex[0] + 1] = vertexIndex[0] + 1;
+                    triangles[triangleIndex[0] + 2] = vertexIndex[0] + 2;
+                    triangles[triangleIndex[0] + 3] = vertexIndex[0] + 2;
+                    triangles[triangleIndex[0] + 4] = vertexIndex[0] + 1;
+                    triangles[triangleIndex[0] + 5] = vertexIndex[0] + 3;
 
-                uvs[vertexIndex[0] + 0] = new Vector2(0, 0);
-                uvs[vertexIndex[0] + 1] = new Vector2(0, 1);
-                uvs[vertexIndex[0] + 2] = new Vector2(1, 0);
-                uvs[vertexIndex[0] + 3] = new Vector2(1, 1);
+                    uvs[vertexIndex[0] + 0] = new Vector2(0, 0);
+                    uvs[vertexIndex[0] + 1] = new Vector2(0, 1);
+                    uvs[vertexIndex[0] + 2] = new Vector2(1, 0);
+                    uvs[vertexIndex[0] + 3] = new Vector2(1, 1);
 
-                // increment by 4 because we only added 4 vertices
-                vertexIndex[0] += 4;
+                    // increment by 4 because we only added 4 vertices
+                    vertexIndex[0] += 4;
 
-                // increment by 6 because we only added 6 ints (6 / 3 = 2 triangles)
-                triangleIndex[0] += 6;
+                    // increment by 6 because we only added 6 ints (6 / 3 = 2 triangles)
+                    triangleIndex[0] += 6;
+                }
             }
         }
     }
-
 ```
 
 We also make sure to add the current chunks position to the `GetNoise` function...
 
 ```cs
-    private bool IsSolid(FastNoiseLite noise, int x, int y, int z)
+    public struct ChunkJob : IJob
     {
-        float height = noise.GetNoise(x + chunkPos.x, z + chunkPos.z) * Data.chunkSize;
+        // ... snipping irrelevant code ... //
 
-        if (y <= height)
+        private bool IsSolid(FastNoiseLite noise, int x, int y, int z)
         {
-            return true;
-        }
-        else
-        {
-            return false;
+            float height = (noise.GetNoise(x + chunkPos.x, z + chunkPos.z) + 1) / 2 * DataDefs.chunkSize;
+
+            if (y <= height)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 ```
@@ -410,7 +428,7 @@ otherwise you will get this horrifying monstrocity
 
 ![repetitive chunks same noise](/Assets/repetitive_chunks_same_noise.png)
 
-In start allocate our mesh's data arrays and then setup the `ChunkJob` variables.
+In the start of ChunkJob allocate our mesh's data arrays and then setup the `ChunkJob` variables.
 
 ```cs
     private void Start() {
@@ -421,7 +439,7 @@ In start allocate our mesh's data arrays and then setup the `ChunkJob` variables
         m_vertexIndex = new NativeArray<int>(1, Allocator.TempJob);
         m_triangleIndex = new NativeArray<int>(1, Allocator.TempJob);
 
-        ChunkJob job = new ChunkJob();
+        JobDefs.ChunkJob job = new JobDefs.ChunkJob();
         job.chunkPos = gameObject.transform.position;
         job.vertices = m_vertices;
         job.triangles = m_triangles;

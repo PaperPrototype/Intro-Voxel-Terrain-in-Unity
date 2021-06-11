@@ -75,12 +75,13 @@ Make a new micro project called "1D" in a folder called "Recycling".
 ```
     Assets/
     |___FastNoiseLite/
-    |___Data.cs
+    |___DataDefs.cs
     |___White (Material)
     |___Quad/
     |___Voxel/
     |___Chunk/
     |___JobChunk/
+    |___JobDefs.cs
     |___Recycling/
         |___1D/
             |___Recycle1D.cs
@@ -148,12 +149,13 @@ Now make another micro project called 2D in the Recycling folder
 ```
     Assets/
     |___FastNoiseLite/
-    |___Data.cs
+    |___DataDefs.cs
     |___White (Material)
     |___Quad/
     |___Voxel/
     |___Chunk/
     |___JobChunk/
+    |___JobDefs.cs
     |___Recycling/
     |   |___1D/
     |   |___2D/
@@ -239,12 +241,13 @@ To have a chunk handling system for chunks we need a "handle" for each chunk tha
 ```
     Assets/
     |___FastNoiseLite/
-    |___Data.cs
+    |___DataDefs.cs
     |___White (Material)
     |___Quad/
     |___Voxel/
     |___Chunk/
     |___JobChunk/
+    |___JobDefs.cs
     |___Recycling/
     |___JobWorld/
         |___JobWorld.unity
@@ -274,7 +277,7 @@ public class JobWorldChunk
     private NativeArray<int> m_triangleIndex;
 
     private JobHandle m_handle;
-    private ChunkJob m_chunkJob;
+    private JobDefs.ChunkJob m_chunkJob;
 }
 ```
 
@@ -288,7 +291,7 @@ We will create a constructor. Constructors are functions that are special. They 
 JobWorldChunk chunk = new JobWorldChunk()
 ``` 
 
-the `JobWorldChunk()` with the parenthesis is the constructor. Constructor function have the same name as the class that holds them. Make a constructor function for `JobWorldChunk` with all of the initalization code.
+the `JobWorldChunk()` with the parenthesis is the constructor. Constructor function have to have the same name as the class that holds them. Make a constructor function for `JobWorldChunk` with all of the initalization code.
 
 ```cs
 public class JobWorldChunk
@@ -330,7 +333,7 @@ public class JobWorldChunk
         m_vertexIndex = new NativeArray<int>(1, Allocator.TempJob);
         m_triangleIndex = new NativeArray<int>(1, Allocator.TempJob);
 
-        m_chunkJob = new ChunkJob();
+        m_chunkJob = new JobDefs.ChunkJob();
         m_chunkJob.chunkPos = gameObject.transform.position;
         m_chunkJob.vertices = m_vertices;
         m_chunkJob.triangles = m_triangles;
@@ -441,10 +444,10 @@ public class JobWorld : MonoBehaviour
 }
 ```
 
-We will also need to add a new constant in Data.cs that tells the number of chunks we will want in the x and z directions. We use this constant in the above code.
+We will also need to add a new constant in DataDefs.cs that tells the number of chunks we will want in the x and z directions. We use this constant in the above code.
 
 ```cs
-public class Data
+public static class DataDefs
 {
     public const int chunkNum = 8;
 
@@ -470,7 +473,7 @@ In the same `for` loop as the instantiation we could schedule and complete the d
     }
 ```
 
-If we use a timeline diagram we can see that we aren't gaining anything time wise from using the jobs.
+If we use a timeline diagram we can see that we aren't gaining anything (time wise) from using Jobs.
 
 ![threading timeline inefficient](/Assets/threading_timeline_inefficient.png)
 
@@ -507,6 +510,12 @@ And it turns out that Unity provides us with a live timeline viewer! To open it 
 ![screenshot threading timeline](/Assets/screenshot_threading_timeline.png)
 
 You will notice the record button at the top, this is for recording data for the profiler to use. The other highlighted thing is a dropdown, by default you will be in Hierarchy mode click on the dropdown to change it to Timeline mode. In timeline mode you should be able to see worker threads under "Jobs". But first you will have to hit play and record some data.
+
+How does the JobSystem work, and what happens when we call the `Schedule()` function? 
+
+When we call the Schedule function our Job (a struct) gets added to a large queue of all the Jobs that need to run. Worker threads then constantly grab a Job off of the queue (eventually our Job)  and run its `Execute()` function. Pretty simple.
+
+Some job systems will stop running a Job's `execute` function if has to wait for Input from the OS. The worker will then start working on another Job, once it finishes it will go back and finish its previously paused Job.
 
 # Recycling chunks
 Add the recycling code from the cubes example. We move chunks over to the other side of the world as in the cubes example.
@@ -715,6 +724,6 @@ Now in the `JobWorld` class in the `RecycleChunks()` function we can simply set 
     }
 ```
 
-And if you hit play you should only have the chunks redrawing when they are recycled! Try setting the `chunkNum` in Data.cs as high as you can for stress testing!
+And if you hit play you should only have the chunks redrawing when they are recycled! Try setting the `chunkNum` in DataDefs.cs as high as you can for stress testing!
 
 And thats week 2! See you next week! Make sure to check out the Tutorials folder!

@@ -251,22 +251,22 @@ Add a new micro project to our Unity project so that looks like this
     |   |___Voxel.cs
 ```
 
-Now open up the Voxel scene and add an empty GameObject. Open up Voxel.cs and force Unity to add our components as before. Now instead of hard coding our triangle we are going to be smart. We will make an array of all 8 possible vertices for a cube, that we can always reference. We'll make a new script to contain all this called Data.cs
+Now open up the Voxel scene and add an empty GameObject. Open up Voxel.cs and force Unity to add our components as before. Now instead of hard coding our triangle we are going to be smart. We will make an array of all 8 possible vertices for a cube, that we can always reference. We'll make a new script to contain all this called DataDefs.cs
 
 ```
     Assets/
-    |___Data.cs
+    |___DataDefs.cs
     |___White (Material)
     |___Quad/
     |___Voxel/
 ```
 
-Change Data.cs to the following.
+Change DataDefs.cs to the following.
 
 ```cs
 using UnityEngine;
 
-public static class Data
+public static class DataDefs
 {
     public static readonly Vector3[] Vertices = new Vector3[8]
     {
@@ -335,10 +335,10 @@ Make a new function that uses the lookup tables to make a voxel. The `side` vari
     {
         for (int side = 0; side < 6; side++)
         {
-            m_vertices[m_vertexIndex + 0] = Data.Vertices[Data.BuildOrder[side, 0]];
-            m_vertices[m_vertexIndex + 1] = Data.Vertices[Data.BuildOrder[side, 1]];
-            m_vertices[m_vertexIndex + 2] = Data.Vertices[Data.BuildOrder[side, 2]];
-            m_vertices[m_vertexIndex + 3] = Data.Vertices[Data.BuildOrder[side, 3]];
+            m_vertices[m_vertexIndex + 0] = DataDefs.Vertices[DataDefs.BuildOrder[side, 0]];
+            m_vertices[m_vertexIndex + 1] = DataDefs.Vertices[DataDefs.BuildOrder[side, 1]];
+            m_vertices[m_vertexIndex + 2] = DataDefs.Vertices[DataDefs.BuildOrder[side, 2]];
+            m_vertices[m_vertexIndex + 3] = DataDefs.Vertices[DataDefs.BuildOrder[side, 3]];
 
             // get the correct triangle index
             m_triangles[m_triangleIndex + 0] = m_vertexIndex + 0;
@@ -348,7 +348,7 @@ Make a new function that uses the lookup tables to make a voxel. The `side` vari
             m_triangles[m_triangleIndex + 4] = m_vertexIndex + 1;
             m_triangles[m_triangleIndex + 5] = m_vertexIndex + 3;
 
-            // set the uv's (different than the quad uv's due to the order of the lookup tables in Data.cs)
+            // set the uv's (different than the quad uv's due to the order of the lookup tables in DataDefs.cs)
             m_uvs[m_vertexIndex + 0] = new Vector2(0, 0);
             m_uvs[m_vertexIndex + 1] = new Vector2(0, 1);
             m_uvs[m_vertexIndex + 2] = new Vector2(1, 0);
@@ -361,6 +361,23 @@ Make a new function that uses the lookup tables to make a voxel. The `side` vari
             m_triangleIndex += 6;
         }
     }
+```
+
+You should notice that when setting the triangles we set them to 
+
+```cs
+= m_vertexIndex + 0;
+= m_vertexIndex + 1;
+= m_vertexIndex + 2;
+= m_vertexIndex + 2;
+= m_vertexIndex + 1;
+= m_vertexIndex + 3;
+``` 
+
+which corresponds to the `BuildOrder` lookup table's comment I added
+
+```cs
+    // 0 1 2 2 1 3 <- triangle order per side
 ```
 
 Now initialize all of the member variables in `Start()` and Draw the voxel. Then set the meshes data, and convert our NativeArray to an Array using `.ToArray()`. Then set the MeshFilters mesh to our mesh. Also Calculate our normals and Bounds.
