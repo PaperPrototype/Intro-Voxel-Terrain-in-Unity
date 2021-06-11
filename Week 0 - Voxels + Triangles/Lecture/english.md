@@ -270,8 +270,6 @@ public static class DataDefs
 {
     public static readonly Vector3[] Vertices = new Vector3[8]
     {
-        // 0 1 2 2 1 3 <- triangle order per side
-
         new Vector3(-0.5f, -0.5f, -0.5f),
         new Vector3(0.5f, -0.5f, -0.5f),
         new Vector3(0.5f, 0.5f, -0.5f),
@@ -284,13 +282,15 @@ public static class DataDefs
 }
 ```
 
-This is all 8 possible vertices for the corners of a voxel. We've made the lookup table so the triangles will always be `0, 1, 2, 2, 1, 3`. 
+This is all 8 possible vertices for the corners of a voxel.
 
 Now we need a way to find all the vertices per each side of the voxel. For this we'll make a lookup table (a 2D array) that gets 4 vertices based on the side of the cube we want.
 
 ```cs
     public static readonly int[,] BuildOrder = new int[6, 4]
     {
+        // 0 1 2 2 1 3 <- triangle order per side
+
         // right, left, up, down, front, back
         
         {1, 2, 5, 6},  // right face
@@ -303,6 +303,8 @@ Now we need a way to find all the vertices per each side of the voxel. For this 
         {0, 3, 1, 2} // back face
     };
 ```
+
+We've made the lookup table to get the vertices so that the triangles for each side of a voxel will always be `0, 1, 2, 2, 1, 3`.
 
 We mark the class as well as the arrays `static` for a reason. Anything marked as `static` gets saved to a special part of our programs for data that will be accessed a lot and doesn't change. A result of this is there is only one copy of that data and data can be accessed really fast. Also the arrays are marked as `readonly`. This tells the compiler that the data can only be read and not modified. The correct word is "not mutated" or "immutable". This allows any Thread or Job to access the arrays since there is only one copy of them and they aren't allowed to be modified. A result of nothing being allowed to change is that the C# Job system won't complain when we use a Job to make our meshes using the lookup tables.
 
@@ -376,7 +378,7 @@ You should notice that when setting the triangles we set them to
 = m_vertexIndex + 3;
 ``` 
 
-which corresponds to the comment in the `Vertices` lookup table
+which corresponds to the comment in the `BuildOrder` lookup table
 
 ```cs
     // 0 1 2 2 1 3 <- triangle order per side
