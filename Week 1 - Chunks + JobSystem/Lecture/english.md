@@ -89,7 +89,46 @@ Our vertex and triangle arrays will need to be larger, since we will be making a
 
 Tada! Now the rest of the code is exactly the same as before! I'll let you copy paste that from Voxel.cs. 
 
-Make a new empty gameObject in the Chunk scene (Chunk.unity) and add Chunk.cs to it as a component. Also don't forget to set the material. If you click play you'll see a chunk drawn!
+Make a new empty gameObject in the Chunk scene (Chunk.unity) and add Chunk.cs to it as a component. Also don't forget to set the material. If you click play you'll see a chunk drawn! If not then get help from me in the Discord. (Link in README file).
+
+!()[/Assets/first_chunk.png]
+
+If you set your chunk size higher than about 8 you will see only part of the chunk being drawn. In this example we set `chunkSize = 16` so you can see part of the voxel missing. This is because meshes have a max limit on the number of vertices they can have. If you want to change the max size to be double what it is now you can add the following. 
+
+```cs
+// ... snip ... //
+using UnityEngine.Rendering;
+
+// ... snip ... //
+public class Chunk : MonoBehaviour
+{
+    // ... snip ... //
+
+    private void Start()
+    {
+        // ... snip ... //
+
+        m_mesh = new Mesh
+        {
+            indexFormat = IndexFormat.UInt32,
+            vertices = m_vertices.Slice<Vector3>(0, m_vertexIndex).ToArray(),
+            triangles = m_triangles.Slice<int>(0, m_triangleIndex).ToArray(),
+            uv = m_uvs.Slice<Vector2>(0, m_vertexIndex).ToArray()
+        };
+
+        m_mesh.RecalculateBounds();
+        m_mesh.RecalculateNormals();
+
+        // ... snip ... //
+    }
+
+    // ... snip ... //
+}
+```
+
+The reason it is set to UInt16 is because on mobile (AKA iPhone, Android) the graphics cards can only handle a small mesh data size.
+
+When you set `indexFormat` it clears the meshes data so make sure you don't set it *after* you set the meshes data.
 
 # Optimized Chunk
 If you look at the inside of the current chunk you will see something like this
