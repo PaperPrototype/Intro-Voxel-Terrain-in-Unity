@@ -1,3 +1,9 @@
+# Overview
+- Data = buildable chunk
+- Save = persistent chunk
+- CalcDataJob + DrawDataJob chunk = JobChunk2
+- SaveDataJob + LoadDataJob chunk = Persistent Chunk
+
 # Intro
 To make the terrain editable we have to store some sort of data. Say we remove a block. If we want to see the change we have to "update" the mesh to show the change. One way is to just redraw the whole chunk's mesh and account for the change. But when we redraw the chunk's mesh we can't still use the Noise for checking where there are or aren't voxels since it will not have acounted for the change we have made.
 
