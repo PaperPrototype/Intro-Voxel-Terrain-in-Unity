@@ -91,7 +91,7 @@ Tada! Now the rest of the code is exactly the same as before! I'll let you copy 
 
 Make a new empty gameObject in the Chunk scene (Chunk.unity) and add Chunk.cs to it as a component. Also don't forget to set the material. If you click play you'll see a chunk drawn! If not then get help from me in the Discord. (Link in README file).
 
-!()[/Assets/first_chunk.png]
+!(first chunk)[/Assets/first_chunk.png]
 
 If you set your chunk size higher than about 8 you will see only part of the chunk being drawn. In this example we set `chunkSize = 16` so you can see part of the voxel missing. This is because meshes have a max limit on the number of vertices they can have. If you want to change the max size to be double what it is now you can add the following. 
 
@@ -309,8 +309,7 @@ Make a new micro project called JobChunk so that our project looks like this
     |   |___JobChunk.cs
     |___JobDefs.cs
 ```
-
-Now open up JobChunk.cs and add this boiler plate code. It's different from our previous code
+We also add a class called `JobDefs` that will hold all of our Jobs. Now open up JobChunk.cs and add this boiler plate code. It's different from our previous code
 
 ```cs
 using UnityEngine;
