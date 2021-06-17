@@ -1,3 +1,6 @@
+
+Temporary showcase video https://www.youtube.com/watch?v=HvpDE3eM6v4 (I will make a better video once the course is more finished and finalized, and I can showcase planet generation)
+
 # Intro to Simplified Voxel Systems in Unity
 An open source introductory course on making a simple voxel engine in Unity. The goal is to use the least and simplest code to achieve a simple easy to understand voxel system that still achieves high performance using the JobSystem.
 
@@ -20,6 +23,4 @@ If you get stuck or you did what the course said but somehow it is still borken,
 If you want to contribute then read our [Guidelines](https://github.com/Nanite3D/Nanite-course-Guidelines) it shouldn't take you more than 1 minute to read. Seriously its super short.
 
 # Currently being made
-this course is still being written as you read this. This (paragraph) will be removed once the course is finished.
-
-Temporary showcase video https://www.youtube.com/watch?v=HvpDE3eM6v4 (I will make a better video once the course is more finished and finalized, and I can showcase planet generation)
+this course is still being written as you read this. Breaking changes may be introduced. Join the Discord for a changelog and one-on-one help from me https://discord.gg/Gp7YEUkVHC
