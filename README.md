@@ -18,7 +18,7 @@ If something is broken we would love it if you created a new "issue" in the Issu
 
 # How to take this course
  - A file named "english.md" (or a different language) is the lecture that you need to read. Click on it to open it and start reading.
- - Folders with the word "Week" have aLecture folder and a notes folder containing the lecture and notes.
+ - Folders with the word "Week" have a lecture and notes folder (with the lecture and notes in an english.md).
  - Folders named "Tutorial" contains tutorials for when you've finished a lecture and want to try out what you've learned!
 
 # Contributing
