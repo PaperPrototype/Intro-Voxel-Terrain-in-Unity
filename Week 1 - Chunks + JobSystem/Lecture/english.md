@@ -191,7 +191,7 @@ Now we can make our function for checking if a voxel should exist or not exist
     }
 ```
 
-The `FastNoiseLite`'s `GetNoise()` function gives us values between -1 and 1 depending on what position we use to get the noise. We add 1 to shift us up to get values between 0 and 2. Then divide it by 2 to get values between 0 and 1.
+The `FastNoiseLite`'s `GetNoise()` function gives us values between -1 and 1 depending on what position we put in. We add 1 to shift us up to get values between 0 and 2. Then divide it by 2 to get values between 0 and 1.
 
 We multiply the noise value by a height value so the terrain doesn't stay within the height of 0 and 1. We chose to multiply by our chunk size so that the highest possible height is the same as the chunks height. 
 
@@ -335,7 +335,7 @@ public class JobChunk : MonoBehaviour
 
 You might notice that the all our member variables have been changed to be stored in a `NativeArray`. Remember how C# makes copies of everything? NativeArrays allow us to access the same memory / instance from different places, rather than making copies of it every time. So to access any data outside a Job we need to use a NativeArray. 
 
-Now open up JobDefs.cs and change the code to make the class static and add a new Job (which is just a struct).
+Open JobDefs.cs and change the code to make `JobDefs` a static class and add a new Job struct (which is just a struct). We will be putting all of our Jobs in `JobDefs` to keep our code organized.
 
 ```cs
 using UnityEngine;
@@ -356,7 +356,7 @@ public static class JobDefs
 }
 ```
 
-Jobs are structs that hold the data they will need and they inherit from the `IJob` interface. An interface is a bunch functions (or in our case just one function) that a class or struct that inherits from the interface has to implement. In this case `IJob` makes us implement the `Execute()` function, so that the JobSYstem can have a function to call when it should "run" or execute the job. We can treat the `Execute()` function it similar to the way we've treated the `Start()` function in the past.
+Jobs are structs that hold the data they will work on and they inherit from the `IJob` interface. An interface is a bunch functions (or in our case just one function) that a class or struct that inherits from the interface has to implement. In this case `IJob` makes us implement the `Execute()` function, so that the JobSYstem can have a function to call when it should "run" or execute the job. We can treat the `Execute()` function it similar to the way we've treated the `Start()` function in the past.
 
 ```cs
 public static class JobDefs
@@ -439,7 +439,7 @@ You might notice that the `DrawVoxel()` and `IsSolid()` functions have changed. 
     }
 ```
 
-We also make sure to add the current chunks position to the `GetNoise` function...
+We also make sure to add the current chunks position to the `IsSolid` function...
 
 ```cs
     public struct ChunkJob : IJob
