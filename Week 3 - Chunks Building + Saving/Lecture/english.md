@@ -1,3 +1,6 @@
+# NOTE
+This lecture is still being written expect breaking changes
+
 # Overview
 - Data + Save + Buildable = Chunk2
 - CalcDataJob + DrawDataJob = JobChunk2
