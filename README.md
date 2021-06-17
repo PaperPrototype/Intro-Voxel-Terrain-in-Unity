@@ -6,11 +6,8 @@ Join our Discord https://discord.gg/Gp7YEUkVHC
 You can view the source code of the final projects results here https://github.com/PaperPrototype/VoxelSystem
 
 # Pre-requisites
-You must already be familar with coding and using Unity for simple games.
-If you don't already know how to use Unity but know how to code you can take our course for free
-[Intro to Coding in Unity - THIS COURSE IS PLANNED, AND HAS NO CONTENT YET](https://github.com/PaperPrototype/Intro-to-Coding-with-Unity)
-
-If you are a complete beginner to coding (or have never coded before) you will ba ble to take our "Intro to Coding and Computer Science with Rust" (Yes, this course does not exist yet but it is planned).
+Basic coding and understanding of computers. 
+Basic understanding of Unity.
 
 You can join our Discord to get any updates https://discord.gg/Gp7YEUkVHC
 
