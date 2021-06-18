@@ -2,7 +2,8 @@
 This lecture is still being written expect breaking changes
 
 # Overview
-- Data + Save + Buildable = Chunk2
+- Data + Buildable = Chunk2
+- File saving = Chunk2
 - CalcDataJob + DrawDataJob = JobChunk2
 - SaveDataJob + LoadDataJob = JobChunk2
 
@@ -418,9 +419,205 @@ Now we can change `Start()` to calculate the chunk data and draw the chunk
 
 Now go into Unity and set up a Chunk GameObject as we have done before. If you hit play you should see a chunk!
 
-NOTE: If your reading this I am still writing this lecture
+# Player
+To build and edit the chunks voxel data first we need a player that can walk around, so that we can then build an interaction system with the terrain. We could also do this through the scene editor rather than using an in game player. 
 
-TODO make first person player for editing
+For this course we are focused on teaching you the concepts you will need, and not on how to implement them in all the different cool ways.
+
+Lets make a simple player. Make a new folder called Player and make a PlayerContoller script in it.
+
+```
+Assets/
+    |___...some files...
+    |___Player/
+        |___PlayerController.cs
+```
+
+Open up the script and we will first work on movement.
+
+```cs
+using UnityEngine;
+
+[RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(CapsuleCollider))]
+public class PlayerController : MonoBehaviour
+{
+
+    // movement
+    public float jumpVelocity = 6;
+
+    private Rigidbody m_rb;
+
+    private void Start()
+    {
+        m_rb = gameObject.GetComponent<Rigidbody>();
+    }
+
+    private void Update()
+    {
+        UpdateMovement();
+    }
+
+    private void UpdateMovement()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            m_rb.velocity += new Vector3(0, jumpVelocity, 0);
+        }
+    }
+}
+```
+
+First we force Unity to have the `Rigidbody` component attatched to the gameObject. We make a variable reference `m_rb` so we can access the `RigidBody` component. In start we set `m_rb` to the `RigidBody` component of the gameObject.
+
+We make the `UpdateMovement` function to hold all of the movement code. In the `UpdateMovement` function we check if the space key is pressed. If it is, we increase the y velocity by the `jumpVelocity` variable, this gives us nice yet simple and clean jumping.
+
+Open the `Chunk2` scene and create a capsule gameObject primitve.
+
+![add capsule primitive](/Assets/add_capsule_primitive.png)
+
+Change its name to "Player" and add the `PlayerController` component to the Player.
+
+Make sure to move the player up in the y so that it isn't inside of the chunk. But if you hit play the player will fall through the chunk! Change Chunk2.cs to require a MeshCollider component so that the player doesn't fall through the chunk. A MeshCollider takes in a mesh and makes a collider that works for it. Set the `MeshColliders` sharedMesh to our mesh.
+
+```cs
+// ... snip ... //
+[RequireComponent(typeof(MeshCollider))]
+public class Chunk2 : MonoBehaviour
+{
+    // ... snip ... //
+
+    public void DrawChunk()
+    {
+        // ... snip ... //
+        
+        gameObject.GetComponent<MeshFilter>().mesh = m_mesh;
+        gameObject.GetComponent<MeshCollider>().sharedMesh = m_mesh; // set
+
+        // ... snip ... //
+    }
+}
+```
+
+You may need to add the MeshCollider component yourself since Unity might not register that you added `[RequireComponent(typeof(MeshCollider))]`
+
+Now if you hit play the player should be able to jump on the chunk! 
+
+The direction that the Heads forward vector (z positive) is "looking" will be used for the movment code, so we need to get the players look rotation working before we continue.
+
+Rather than having to figure out weird rotation stuff, lets nest some gameObjects so that the transform system does the difficult rotation math for us. Make a new gameObject under the Player gameObject and call it "Head". Position the Head where you want the viwer to see from. Drag the camera onto the Head gameObject so that the camera is a child of the head. Reset the camera's position so that it is the same as the Heads position.
+
+!(player controller hierarchy)[/Assets/player_controller_hierarchy.png]
+
+Change the script to take in the Heads transform and the Cameras transform.
+
+```cs
+public class PlayerController : MonoBehaviour
+{
+    // ... snip ... //
+
+    // rotation
+    public float lookSpeed = 100;
+    public Transform head;
+    public Transform cam;
+
+    // ... snip ... //
+
+    private void Update() 
+    {
+        // ... snip ... //
+
+        if (Input.GetMouseButton(1))
+        {
+            UpdateLook();
+        }
+    }
+
+    private void UpdateLook()
+    {
+        float rotateSpeedy = Input.GetAxis("Mouse X") * lookSpeed * Time.deltaTime;
+        float rotateSpeedx = -Input.GetAxis("Mouse Y") * lookSpeed * Time.deltaTime;
+    }
+}
+```
+
+We calculate the speed of rotation by getting a input from the mouse. We multiply the input by deltaTime to make sure the rotation stays the same speed no matter what the fps (frames per second) is.
+
+We check if the second mouse button is being pressed (right click), and if it is, it activates player look. This will let the player click anywhere on the screen to remove / place blocks.
+
+We apply the y rotation (right/left) to the Head, and then we apply the x rotation (up/down) to the cam, which is a child of the Head. This is important because by parenting the camera under the Head when we rotate the head in the y the camera also gets rotated. Then when we rotate the camera to look up and down 
+
+```cs
+    private void UpdateLook()
+    {
+        float rotateSpeedy = Input.GetAxis("Mouse X") * lookSpeed * Time.deltaTime;
+        float rotateSpeedx = -Input.GetAxis("Mouse Y") * lookSpeed * Time.deltaTime;
+    
+        head.Rotate(Vector3.up, rotateSpeedy);
+        cam.Rotate(Vector3.right, rotateSpeedx);
+    }
+```
+
+Now we can go back to our movement code.
+
+```cs
+public class PlayerController : MonoBehaviour
+{
+    // movement
+    public float jumpVelocity = 6;
+    public float moveSpeed = 2;
+
+    // ... snip ... //
+
+    private void UpdateMovement()
+    {
+        // ... snip ... //
+
+        float forwardSpeed = Input.GetAxis("Vertical") * moveSpeed * Time.deltaTime;
+        float sideSpeed = Input.GetAxis("Horizontal") * moveSpeed * Time.deltaTime;
+    }
+}
+```
+
+We add a movement speed variable. Then calculate a forward speed by getting input from the Vertical axis (W-S and UP-DOWN keys). We do the same for the side speed. Now lets apply those to the player.
+
+```cs
+    private void UpdateMovement()
+    {
+        // ... snip ... //
+
+        transform.position += head.forward * forwardSpeed; // forward
+        transform.position += head.right * sideSpeed; // sideways
+    }
+```
+
+Now if we go back into Unity we should see movement and look working. First you need to assign the Head and Cam transforms in the Inspector. Also in the Player gameObject we need to freeze the rotation in the x, y and z, since we will be doing all the look rotation throught the Head and Cam. Set the Players RigidBody constraints to the following.
+
+![player rigidbody constraints](/Assets/player_rigidbody_constraints.png)
+
+If you want you can prevent the `PlayerController` from always controlling the position of the player and only taking control when we give it input.
+
+```cs
+    private void Update()
+    {
+        if (Input.anyKey)
+        {
+            UpdateMovement();
+
+            if (Input.GetMouseButton(1))
+            {
+                UpdateLook();
+            }
+        }
+    }
+```
+
+# Building
+Now with a working player we can get to actually editing the chunks data, then redrawing the chunk mesh, to simulate building! We could also make a simple destruction system by getting all the collisiion points and then changing the chunks data with those collision points.
+
+Make a new script called PlayerBuilding 
+
+NOTE: If your reading this I am still writing this lecture
 
 TODO once I get to the saving part
 We will change the `byte[,,]` array to be inside of a struct called `ChunkData`. <-- not working, since we cannot wrap a nullable type in a struct in a NativeArray

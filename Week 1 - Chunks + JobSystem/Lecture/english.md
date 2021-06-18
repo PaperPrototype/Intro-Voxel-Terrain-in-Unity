@@ -219,7 +219,9 @@ And we have terrain!
 
 ![first noise chunk](/Assets/first_noise_chunk.png)
 
-But we still aren't checking if a voxel has a neighbor! 
+But we still aren't checking if a voxel has a neighbor!
+
+First we need to install the Mathematics package from Unity. Go to the package manager and click the plus with a dropdown, then click on "Add pckage from git url" type in `com.unity.mathematics`. Click add. Then you should be good to go.
 
 To check if a voxel has a neighbor we will make a lookup table of offset grid positions. We will then check each voxel's neighbor using this. Add the following to DataDefs.cs
 
