@@ -615,7 +615,44 @@ If you want you can prevent the `PlayerController` from always controlling the p
 # Building
 Now with a working player we can get to actually editing the chunks data, then redrawing the chunk mesh, to simulate building! We could also make a simple destruction system by getting all the collisiion points and then changing the chunks data with those collision points.
 
-Make a new script called PlayerBuilding 
+We will raycast to the terrain.
+
+![]()
+
+Then we can use the hit position and subtract half of the normal from it to get a positon we can use to figure out the desired cube.
+
+![hit point to center of voxel]
+
+Then we can use the position and round it and use it as an array index into the data array of the chunk. This is easy since the cubes are all 1 x 1 x 1, which means to get an index for the array we can just round our position and then use the rounded position as an index.
+
+![hit point rounded to array index]
+
+Make a new script called PlayerBuilding in the project.
+
+```cs
+using UnityEngine;
+using Unity.Mathematics;
+
+public class PlayerBuilding : MonoBehaviour
+{
+    public Camera cam;
+    public Chunk2 chunk;
+
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            // raycast
+            // if raycast
+                // get rounded pos for index
+                // update chunk.data
+                // redraw chunk
+        }
+    }
+}
+```
+
+We take in a reference to the chunk. Then we get a reference to our camera.... TODO TODO TODO
 
 NOTE: If your reading this I am still writing this lecture
 
