@@ -653,6 +653,7 @@ public class PlayerBuilding : MonoBehaviour
                 // get the positon inside of the voxel
                 Vector3 desiredPoint = hit.point - (hit.normal / 2);
 
+                // make a rounded positon we can use for indexing the chunk data
                 int3 gridPos = new int3
                     (
                         Mathf.RoundToInt(desiredPoint.x),
@@ -660,7 +661,11 @@ public class PlayerBuilding : MonoBehaviour
                         Mathf.RoundToInt(desiredPoint.z)
                     );
 
-                chunk.data[0] = 0;
+                // change data
+                chunk.data[Utils.GetIndex(gridPos.x, gridPos.y, gridPos.z)] = 0;
+
+                // redraw
+                chunk.DrawChunk();
             }
         }
     }
