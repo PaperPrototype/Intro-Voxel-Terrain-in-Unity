@@ -643,16 +643,31 @@ public class PlayerBuilding : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             // raycast
+            RaycastHit hit;
+
+            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+
             // if raycast
-                // get rounded pos for index
-                // update chunk.data
-                // redraw chunk
+            if (Physics.Raycast(ray, out hit))
+            {
+                // get the positon inside of the voxel
+                Vector3 desiredPoint = hit.point - (hit.normal / 2);
+
+                int3 gridPos = new int3
+                    (
+                        Mathf.RoundToInt(desiredPoint.x),
+                        Mathf.RoundToInt(desiredPoint.y),
+                        Mathf.RoundToInt(desiredPoint.z)
+                    );
+
+                chunk.data[0] = 0;
+            }
         }
     }
 }
 ```
 
-We take in a reference to the chunk. Then we get a reference to our camera.... TODO TODO TODO
+We take in a reference to the chunk and to our camera. In `Update` we check if the primary mouse button was pressed, if it is we do the chunk editing.
 
 NOTE: If your reading this I am still writing this lecture
 
