@@ -640,14 +640,16 @@ public class PlayerBuilding : MonoBehaviour
 
     private void Update()
     {
+        // if mouse if clicked
         if (Input.GetMouseButtonDown(0))
         {
-            // raycast
+            // store raycast git info
             RaycastHit hit;
 
+            // shoot a ray
             Ray ray = cam.ScreenPointToRay(Input.mousePosition);
 
-            // if raycast
+            // if raycast            pass hit info back out to the "hit" variable
             if (Physics.Raycast(ray, out hit))
             {
                 // get the positon inside of the voxel
@@ -672,7 +674,104 @@ public class PlayerBuilding : MonoBehaviour
 }
 ```
 
-We take in a reference to the chunk and to our camera. In `Update` we check if the primary mouse button was pressed, if it is we do the chunk editing.
+We take in a reference to the chunk and to our camera. In `Update` we check if the primary mouse button (left click) was pressed, if it is we edit the chunks data at the position the ray hit, and then redraw the chunk. Now go into the scene and add this to the Player gameObject. Set the references to the camera and chunk. But you will not see anything being built if you hit play. This is because the raycast is hitting the inside of our players capsule collider and never hitting the terrain. Go to the Player gameObject and set it's layer to "ignore raycast". When it asks if you want to change all the children gameObject as well make sure yu click "yes, change children".
+
+And now we should have Building! Yay! {NOT CURRENTLY WORKING THIS LECTURE IS IN PROGRESS}
+
+We can have the chunk do the redrawing for us when we change the data by making a function that edits the chunk data based on a a position and then sets a variable `needsDrawn` equal to true. In `Chunk2` add the following.
+
+```cs
+// ... snip ... //
+using Unity.Mathematics;
+
+// ... snip ... //
+public class Chunk2 : MonoBehaviour
+{
+    public byte[] data;
+    public bool needsDrawn;
+
+    // ... snip ... //
+
+    private void Start()
+    {
+        data = new byte[DataDefs.chunkSize * DataDefs.chunkSize * DataDefs.chunkSize];
+        needsDrawn = false;
+
+        // ... snip ... //
+    }
+
+    public void EditChunkData(Vector3 worldPosition, byte voxelType)
+    {
+        int3 gridPos = new int3
+            (
+                Mathf.RoundToInt(worldPosition.x),
+                Mathf.RoundToInt(worldPosition.y),
+                Mathf.RoundToInt(worldPosition.z)
+            );
+
+        data[Utils.GetIndex(gridPos.x, gridPos.y, gridPos.z)] = voxelType;
+
+        needsDrawn = true;
+    }
+}
+```
+
+We also have to add the `using Unity.Mathematics;` because we are using Unity's `int3`
+
+In update we check if ``needsDrawn` is true, if it is we redraw the chunk and set `needsDrawn` to false.
+
+```cs
+public class Chunk2 : MonoBehaviour
+{
+    // snip
+    private void Start()
+    {
+        // snip
+    }
+
+    private void Update()
+    {
+        if (needsDrawn is true)
+        {
+            DrawChunk();
+            needsDrawn = false;
+        }
+    }
+
+    // snip
+}
+```
+
+Now in the `PlayerBuilding` script we can change the code to be
+
+```cs
+using UnityEngine;
+
+public class PlayerBuilding : MonoBehaviour
+{
+    public Camera cam;
+    public Chunk2 chunk;
+
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            RaycastHit hit;
+
+            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+
+            if (Physics.Raycast(ray, out hit))
+            {
+                Vector3 desiredPoint = hit.point - (hit.normal / 2);
+
+                chunk.EditChunkData(desiredPoint, 0);
+            }
+        }
+    }
+}
+```
+
+Now we can edit the chunk with ease!
 
 NOTE: If your reading this I am still writing this lecture
 
