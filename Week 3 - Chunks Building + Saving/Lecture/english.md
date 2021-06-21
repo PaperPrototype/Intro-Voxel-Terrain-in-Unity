@@ -788,7 +788,7 @@ Now we can edit the chunk with ease!
 NOTE: If your reading this I am still writing this lecture
 
 TODO once I get to the saving part
-We will change the `byte[,,]` array to be inside of a struct called `ChunkData`. <-- not working, since we cannot wrap a nullable type in a struct in a NativeArray
+We will change the `byte[,,]` array to be inside of a struct called `ChunkData`. <-- not working for Jobs, since we cannot wrap a nullable type in a struct in a NativeArray
 
 This is because if we tried to put a `byte[,,]` array into a NativeArray in a Job we will get an error (outside of a Job you won't get any errors) "The type `byte[*,*,*]` must be a non-nullable value type in order to be used as a parameter `T` in the generic type or method `NativeArray<T>`". This just mean's that in a Job a ntive array can't take a "nullable" type". The type may be "null" (not set to anything) because it is an array. This is because arrays are actually always pointers to memory unless marked as static which would make them more like a lookup table and not a pointer to some memory (it would end up in a special part of our program where all the const's, statics, and globals live).
 
