@@ -613,21 +613,25 @@ If you want you can prevent the `PlayerController` from always controlling the p
 ```
 
 # Building
-Now with a working player we can get to actually editing the chunks data, then redrawing the chunk mesh, to simulate building! We could also make a simple destruction system by getting all the collisiion points and then changing the chunks data with those collision points.
+Now with a working player we can get to actually editing the chunks data, then redrawing the chunk mesh to simulate building! We could also make a simple destruction system by getting all the collisiion points on the chunks mesh collidrr and then changing the chunks data with those collision points.
 
 We will raycast to the terrain.
 
-![]()
+![terrain raycast](/Assets/terrain_raycast.png)
 
-Then we can use the hit position and subtract half of the normal from it to get a positon we can use to figure out the desired cube.
+The green line represents the raycast. The blue dot is the hit position. The blue line is what is called a normal, this is the same as the normals we talked about in week 0. Whenever we "cast" or shoot a Ray in Unity we can get the hitPoint and hitNormal.
 
-![hit point to center of voxel]
+We can subtract half of the normal from the hitPoint to get a positon that is in the center of a voxel.
 
-Then we can use the position and round it and use it as an array index into the data array of the chunk. This is easy since the cubes are all 1 x 1 x 1, which means to get an index for the array we can just round our position and then use the rounded position as an index.
+![hit point to center of voxel](/Assets/hit_point_to_center_of_voxel.png)
 
-![hit point rounded to array index]
+Then we can use the voxel position, round it to an `int`, and use it as an index into the array of data in the chunk.
 
-Make a new script called PlayerBuilding in the project.
+![hit point rounded to array index](/Assets/)
+
+The voxel are `1 x 1 x 1` so rounding the postion to an index is fine. If the cubes were `0.5 x 0.5 x 0.5` then we wuld have to multiply the voxel position we got by 2 to convert it to an index that corresponds to the correct voxel.
+
+Make a new script called `PlayerBuilding` in the micro project.
 
 ```cs
 using UnityEngine;
@@ -649,7 +653,7 @@ public class PlayerBuilding : MonoBehaviour
             // shoot a ray
             Ray ray = cam.ScreenPointToRay(Input.mousePosition);
 
-            // if raycast            pass hit info back out to the "hit" variable
+            // if raycast            \/ pass hit info back "out" to the hit variable
             if (Physics.Raycast(ray, out hit))
             {
                 // get the positon inside of the voxel
@@ -676,34 +680,36 @@ public class PlayerBuilding : MonoBehaviour
 
 We take in a reference to the chunk and to our camera. In `Update` we check if the primary mouse button (left click) was pressed, if it is we edit the chunks data at the position the ray hit. We have to make sure to convert from a position to something that can be used for indexing the chunk. We then redraw the chunk's mesh.
 
-It is very important that we subtract the chunks gameObject position from the calculating of the gridIndex. This gives us a "local" position of the chunk
+It is very important that we subtract the chunks gameObject position from the calculating of the gridIndex. This gives us a "local" position that we can then use for indexing into the chunks data.
+
+![chunk data editing](/Assets/) TODO
 
 This is because the chunk may not always be at the origin
 
 Now go into the scene and add this to the Player gameObject. Set the references to the camera and chunk. But you will not see anything being built if you hit play. This is because the raycast is hitting the inside of our players capsule collider and never hitting the terrain. Go to the Player gameObject and set it's layer to "ignore raycast". When it asks if you want to change all the children gameObject as well make sure yu click "yes, change children".
 
-And now we should have Building! Yay! {NOT CURRENTLY WORKING THIS LECTURE IS IN PROGRESS}
+And now we should have Building!
 
 We can have the chunk do the redrawing for us when we change the data by making a function that edits the chunk data based on a a position and then sets a variable `needsDrawn` equal to true. In `Chunk2` add the following.
 
 ```cs
-// ... snip ... //
+// snip
 using Unity.Mathematics;
 
-// ... snip ... //
+// snip
 public class Chunk2 : MonoBehaviour
 {
     public byte[] data;
     public bool needsDrawn;
 
-    // ... snip ... //
+    // snip
 
     private void Start()
     {
         data = new byte[DataDefs.chunkSize * DataDefs.chunkSize * DataDefs.chunkSize];
         needsDrawn = false;
 
-        // ... snip ... //
+        // snip
     }
 
     public void EditChunkData(Vector3 worldPosition, byte voxelType)
