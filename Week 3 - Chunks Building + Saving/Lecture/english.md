@@ -786,7 +786,7 @@ public class PlayerBuilding : MonoBehaviour
 Now we can edit the chunk with ease!
 
 NOTE: If your reading this I am still writing this lecture
-NOTE: To see current changes for what will come in the course you can view this repo https://github.com/PaperPrototype/VoxelSystem (Although I often forget to push my changes to github)
+NOTE: To see current changes for what will come in the course you can view this repo https://github.com/PaperPrototype/VoxelSystem (Although I often forget to push my changes to that repo)
 
 TODO once I get to the saving part
 We will change the `byte[,,]` array to be inside of a struct called `ChunkData`. <-- not working for Jobs, since we cannot wrap a nullable type in a struct in a NativeArray. AKA `NativeArray<ChunkData>` with chunkdata having a `byte[,,]`
