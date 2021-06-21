@@ -656,15 +656,15 @@ public class PlayerBuilding : MonoBehaviour
                 Vector3 desiredPoint = hit.point - (hit.normal / 2);
 
                 // make a rounded positon we can use for indexing the chunk data
-                int3 gridPos = new int3
+                int3 gridIndex = new int3
                     (
-                        Mathf.RoundToInt(desiredPoint.x),
-                        Mathf.RoundToInt(desiredPoint.y),
-                        Mathf.RoundToInt(desiredPoint.z)
+                        Mathf.RoundToInt(desiredPoint.x - chunk.gameObject.transform.position.x),
+                        Mathf.RoundToInt(desiredPoint.y - chunk.gameObject.transform.position.y),
+                        Mathf.RoundToInt(desiredPoint.z - chunk.gameObject.transform.position.z)
                     );
 
                 // change data
-                chunk.data[Utils.GetIndex(gridPos.x, gridPos.y, gridPos.z)] = 0;
+                chunk.data[Utils.GetIndex(gridIndex.x, gridIndex.y, gridIndex.z)] = 0;
 
                 // redraw
                 chunk.DrawChunk();
@@ -674,7 +674,13 @@ public class PlayerBuilding : MonoBehaviour
 }
 ```
 
-We take in a reference to the chunk and to our camera. In `Update` we check if the primary mouse button (left click) was pressed, if it is we edit the chunks data at the position the ray hit, and then redraw the chunk. Now go into the scene and add this to the Player gameObject. Set the references to the camera and chunk. But you will not see anything being built if you hit play. This is because the raycast is hitting the inside of our players capsule collider and never hitting the terrain. Go to the Player gameObject and set it's layer to "ignore raycast". When it asks if you want to change all the children gameObject as well make sure yu click "yes, change children".
+We take in a reference to the chunk and to our camera. In `Update` we check if the primary mouse button (left click) was pressed, if it is we edit the chunks data at the position the ray hit. We have to make sure to convert from a position to something that can be used for indexing the chunk. We then redraw the chunk's mesh.
+
+It is very important that we subtract the chunks gameObject position from the calculating of the gridIndex. This gives us a "local" position of the chunk
+
+This is because the chunk may not always be at the origin
+
+Now go into the scene and add this to the Player gameObject. Set the references to the camera and chunk. But you will not see anything being built if you hit play. This is because the raycast is hitting the inside of our players capsule collider and never hitting the terrain. Go to the Player gameObject and set it's layer to "ignore raycast". When it asks if you want to change all the children gameObject as well make sure yu click "yes, change children".
 
 And now we should have Building! Yay! {NOT CURRENTLY WORKING THIS LECTURE IS IN PROGRESS}
 
@@ -702,21 +708,21 @@ public class Chunk2 : MonoBehaviour
 
     public void EditChunkData(Vector3 worldPosition, byte voxelType)
     {
-        int3 gridPos = new int3
+        int3 gridIndex = new int3
             (
-                Mathf.RoundToInt(worldPosition.x),
-                Mathf.RoundToInt(worldPosition.y),
-                Mathf.RoundToInt(worldPosition.z)
+                Mathf.RoundToInt(worldPosition.x - gameObject.transform.position.x),
+                Mathf.RoundToInt(worldPosition.y - gameObject.transform.position.y),
+                Mathf.RoundToInt(worldPosition.z - gameObject.transform.position.z)
             );
 
-        data[Utils.GetIndex(gridPos.x, gridPos.y, gridPos.z)] = voxelType;
+        data[Utils.GetIndex(gridIndex.x, gridIndex.y, gridIndex.z)] = voxelType;
 
         needsDrawn = true;
     }
 }
 ```
 
-We also have to add the `using Unity.Mathematics;` because we are using Unity's `int3`
+We also have to add the `using Unity.Mathematics;` because we are using Unity's `int3`.
 
 In update we check if ``needsDrawn` is true, if it is we redraw the chunk and set `needsDrawn` to false.
 
@@ -731,7 +737,7 @@ public class Chunk2 : MonoBehaviour
 
     private void Update()
     {
-        if (needsDrawn is true)
+        if (needsDrawn == true)
         {
             DrawChunk();
             needsDrawn = false;
