@@ -785,6 +785,171 @@ public class PlayerBuilding : MonoBehaviour
 
 Now we can edit the chunk with ease!
 
+# Chunk Saving
+This is all nice and dandy, but once we stop the game and then play again the changes we made to the terrain are gone! Lets add some saving capabilities to our chunk!
+
+But first, how? Well first we need to fiqgure out "where" we should save the data, as well was what the file should be called. Unity gives us a filePath for our games and apps to use that works across every platform. We name a chunk based on its gameObjects position. Add this boiler plate code.
+
+```cs
+// snip
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+
+public class Chunk2 : MonoBehaviour
+{
+    // snip
+
+    public void SaveChunk()
+    {
+        // persistent file path
+        string filePath = Application.persistentDataPath + "/chunks/" + gameObject.transform.position + ".chunk";
+
+        // check if folders and directory exist
+        if (!File.Exists(filePath))
+        {
+            // ... if not create the directory
+            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+        }
+    }
+}
+```
+
+We check if the direcotry where we want to store the file exists or not, if it doesn't we create the directory.
+
+Now we need to convert our byte array to binary for file saving. We use C#'s BinaryFormatter class for this. Then we need a way to put the data into a file, we do that using a FileStream.
+
+```cs
+    public void SaveChunk()
+    {
+        string filePath = Application.persistentDataPath + "/chunks/" + gameObject.transform.position + ".chunk";
+
+        // check if folders and directory exist
+        if (!File.Exists(filePath))
+        {
+            // ... if not create the directory
+            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+        }
+
+        // create formatter and get file access
+        BinaryFormatter formatter = new BinaryFormatter();
+        FileStream fileStream = File.Open(filePath, FileMode.OpenOrCreate);
+
+        // save the data through the fileStream
+        formatter.Serialize(fileStream, data);
+
+        // make sure to close the fileStream!
+        fileStream.Close();
+
+        print("the chunk saved to: " + filePath);
+    }
+```
+
+And then we use the formatter to save our data array to a file through the fileStream. Make sure to close the file streamm or you might end up with weird file leaks! We print a message when we save for debugging purposes.
+
+Add a `needsSaved` variable to the chunk class. We will set `needsSaved` to true in the `EditChunkData` function as well as initializing it to false in start.
+
+```cs
+public class Chunk2 : MonoBehaviour
+{
+    // snip
+    public bool needsSaved;
+
+    private void Start()
+    {
+        // snip
+        needsSaved = false;
+
+        // snip
+    }
+
+    public void EditChunkData(Vector3 worldPosition, byte voxelType)
+    {
+        // snip
+
+        needsSaved = true;
+    }
+```
+
+And then we can use Unity's builtin `OnDisable` method to save our chunk if `needsSaved` is true.
+
+```cs
+public class Chunk2 : MonoBehaviour
+{
+    // snip
+
+    private void OnDisable()
+    {
+        if (needsSaved == true)
+        {
+            SaveChunk();
+        }
+    }
+
+    // snip
+}
+```
+
+Now if you hit play edit the chunk and then stop the game you should see a message log that the chunk was saved!
+
+But if we click play again the changes don't show up! Now we need to load the chunks data. Lets make a function that will check if a file for the chunk exists, if the file does exist then load it and return true. If the file doesn't exist we return false to let whoever uses the function know that no file exsisted for the chunk and we did not load a file.
+
+```cs
+public class Chunk2 : MonoBehaviour
+{
+    // snip
+    public bool LoadChunk()
+    {
+        string filePath = Application.persistentDataPath + "/chunks/" + gameObject.transform.position + ".chunk";
+
+        // if the file exists
+        if (File.Exists(filePath))
+        {
+            // create formatter and get file access
+            BinaryFormatter formatter = new BinaryFormatter();
+            FileStream fileStream = File.Open(filePath, FileMode.Open);
+
+            // deserialize the data and set the chunks data to be this data
+            //     \______/ <-- cast the deserialize to a byte[]
+            data = (byte[])formatter.Deserialize(fileStream);
+
+            // makie sure to close the file stream!
+            fileStream.Close();
+
+            print("the chunk loaded from: " + filePath);
+
+            return true;
+        }
+
+        // there wasn't a file to load so we return false
+        return false;
+    }
+}
+```
+
+We create a `BinaryFormatter` for getting the data through the `FileStream`. When we "deserialize" the data from the file we cast it (convert it) to a byte array `byte[]` by putting `(byte[])` in front of the `formatter.Deserialize(fileStream)`. Then we make sure to close the fileStream! And right before we return we print a log to the console saying we've loaded the chunk (if we put any code after a `return` it won't get run!).
+
+Then the `Start` function changes to try to load the chunk data. If there was a file to load `LoadChunk` returns true, otherwise it returns false (because no file existed for it to load). If `LoadChunk` didn't load any data we run `CalcChunkData` to calc the data ourselves.
+
+```cs
+    private void Start()
+    {
+        // ... snipping irrelevant code ... //
+        m_noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
+
+        // if the chunk was not loaded and LoadChunk returned false
+        if (LoadChunk() == false)
+        {
+            // if no chunk data was loaded we need to calc the data ourselves
+            CalcChunkData();
+        }
+
+        // finally we can draw the chunk's mesh
+        DrawChunk();
+    }
+```
+
+And now if you click play, edit some voxels, then stop the game, then play agin the changes should still be there! WHOOP WHOOP!
+
 NOTE: If your reading this I am still writing this lecture
 NOTE: To see current changes for what will come in the course you can view this repo https://github.com/PaperPrototype/VoxelSystem (Although I often forget to push my changes to that repo)
 
