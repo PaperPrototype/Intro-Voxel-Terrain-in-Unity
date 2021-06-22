@@ -951,7 +951,7 @@ Then the `Start` function changes to try to load the chunk data. If there was a 
 And now if you click play, edit some voxels, then stop the game, then play agin the changes should still be there! WHOOP WHOOP!
 
 # Mulithreading everything! (In the chunk code)
-Don't worry I am working on writing this! You can download the working project for this here 
+Don't worry I am working on writing this! Don't want to wait? You can download the working project for the upcoming section here https://github.com/PaperPrototype/Voxel-Terrain-System/blob/main/Assets/JobChunk2/BuildableChunk.cs
 
 NOTE: If your reading this I am still writing this lecture
 NOTE: To see current changes for what will come in the course you can view this repo https://github.com/PaperPrototype/VoxelSystem (Although I often forget to push my changes to that repo)
