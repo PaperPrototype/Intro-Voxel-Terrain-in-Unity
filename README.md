@@ -2,7 +2,7 @@
 Temporary showcase video https://www.youtube.com/watch?v=HvpDE3eM6v4 (I will make a better video once the course is more finished and finalized, and I can showcase planet generation)
 
 # Intro to Simplified Voxel Systems in Unity
-An open source introductory course on making a simple voxel engine in Unity. The goal is to use the least and simplest code to achieve a simple easy to understand voxel system that still achieves high performance using the JobSystem.
+An open source introductory course on making a voxel terrain system in Unity. For beginners to Unity that already know how to code (what functions, pointers, arrays, and return types are). The goal is to use the simplest code to achieve an easy to understand voxel terrain system that still achieves high performance using the JobSystem.
 
 Join our Discord to get any updates https://discord.gg/Gp7YEUkVHC
 View the source code of the courses projects https://github.com/PaperPrototype/VoxelSystem
