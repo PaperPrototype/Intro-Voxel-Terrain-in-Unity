@@ -16,7 +16,7 @@ Most modern game engine rendering systems don't support 3D picture (voxel) forma
 ### Vertices
 A mesh is really just contains information on how to represent a shape. Most meshes use a sets of three positions (called "points") in space to construct the triangles. Triangles can *approximately* make any shape. For example you can make a square using 2 triangles, and you can make a *pretty good* circle using triangles. We often refer to "points in space" (in the context of meshes) as vertices (singular is vertex). Let's make a triangle using 3 vertices.
 
-(This isn't valid C# code, the techinical name would be "pseudo code" meaning its just to show a concept or express "to be" code)
+(You don't need write this, it's just an example, so just read along for now)
 
 ```
     mesh.vertices = { Vector3(-1, -1, 0), Vector3(-1, 1, 0), Vector3(1, 1 0) }
