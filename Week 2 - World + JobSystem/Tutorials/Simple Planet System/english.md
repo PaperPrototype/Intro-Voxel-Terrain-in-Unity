@@ -276,6 +276,7 @@ Before you hit play make sure to change the chunkNum variable in Data.cs to a lo
 TODO finish Mock tutorial in The-Teaching-Handbook repo
 TODO add planetary gravity and orientation
 TODO show player controller code change for making the planet
+TODO make a really good video about the tutorial to get people interested in the course
 
 You can join my discord for help from me! https://discord.gg/QhqTE4t2tR
 
