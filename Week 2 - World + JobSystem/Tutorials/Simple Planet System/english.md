@@ -271,9 +271,7 @@ In `Update` call the `ScheduleChunks` and `CompleteChunks` functions to generate
 
 Open the SimplePlanets.unity scene and add a gameObject called "Planet" (Make sure it is in the center of the world!) then attach the `SimplePlanet` component script and assign the material. Also create a gameObject to act as the player, so the terrain can generate around it.
 
-Now if you hit play you should see a planet!
-
-EDIT: the planet is broken I am working on fixing this now!
+Before you hit play make sure to change the chunkNum variable in Data.cs to a low number like 15 or you will be waiting a long time for all those Jobs to run. Now if you hit play you should see a planet! Move the player gameObject around to see the terrain regenerate.
 
 TODO finish Mock tutorial in The-Teaching-Handbook repo
 TODO add planetary gravity and orientation
