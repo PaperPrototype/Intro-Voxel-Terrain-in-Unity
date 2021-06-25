@@ -167,12 +167,12 @@ public class SimplePlanet : MonoBehaviour
                     }
 
                     // y
-                    if (player.position.z + offset < chunks[x, y, z].gameObject.transform.position.z)
+                    if (player.position.y + offset < chunks[x, y, z].gameObject.transform.position.y)
                     {
                         chunks[x, y, z].gameObject.transform.position -= new Vector3(0, DataDefs.chunkNum * DataDefs.chunkSize, 0);
                         chunks[x, y, z].needsDrawn = true;
                     }
-                    if (player.position.z - offset > chunks[x, y, z].gameObject.transform.position.z)
+                    if (player.position.y - offset > chunks[x, y, z].gameObject.transform.position.y)
                     {
                         chunks[x, y, z].gameObject.transform.position += new Vector3(0, DataDefs.chunkNum * DataDefs.chunkSize, 0);
                         chunks[x, y, z].needsDrawn = true;
@@ -257,11 +257,13 @@ Now finally in start we can generate each chunk in a grid. Then make sure they a
     }
 ```
 
-In `Update` call the `ScheduleChunks` and `CompleteChunks` functions to generate all the chunks meshes.
+In `Update` call the `ScheduleChunks` and `CompleteChunks` functions to generate all the chunks meshes. We also recycle all the chunks right before we draw them.
 
 ```cs
     private void Update()
     {
+        RecycleChunks();
+
         ScheduleChunks();
         CompleteChunks();
     }
@@ -271,9 +273,13 @@ Open the SimplePlanets.unity scene and add a gameObject called "Planet" (Make su
 
 Now if you hit play you should see a planet!
 
+EDIT: the planet is broken I am working on fixing this now!
+
 TODO finish Mock tutorial in The-Teaching-Handbook repo
 TODO add planetary gravity and orientation
 TODO show player controller code change for making the planet
+
+You can join my discord for help from me! https://discord.gg/QhqTE4t2tR
 
 Here is the player controller code change for making the planet gravity script work, for those wonderful poeple who don't want to wait for me to finish this tutorial
 
