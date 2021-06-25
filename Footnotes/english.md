@@ -1,7 +1,9 @@
 TODO add links to all resources used to make this course
 
-Penny De Byl for the basic saving
+Jordan Peck for the FastNoiseLite library https://github.com/Auburn/FastNoiseLite
 
-b3agz for the voxel types and voxel lookup tables
+Penny De Byl for the basic saving system https://www.udemy.com/course/unityminecraft/
 
-SimonDev for the Octree LOD system
+b3agz for the voxel types and voxel lookup tables https://www.youtube.com/watch?v=h66IN1Pndd0&list=PLVsTSlfj0qsWEJ-5eMtXsYp03Y9yF1dEn
+
+SimonDev for the Octree LOD system and his inspirational terrain videos! https://www.youtube.com/watch?v=hHGshzIXFWY&list=PLRL3Z3lpLmH3PNGZuDNf2WXnLTHpN9hXy

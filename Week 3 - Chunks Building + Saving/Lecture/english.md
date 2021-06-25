@@ -942,15 +942,17 @@ Then the `Start` function changes to try to load the chunk data. If there was a 
             // if no chunk data was loaded we need to calc the data ourselves
             CalcChunkData();
         }
-
+        
         // finally we can draw the chunk's mesh
         DrawChunk();
     }
 ```
 
-And now if you click play, edit some voxels, then stop the game, then play agin the changes should still be there! WHOOP WHOOP!
+And now if you click play, edit some voxels, then stop the game, then play again. The changes should still be there! WHOOP WHOOP!
 
 # Mulithreading everything! (In the chunk code)
+Memory is historically one of the slowest processes of a computer. So we will be putting our file saving and loading into a Job to increase the amount of files we can load and save to disk. We will also be calculating the chunk's data in a Job. Lets do it!
+
 Don't worry I am working on writing this! Don't want to wait? You can download the working project for the upcoming section here https://github.com/PaperPrototype/Voxel-Terrain-System/blob/main/Assets/JobChunk2/BuildableChunk.cs
 
 NOTE: If your reading this I am still writing this lecture
