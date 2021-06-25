@@ -35,7 +35,7 @@ Now this won't actually work because in a mesh we need to know what 3 vertices w
     mesh.triangles = { 0, 1, 2 }
 ```
 
-In the list of "triangles" (they're just a set of 3 `int`s) we are saying, get the vertex at `0` in the array and make that the first vertex in our triangle. Then get vertex at `1` and use it for the second vertex of the triangle. Then get vertex at `2` for the third vertex. These "triangle" ints are called indexes. An index tells us where in a list (or array) to find something. Triangle ints (usually just called "triangles") have to be in sets of 3, if they are not we will get an error.
+In the list of "triangles" (they're just a set of 3 `int`s, ints are numbers without any decimals) we are saying, get the vertex at `0` in the list of verticces (aka positons) and make that the first vertex in our triangle. Then get vertex at `1` and use it for the second vertex of the triangle. Then get vertex at `2` for the third vertex. These "triangle" ints are called indexes. An index tells us where in a list (or array) to find something. Triangle ints (usually just called "triangles") have to be in sets of 3, if they are not we will get an error.
 
 ![triangle mesh](/Assets/triangle_mesh.png)
 
