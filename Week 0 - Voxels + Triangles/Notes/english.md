@@ -5,8 +5,11 @@ If anything is defined incorrectly or you have some knowledge of compiler keywor
 Vertex (singular) - Vertices (plural)
 > A 3D position used to tell where a mesh's triangle corners will be.
 
+Backface culling
+> When a renderer doesn't render both sides of a triangle.
+
 Index (singular) - Indexes? Indices? (plural)
-> An index tells us where in a list, or array, we can find something.
+> An index tells us where in a list, or array, we can find an item.
 
 Triangle(s)
 > A set of 3 numbers telling us which vertices to use to make one corner of a triangle.
@@ -19,13 +22,46 @@ Normal(s)
 > [Normals Wikpiedia](https://en.wikipedia.org/wiki/Normal_(geometry))
 > [Vertex Normal Wikipedia](https://en.wikipedia.org/wiki/Vertex_normal)
 
+Local (positioning and measuring)
+> The positon of something relative to itself or its parent object.
+
+Global (positioning and measuring)
+> The position of something relative to the "world" or global position.
+
+Vector
+> 3 numbers used to represent a position or direction in space.
+
+Bounds
+> the area or volume something takes up in 3D, usally this the area is calculated with a box or cube shape, since the algorithm for calculating them is very simple.
+
 UV(s)
 > The position on a texture to map to a specific vertex of a triangle. A UV of `Vector2(0, 0)` gets the bottom left of a texture. 
 > ![2D uv texture coordinate](/Assets/2D_uv_texture_coordinate.png)
 
+Array
+> A continous block of memory
+
+List
+> A collection of objects linked togehter using memory pointers
+
+Array vs List
+> An array is just a list, the difference is that the items of a list are stored randomly in memory, whereas an array is actually laid out in a row of memory. Lists are useful because we can add stuff to them, while an array can't change its size.
+
 Unit Vector
 > A vector who's magnitude is 1. The megnitude of a vector is just the distance from the start, or origin, to the "end" position that the vector is giving.
 > ![magnitude of a vector](/Resources/assets/normal_magnitude.png)
+
+Enum
+> An enum lets us make a predefined set of options for a variable.
+> An example of making an enum is below
+
+```cs
+// the enum
+enum RandomeEnum { TRUE, FALSE, MAYBE, KILL, HELP };
+
+// using the enum in a variable
+RandomeEnum myVariable;
+```
 
 Immutable
 > A value that can **only** be read and not changed, AKA immutable.

@@ -271,7 +271,9 @@ In `Update` call the `ScheduleChunks` and `CompleteChunks` functions to generate
 
 Open the SimplePlanets.unity scene and add a gameObject called "Planet" (Make sure it is in the center of the world!) then attach the `SimplePlanet` component script and assign the material. Also create a gameObject to act as the player, so the terrain can generate around it.
 
-Before you hit play make sure to change the chunkNum variable in Data.cs to a low number like 15 or you will be waiting a long time for all those Jobs to run. Now if you hit play you should see a planet! Move the player gameObject around to see the terrain regenerate.
+Before you hit play make sure to change the chunkNum variable in Data.cs to a lower number like 15 or you will be waiting a long time for all those Jobs to finish running. Now if you hit play you should see a planet! Move the player gameObject around to see the terrain regenerate.
+
+# Player controller and planet orientation
 
 TODO finish Mock tutorial in The-Teaching-Handbook repo
 TODO add planetary gravity and orientation
@@ -297,3 +299,16 @@ Here is the player controller code change for making the planet gravity script w
 (it was getting late and I needed to go to bed, I have been coding and writing all day)
 
 If you don't want to wait for me to add this you can visit the
+
+How is it possible that we can get something like this
+
+![]() TODO picture of overhanging terrain, with red lines outlining the overhang gap, Red lines hsould make a shape that would fill in the gap if we were using height only based terrain
+
+By only adding and subtracting from the distance to the center of the planet? Wouldn't that only give us varying height values for mountians?
+
+If voxel `A` (in the picture below) adds noise to the distance, that would make the if statement true. While voxel `B` subtracts noise from the distance, making the if statment false.
+
+![]() TODO voxel is A on top of the overhang, voxel B is below the overhang.
+
+The reasson this is happening is becuase we are sampling the noise per voxel position, giving us varying results depending on our voxel position rather than its height.
+
