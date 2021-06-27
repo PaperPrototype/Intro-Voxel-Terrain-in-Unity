@@ -107,19 +107,19 @@ Each vertex on a mesh needs a normal.
     mesh.triangles = { 0, 1, 2, 0, 2, 3 }
 ```
 
-Normals are usually a Unit Vector. A "Unit Vector" means that the distance from the origin (`Vector3(0, 0, 0)`) to the "position" or "end" of a Normal needs to be 1 (check the notes of this lecture for definitions of all the vocab and techy words). The distance from the center of the normal `Vector3(0, 0, 0)` to its end `Vector3(0, 0, 1)` is obviously 1, so we are fine.
+If the distance a normal covers is 1, then it is called a "Unit" normal.
 
-When we mesaure the length of the normal, we don't use the distance from the cneter of the world to the tip of the normal, instead we use the its "local" space to measure it. 
+![]() TODO add pic of Unit normal being measured
 
-Normals are always just giving us a "direction", so they are not positioned near the vertex, instead since all we care about is the direction they aim in their positon is actually in the center of the world.
+Normals are always just giving us a "direction", so they are not positioned near their vertex. Instead since all we care about is the direction they give us, they are actually positoned in the center of the world.
 
-The distance from the beggining to the end of any normal or vector is called it's Magnitude. 
+The distance from the beggining to the end of any normal (or any Vector3) is called it's Magnitude. 
 
 ![magnitude of normal](/Assets/normal_magnitude.png)
 
-Now generating all the normals of a mesh can get complicated so Unity has a builtin function for generating normals for us called `RecalculateNormals`.
+So we could say that a "Unit" normal, has a "magnitude" of 1 (I'm telling you all this because someone will probably use these words and you might want to know what they are talking about).
 
-(Don't worry this is still fake code so you don't have to worry about adding this to a script. The function called `RecalculateNormals` is a real function in Unity though)
+Now calculating all the normals for a mesh can get complicated so Unity has a builtin function for generating normals for us called `RecalculateNormals`.
 
 ```
     mesh.vertices = { Vector3(-1, -1, 0), Vector3(-1, 1, 0), Vector3(1, 1, 0), Vector3(1, -1, 0) }
@@ -127,13 +127,13 @@ Now generating all the normals of a mesh can get complicated so Unity has a buil
     mesh.RecalculateNormals()
 ```
 
-`RecalculateNormals` requires us to already have the `vertices` and `triangles` set in the mesh.
+Don't worry this is still fake code so you don't have to worry about adding this to a script. Although the `RecalculateNormals` function is a real function in Unity.
 
-How will the `RecalculateNormals` function now which direction the surface should face?
+To use the `RecalculateNormals` function it requires us to already have the `vertices` and `triangles` set in the mesh.
 
-The renderer uses the order we put the triangles in to determine which side of a triangle to render. 
+The `RecalculateNormals` function uses the "order" we put the triangles in to determine which side of a triangle the normals should face.
 
-The way we can remember is, clockwise will make the normals face us
+Clockwise will make the normals face us
 
 (taken from https://forum.unity.com/threads/unity-has-a-clockwise-winding-order.129923/#post-3198466)
 ![clockwise triangle order](/Assets/clockwise_triangle.png)
@@ -144,9 +144,9 @@ The way we can remember is, clockwise will make the normals face us
 
 
 # Making the quad in Unity
-Make a new Unity project from Unity Hub for this course. Make the project a 3D project using the Universal Render Pipeline.
+Make a new Unity project for this course. Make the project a 3D project using the Universal Render Pipeline.
 
-Once that loads, make a new folder under assets called  `Qaud`. In it put a new scene called Quad, as well as c new script called `Quad`. You project should look like the following.
+Once that loads, make a new folder under the Assets folder called "Qaud". In  the "Quad" folder put a new scene called Quad, as well as new script called `Quad`. The project should then look like the following.
 
 ```
     Assets/
@@ -155,7 +155,7 @@ Once that loads, make a new folder under assets called  `Qaud`. In it put a new 
     |   |___Quad.cs (Script)
 ```
 
-Open the scene by double clicking it and in the scene add an empty GameObject. 
+Open the scene we made by double clicking it. In the scene add an empty GameObject. 
 
 Open the script by double clicking it. The gameObject will need a MeshRenderer component and a MeshFilter component. We can force Unity to have these on the GameObject by adding a `RequireComponent` attribute above the `Quad` class.
 
