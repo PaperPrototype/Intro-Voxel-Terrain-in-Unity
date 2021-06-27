@@ -273,6 +273,149 @@ Open the SimplePlanets.unity scene and add a gameObject called "Planet" (Make su
 
 Before you hit play make sure to change the chunkNum variable in Data.cs to a lower number like 15 or you will be waiting a long time for all those Jobs to finish running. Now if you hit play you should see a planet! Move the player gameObject around to see the terrain regenerate.
 
+# Planet Mountains?
+Lets make some mountains! Open the `PlanetChunkJob` job. We will use the noise instacne that we didn't delete (hopefully you didn't either). Now when we calculate the distance variabel we can just add noise based on the voxel positon.
+
+```cs
+        private bool IsSolid(FastNoiseLite noise, int x, int y, int z)
+        {
+            float distance = Vector3.Distance(new Vector3(x, y, z) + chunkPos, Vector3.zero);
+
+            // add to the distance variable
+            distance += noise.GetNoise(x + chunkPos.x, y + chunkPos.y, z + chunkPos.z) * 10;
+
+            if (distance <= planetRadius)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+```
+
+We multiply the noise by 10. Multiplying the noise by 10, incereases the "size" of affect the noise has. The "size of affect" is called the "amplitude". Now hit play and the pnaet should have mountains! Ok, they are more like hills...
+
+We also make sure to add the chunkPos offset to the noise calculation, or all the chunks will have the same noise applied, which will make the planet look broken.
+
+Now lets make it so that we can change the amplitude on the inspector.
+
+Add a variable to the chunkJob for noise amplitude. And use it as the noise multiplier.
+
+```cs
+    public struct PlanetChunkJob : IJob
+    {
+        public float amplitude;
+
+        private bool IsSolid(FastNoiseLite noise, int x, int y, int z)
+        {
+            // ... snip
+
+            distance += noise.GetNoise(x + chunkPos.x, y + chunkPos.y, z + chunkPos.z) * amplitude;
+
+            // ... snip
+        }
+    }
+```
+
+We can also multiply the positions we sample by a number to expans the area of noie we sample, which will give us more small details and bumps (be carefull, because this can give you a planet full of random tiny holes!).
+
+```cs
+    public struct PlanetChunkJob : IJob
+    {
+        public float frequency;
+        // ... snip
+
+        private bool IsSolid(FastNoiseLite noise, int x, int y, int z)
+        {
+            // ... snip
+
+            distance += noise.GetNoise((x + chunkPos.x) * frequency, (y + chunkPos.y) * frequency, (z + chunkPos.z) * frequency) * amplitude;
+            
+            // ... snip
+        }
+    }
+```
+
+But... the FastNoiseLite library has a function for doing this for us. So remove the frequency multiplication we just did and use the library function instead (make sure to remove what we did before if you use the library function!).
+
+```cs
+
+    public struct PlanetChunkJob : IJob
+    {
+        // ... snip
+
+        public void Execute()
+        {
+            FastNoiseLite noise = new FastNoiseLite();
+            noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
+            noise.SetFrequency(frequency); // added this
+
+            // ... snip
+        }
+
+        // ... snip
+    }
+```
+
+0.02 is the default frequency in FastNoiseLite.
+
+Now we have to set the frequency variable and the amplitude variable when we schedule our job. First though, we probably want to set these values in the inspector so open `SimplePlanet` and add two values for our inspector. We clamp the freqquency to a small value because a small change in frequency has a very big impact.
+
+```cs
+public class SimplePlanet : MonoBehaviour
+{
+    // ... snip
+
+    [Range(0, 0.5f)]
+    public float frequency = 0.02f;
+
+    public float amplitude = 10;
+
+    // ... snip
+}
+```
+
+And since we have access to the `SimplePlanet` class in the `SimplePlanetChunk` through the `m_owner` variable we can just access the variables directly from the `SimplePlanet` class and use them when setting the job.
+
+```cs
+
+public class SimplePlanetChunk
+{
+    // ... snip
+
+    public void ScheduleDraw()
+    {
+        if (needsDrawn == true)
+        {
+            // ... snip
+
+            m_chunkJob = new JobDefs.PlanetChunkJob();
+            m_chunkJob.amplitude = m_owner.amplitude; // added this
+            m_chunkJob.frequency = m_owner.frequency; // added this
+        }
+    }
+    // ... snip
+}
+```
+
+Now if you hit play you can mess around with the values to get some pretty intersting planets.
+
+How is it possible that we can get something like this
+
+![]() TODO picture of overhanging terrain, with red lines outlining the overhang gap, Red lines hsould make a shape that would fill in the gap if we were using height only based terrain
+
+By only adding and subtracting from the distance to the center of the planet? Wouldn't that only give us varying height values for mountians?
+
+If voxel `A` (in the picture below) adds noise to the distance, that would make the if statement true. While voxel `B` subtracts noise from the distance, making the if statment false.
+
+![]() TODO voxel is A on top of the overhang, voxel B is below the overhang.
+
+The reasson this is happening is becuase we are sampling the noise per voxel position, giving us varying results depending on our voxel position rather than its height.
+
+
+
 # Player controller and planet orientation
 Now, lets give our planet gravity! We'll also be adding a *gradual* planet orientation to the gravity script since a lot of people are trying to figure out how to get this to work.
 
@@ -369,7 +512,7 @@ public class SimplePlanetGravity : MonoBehaviour
 {
     // ... snipping irrelevant code
 
-    public Rigidbody playerRigidbody;
+    private Rigidbody playerRigidbody;
 
     private void Start()
     {
@@ -381,9 +524,33 @@ public class SimplePlanetGravity : MonoBehaviour
 Now we can add the gravity force!
 
 ```cs
+    private void FixedUpdate()
+    {
+        Vector3 upDirection = transform.position - planet.position;
+        upDirection.Normalize();
 
-
+        playerRigidbody.AddForce(-upDirection * gravityForce);
+    }
 ```
+
+Now make sure to add this script to the player gameObject. 
+
+Also position the player so that they are outside of the planet radius. You can use the `radius` variable on the planet script to determine how far away to place the player. Fo example, if the radius of the planet is 100, then set the y position to be 105.
+
+Now how about orienting the player ith the planet upDirection, so that they rotate correctly?
+
+We can set the players `transform.up` to the upDIrection and then the player will always stand straight up on the planet surface!
+
+```cs
+    private void FixedUpdate()
+    {
+        // ... snip
+
+        // set the upDirection of the player
+        transform.up = upDirection;
+    }
+```
+
 
 TODO finish Mock tutorial in The-Teaching-Handbook repo
 TODO add planetary gravity and orientation
@@ -392,7 +559,7 @@ TODO make a really good video about the tutorial to get people interested in the
 
 You can join my discord for help from me! https://discord.gg/QhqTE4t2tR
 
-Here is the player controller code change for making the planet gravity script work, for those wonderful poeple who don't want to wait for me to finish this tutorial
+Here is the player controller code change for making the planet gravity script work, for those wonderful poeple who want to get a player running around a planet.
 
 ```cs
     private void UpdateMovement()
@@ -405,20 +572,3 @@ Here is the player controller code change for making the planet gravity script w
         // snipping unchanged code
     }
 ```
-
-(it was getting late and I needed to go to bed, I have been coding and writing all day)
-
-If you don't want to wait for me to add this you can visit the
-
-How is it possible that we can get something like this
-
-![]() TODO picture of overhanging terrain, with red lines outlining the overhang gap, Red lines hsould make a shape that would fill in the gap if we were using height only based terrain
-
-By only adding and subtracting from the distance to the center of the planet? Wouldn't that only give us varying height values for mountians?
-
-If voxel `A` (in the picture below) adds noise to the distance, that would make the if statement true. While voxel `B` subtracts noise from the distance, making the if statment false.
-
-![]() TODO voxel is A on top of the overhang, voxel B is below the overhang.
-
-The reasson this is happening is becuase we are sampling the noise per voxel position, giving us varying results depending on our voxel position rather than its height.
-

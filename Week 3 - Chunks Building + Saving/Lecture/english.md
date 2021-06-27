@@ -469,7 +469,7 @@ public class PlayerController : MonoBehaviour
 
 First we force Unity to have the `Rigidbody` component attatched to the gameObject. We make a variable reference `m_rb` so we can access the `RigidBody` component. In start we set `m_rb` to the `RigidBody` component of the gameObject.
 
-We make the `UpdateMovement` function to hold all of the movement code. In the `UpdateMovement` function we check if the space key is pressed. If it is, we add to the current velocity by using the players current up direction and multiplying it by the jumpVelocity. (This will help make sure this player controller code works with the planet tutorial).
+We make the `UpdateMovement` function to hold all of the movement code. In the `UpdateMovement` function we check if the space key is pressed. If it is, we add to the current velocity by using the players current up direction and multiplying it by the jumpVelocity. (This will help make sure the player controller code works with the planet tutorial from last week).
 
 Open the `Chunk2` scene and create a capsule gameObject primitve.
 
