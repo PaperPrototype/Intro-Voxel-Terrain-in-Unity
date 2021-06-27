@@ -417,7 +417,6 @@ If voxel `A` (in the picture below) adds noise to the distance, that would make 
 The reasson this is happening is becuase we are sampling the noise per voxel position, giving us varying results depending on our voxel position rather than its height.
 
 
-
 # Planet gravity and orientation
 Now, lets give our planet gravity! We'll also be adding a *gradual* planet orientation to the gravity script since a lot of people are trying to figure out how to get this to work.
 
