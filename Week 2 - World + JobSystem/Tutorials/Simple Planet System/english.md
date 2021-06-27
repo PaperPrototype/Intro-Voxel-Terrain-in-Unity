@@ -402,6 +402,8 @@ public class SimplePlanetChunk
 
 Now if you hit play you can mess around with the values to get some pretty intersting planets.
 
+TODO:
+
 How is it possible that we can get something like this
 
 ![]() TODO picture of overhanging terrain, with red lines outlining the overhang gap, Red lines hsould make a shape that would fill in the gap if we were using height only based terrain
