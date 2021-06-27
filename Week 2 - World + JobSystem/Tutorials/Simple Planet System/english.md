@@ -569,7 +569,9 @@ We can set the players `transform.up` to the  same as the `upDirection` vector a
     }
 ```
 
+# Gradual 
 
+HEY THERE! reload the page and you might see the changes I am doing to this tutorial!
 
 TODO gradual planet orientation.
 
