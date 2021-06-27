@@ -570,18 +570,209 @@ We can set the players `transform.up` to the  same as the `upDirection` vector a
 ```
 
 # Gradual planet orientation
+What if we have a starship that when it flies near the planet it gradually adapts to the planets orientation? Also what about smoothly adding gravity to the player only when they are close to the planet. Lets start with the first problem.
 
-HEY THERE! reload the page and you might see the changes I am doing to this tutorial!
+Well, right now, any gameObject that adds the `SimplePlanetGravity` Component is forced to adapt to the planet's orientation.
 
-TODO gradual planet orientation.
+We can use an animation curve to first get a smoothing number based on the distance we are form the planet.
 
-For thos of you who do not want to wait here is the code for doing gradual planet orientation https://github.com/PaperPrototype/Voxel-Terrain-System/blob/main/Assets/SmallPlanet/PlanetGravity.cs
+![animation curve pic]
 
-TODO finish Mock tutorial in The-Teaching-Handbook repo
+An animation curve will give us a number between 0 and 1 that we can call `CurrentOrientionAffect`, 0 will mean no affect and 1 will mean full affect.
 
-You can join my discord for help from me! https://discord.gg/QhqTE4t2tR
+Lets get that working. In the following function we are calcualting *where* on the `AnimationCurve` to sample.
 
-Here is the player controller code change for making the planet gravity script work, for those wonderful poeple who want to get a player running around a planet.
+```cs
+    private float CurrentOrientationAffect(float distance)
+    {
+        // get where on the curve to sample
+        float curvePos = distance;
+    }
+```
+
+(You'll get an error now because our function is uspposed to return (give back) a number, just ignore it for now)
+
+But this won't work. An AnimationCurve takes in number bwteen 0 and 1, so we need to divide the distance by some height number to make it smaller. Lets divide it by a radius number that is slightly larger than the planets radius. Doing this will keep the curve number below 1 as long as we haven't gone outside of the radius. We will call this an affectRadius.
+
+
+```cs
+public class SimplePlanetGravity : MonoBehaviour
+{
+    public Transform planet;
+    public float gravityForce = 9.8f;
+
+    public float orientationAffectRadius = 100f;
+
+    // ... snip
+    private float CurrentOrientationAffect(float distance)
+    {
+        // get where on the curve to sample
+        float curvePos = distance / orientationAffectRadius;
+
+        // if we go outside of the radius we clamp it at 1
+        if (curvePos > 1)
+        {
+            curvePos = 1;
+        }
+    }
+}
+```
+
+We also clamp the number at 1, otherswise when we go outside of the `orientationAffectRadius` the number will get larger than 1, and we will start sampling outside of the AnimationCurve.
+
+Now make an animation curve variabel that we can set in the inspector, and sample it using the `curvePos` variable. Actually the function used by Unity is `Evaluate`.
+
+```cs
+public class SimplePlanetGravity : MonoBehaviour
+{
+    // ... snip
+
+    public float orientationAffectRadius = 100f;
+    public AnimationCurve orientationAffectCurve; // added curve
+
+    // ... snip
+
+    private float CurrentOrientationAffect(float distance)
+    {
+        // ... snip
+
+        float currentAffectAmount = orientationAffectCurve.Evaluate(curvePos);
+
+        // prevent number from becoming negative
+        if (currentAffectAmount < 0)
+        {
+            currentAffectAmount = 0;
+        }
+
+        return currentAffectAmount;
+    }
+```
+
+We then make sure that the `curentAffectAmount` never goes below zero. This can happen when you make your AnimationCurve curve drop below zero. If we didn't clmap it to 0, when we use `curentAffectAmount` later in our Lerp function, the player will immediately flip over upside down.
+
+Now open the Planet scene and change the AnimationCruve in the player gameObject to look like this. (Click on the empty curve in the editor, then click on a preset curve and edit it to look like the one in the picture)
+
+![orientation animation curve](./Assets/curve_edit.png)
+
+Now we can apply this smoothing to the player using a Lerp function
+
+```cs
+public class SimplePlanetGravity : MonoBehaviour
+{
+    //... snip
+    private void FixedUpdate()
+    {
+        // ... snip
+
+        // distance from the center of the planet
+        float distance = Vector3.Distance(planet.position, transform.position);
+
+        // set the upDirection of the player
+        transform.up = Vector3.Lerp(transform.up, planetUpDirection, CurrentOrientationAffect(distance));
+    }
+
+    //... snip
+}
+```
+
+The `Lerp` function takes in to vectors. Then it takes in a smoothing value. When the smoothing value is 0, you get back the first vector (aka transform.up). And when the smoohting value is 1 you get back the first vector. But as you smooth between 0 and 1 for the smoothing value, it smooths between the first and second vector.
+
+To visualize the `orientationAffectRadius` add the following function.
+
+```cs
+public class SimplePlanetGravity : MonoBehaviour
+{
+    // ... snipping irrelevant code
+
+    private void OnDrawGizmos()
+    {
+        // wire circle in editor showing the orientation affect Radius
+        Gizmos.DrawWireSphere(planet.position, orientationAffectRadius);
+    }
+}
+```
+
+Now if you hit play and move the player outside of the orientation affect Radius, you will see they are free to rotate as they please. But when they enter the orientation affect Radius they start (smoothly) roating to be upright with the planet.
+
+Yay! Whoop! 
+
+A tip. If you'r player isn't standing as up right as you want, try changing the curve. The higher the curve is, the stronger the Lerp function is.
+
+Another tip. If your player is acting weird, like continuing to move even after it should stop moving, then make sure that you've given the player some drag in its Rigidbody.
+
+Now what about using an AnimationCurve for gravity? So that our player isn't always outside the gravity of the planet. You could just use an if statement and check if the player is inside of a radius, but that no fun!
+
+First we make the affect radius variable as before. And we add a curve for the gravity.
+
+Then we need to reduce the distance variable to be within 0 and 1. Then we use that distance to Evaluate the curve. Then we store the result from the curve in a `currentAffectAmount` variable. Then we return the `currentAffectAmount` variable.
+
+```cs
+public class SimplePlanetGravity : MonoBehaviour
+{
+    //... snip
+
+    public float gravityAffectRadius = 100f; // new radius
+    public AnimationCurve gravityAffectCurve; // curve for gravity
+
+    //... snip
+
+    private float CurrentGravityAffect(float distance)
+    {
+        // where on the animation curve to evaluate
+        float curvePos = distance / gravityAffectRadius;
+
+        // clamp to 1
+        if (curvePos > 1)
+        {
+            curvePos = 1;
+        }
+
+        // get value from the curve
+        float currentAffectAmount = gravityAffectCurve.Evaluate(curvePos);
+
+        // prevent number from becoming negative
+        if (currentAffectAmount < 0)
+        {
+            currentAffectAmount = 0;
+        }
+
+        return currentAffectAmount;
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(planet.position, orientationAffectRadius);
+        Gizmos.color = Color.red; // change the color to red
+        Gizmos.DrawWireSphere(planet.position, gravityAffectRadius); // draw wire sphere for gravity radius
+    }
+}
+```
+
+We also draw a sphere gizmo as before. Now lets use the `CurrentGravityAffect` function and multiply the gravity force by it.
+
+```cs
+    private void FixedUpdate()
+    {
+        //... snip
+
+        // distance from the center of the planet
+        float distance = Vector3.Distance(planet.position, transform.position);
+
+        // add planet gravity force
+        playerRigidbody.AddForce(-planetUpDirection * gravityForce * CurrentGravityAffect(distance));
+
+        // set the upDirection of the player
+        transform.up = Vector3.Lerp(transform.up, planetUpDirection, CurrentOrientationAffect(distance));
+    }
+```
+
+And tada! 
+
+A tip, make sure the player has some drag! Or once they leave the planet they will drift through space and not stop! This is especially a problem when the player starts moving fast.
+
+You can join my discord for help from me! https://discord.gg/QhqTE4t2tR Please let me know of any issues!
+
+Here is the player controller code change needed for making the jump code work on the planet (for those wonderful poeple who took an earlier version of my course!).
 
 ```cs
     private void UpdateMovement()
