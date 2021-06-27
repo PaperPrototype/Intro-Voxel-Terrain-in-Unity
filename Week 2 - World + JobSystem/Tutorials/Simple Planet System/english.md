@@ -274,7 +274,116 @@ Open the SimplePlanets.unity scene and add a gameObject called "Planet" (Make su
 Before you hit play make sure to change the chunkNum variable in Data.cs to a lower number like 15 or you will be waiting a long time for all those Jobs to finish running. Now if you hit play you should see a planet! Move the player gameObject around to see the terrain regenerate.
 
 # Player controller and planet orientation
-Now, lets put a player on our planet!
+Now, lets give our planet gravity! We'll also be adding a *gradual* planet orientation to the gravity script since a lot of people are trying to figure out how to get this to work.
+
+First lets make our player so that it can have physics.
+
+To the player gameObject in our scene add a Rigidbody component, uncheck teh "use Gravity" checkbox, because we will be making our own gravity. Then add a capsule gameObject under the player it so that we can see gravity doing its thing, this also adds a capsule collider so that our player can collide with the planet.
+
+Also lets make sure our `SimplePlanetChunk` script is adding a collider to the terrain for us to land on. Add a `MeshCollider` reference.
+
+```cs
+public class SimplePlanetChunk
+{
+    // ... snipping irrelevant code
+
+    private MeshCollider m_meshCollider; // new variable
+
+    // ... snipping irrelevant code
+
+    public SimplePlanetChunk(SimplePlanet owner, Material m_material, Vector3 m_position)
+    {
+        // ... snipping irellevant code
+        m_meshCollider = gameObject.AddComponent<MeshCollider>(); // new line of code
+
+        // ... snipping irellevant code
+    }
+
+
+    public void CompleteDraw()
+    {
+        if (needsDrawn == true)
+        {
+            // snipping irrelevant code
+            m_mesh.RecalculateBounds();
+            m_mesh.RecalculateNormals();
+
+            m_meshFilter.mesh = m_mesh;
+            m_meshCollider.sharedMesh = m_mesh; // set meshColliders mesh
+
+            // snipping irrelevant code
+        }
+    }
+}
+```
+
+Then initlaize the reference in the constructor function. Then after finishing the draw job, set the meshColliders refernce mesh (aka sharedMesh) to the mesh we just made.
+
+For gravity we need to add a force to the player. That force needs to push the player towards the planet. If the planet is in the center of the world, then we can get a direction that give us an upwards direction from the planet, by simply using the players position as a vector.
+
+![player pos for planet upDirection](./Assets/planet_up_direction.png)
+
+And then putting a negative sign in front of the direction (aka `-updDirection`) and use it for adding a gravity force to the player!
+
+Make a new script in the project called `SimplePlanetGravity`. Open it, and add a reference to the planet transform.
+
+```cs
+using UnityEngine;
+
+public class SimplePlanetGravity : MonoBehaviour
+{
+    public Transform planet;
+    public float gravityForce = 9.8f;
+}
+```
+
+We also add a `gravityForce` variable so we can change the gravity in the inspector. Now to get the `upDirection` from the planet we use the players position. We subtract the planet position, to remove any offset the planet may have. This is might happen if don't want the planet in the center of the world. We do all this in fixed update since we will be doing mostly physics calculations.
+
+```cs
+public class SimplePlanetGravity : MonoBehaviour
+{
+    // ... snip
+
+    private void FixedUpdate()
+    {
+        Vector3 upDirection = transform.position - planet.position;
+        upDirection.Normalize(); // normalize so that the magnitude is 1
+    }
+}
+```
+
+We also run the `Normalize` function to make the vectors magnitude = 1. A vectors magniute is the length it covers.
+
+![magitude of a vector](/Assets/normal_magnitude.png)
+
+And currently our planets negative `upDirection` has a massive magnitude!
+
+![negative planet up direction magnitude](./Assets/planet_up_direction_normalized.png)
+
+Add a reference to get the players RigidBody so we can add our planet gravity force to it. Then set it in start.
+
+```cs
+
+[RequireComponent(typeof(Rigidbody))] // force the player to have a rigidbody
+public class SimplePlanetGravity : MonoBehaviour
+{
+    // ... snipping irrelevant code
+
+    public Rigidbody playerRigidbody;
+
+    private void Start()
+    {
+        playerRigidbody = gameObject.GetComponent<Rigidbody>();
+    }
+}
+```
+
+Now we can add the gravity force!
+
+```cs
+
+
+```
 
 TODO finish Mock tutorial in The-Teaching-Handbook repo
 TODO add planetary gravity and orientation
