@@ -570,6 +570,7 @@ We can set the players `transform.up` to the  same as the `upDirection` vector a
 ```
 
 
+
 TODO gradual planet orientation.
 
 For thos of you who do not want to wait here is the code for doing gradual planet orientation https://github.com/PaperPrototype/Voxel-Terrain-System/blob/main/Assets/SmallPlanet/PlanetGravity.cs
