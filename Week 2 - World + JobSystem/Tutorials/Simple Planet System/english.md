@@ -570,6 +570,9 @@ We can set the players `transform.up` to the upDIrection and then the player wil
 ```
 
 
+TODO gradual player entry orientation
+For thos of you who do not want to wait here is the code for doing incremental planet orientation https://github.com/PaperPrototype/Voxel-Terrain-System/blob/main/Assets/SmallPlanet/PlanetGravity.cs
+
 TODO finish Mock tutorial in The-Teaching-Handbook repo
 
 You can join my discord for help from me! https://discord.gg/QhqTE4t2tR
