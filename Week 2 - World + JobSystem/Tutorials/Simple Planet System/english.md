@@ -402,20 +402,37 @@ public class SimplePlanetChunk
 
 Now if you hit play you can mess around with the values to get some pretty intersting planets.
 
-TODO:
+But at some point you may ask yoursefl? How is it possible that we can get something like this...
 
-How is it possible that we can get something like this
+![planet blob floating](./Assets/planet_floating_blob.png)
 
-![]() TODO picture of overhanging terrain, with red lines outlining the overhang gap, Red lines hsould make a shape that would fill in the gap if we were using height only based terrain
+...by only adding and subtracting from the distance to the center of the planet? Wouldn't that only give us varying height values for mountians, and not any overhangs?
 
-By only adding and subtracting from the distance to the center of the planet? Wouldn't that only give us varying height values for mountians?
+Look at the IsSolid funciton for a sec
 
-If voxel `A` (in the picture below) adds noise to the distance, that would make the if statement true. While voxel `B` subtracts noise from the distance, making the if statment false.
+```cs
+    private bool IsSolid(FastNoiseLite noise, int x, int y, int z)
+    {
+        float distance = Vector3.Distance(new Vector3(x, y, z) + chunkPos, Vector3.zero);
 
-![]() TODO voxel is A on top of the overhang, voxel B is below the overhang.
+        distance += noise.GetNoise(x + chunkPos.x, y + chunkPos.y, z + chunkPos.z) * amplitude;
 
-The reasson this is happening is becuase we are sampling the noise per voxel position, giving us varying results depending on our voxel position rather than its height.
+        if (distance <= planetRadius)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+```
 
+If voxel `A` (in the picture below) added noise to the distance, that would make the if statement true in the `IsSolid` function. While if voxel `B` subtracts noise from the distance, it would make the if statement false in `IsSolid`.
+
+![floating terrain explained](./Assets/planet_floating_blob_explained.png) 
+
+The reason this is happening is becuase we are sampling the noise per voxel position, and not per positon on the surface of the terrain, giving us varying results depending on our voxel position rather than its height.
 
 # Planet gravity and orientation
 Now, lets give our planet gravity! We'll also be adding a *gradual* planet orientation to the gravity script since a lot of people are trying to figure out how to get this to work.
@@ -554,9 +571,6 @@ We can set the players `transform.up` to the upDIrection and then the player wil
 
 
 TODO finish Mock tutorial in The-Teaching-Handbook repo
-TODO add planetary gravity and orientation
-TODO show player controller code change for making the planet
-TODO make a really good video about the tutorial to get people interested in the course
 
 You can join my discord for help from me! https://discord.gg/QhqTE4t2tR
 
