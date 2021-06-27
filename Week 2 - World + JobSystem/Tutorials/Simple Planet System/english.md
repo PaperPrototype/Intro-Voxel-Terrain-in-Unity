@@ -418,7 +418,7 @@ The reasson this is happening is becuase we are sampling the noise per voxel pos
 
 
 
-# Player controller and planet orientation
+# Planet gravity and orientation
 Now, lets give our planet gravity! We'll also be adding a *gradual* planet orientation to the gravity script since a lot of people are trying to figure out how to get this to work.
 
 First lets make our player so that it can have physics.
