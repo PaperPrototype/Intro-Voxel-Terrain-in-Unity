@@ -553,7 +553,7 @@ Now we can add the gravity force!
 
 Now make sure to add this script to the player gameObject. 
 
-Also position the player so that they are outside of the planet radius. You can use the `radius` variable on the planet script to determine how far away to place the player. Fo example, if the radius of the planet is 100, then set the y position to be 105.
+Also position the player so that they are outside of the planet radius. You can use the `radius` variable on the planet script to determine how far away to place the player. For example, if the radius of the planet is 100, then set the y position to be 105.
 
 Now how about orienting the player ith the planet upDirection, so that they rotate correctly?
 
