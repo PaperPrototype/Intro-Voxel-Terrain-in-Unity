@@ -555,9 +555,9 @@ Now make sure to add this script to the player gameObject.
 
 Also position the player so that they are outside of the planet radius. You can use the `radius` variable on the planet script to determine how far away to place the player. For example, if the radius of the planet is 100, then set the y position to be 105.
 
-Now how about orienting the player ith the planet upDirection, so that they rotate correctly?
+Now how about orienting the player in the the planet upDirection, so that they rotate correctly?
 
-We can set the players `transform.up` to the upDIrection and then the player will always stand straight up on the planet surface!
+We can set the players `transform.up` to the  same as the `upDirection` vector and then the player will always stand straight up on the planet surface!
 
 ```cs
     private void FixedUpdate()
@@ -570,8 +570,9 @@ We can set the players `transform.up` to the upDIrection and then the player wil
 ```
 
 
-TODO gradual player entry orientation
-For thos of you who do not want to wait here is the code for doing incremental planet orientation https://github.com/PaperPrototype/Voxel-Terrain-System/blob/main/Assets/SmallPlanet/PlanetGravity.cs
+TODO gradual planet orientation.
+
+For thos of you who do not want to wait here is the code for doing gradual planet orientation https://github.com/PaperPrototype/Voxel-Terrain-System/blob/main/Assets/SmallPlanet/PlanetGravity.cs
 
 TODO finish Mock tutorial in The-Teaching-Handbook repo
 
