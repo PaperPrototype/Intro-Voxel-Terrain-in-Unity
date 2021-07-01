@@ -28,4 +28,4 @@ If you want to contribute then read our [Guidelines](https://github.com/Nanite3D
 this course is still being written as you read this. Breaking changes may be introduced. Join the Discord for a changelog and one-on-one help from me https://discord.gg/Gp7YEUkVHC
 
 # License
-The content of all files ending in ".md" remain the sole property of Abdiel Lopez, unless otherwise specified. The source code taught in the course is licensed under the MIT license. A complete Unity project containing all the source code can be found here https://github.com/PaperPrototype/Voxel-Terrain-System
+The content of all files ending in ".md" remain the sole property of Abdiel Lopez, unless otherwise specified. The source code snippets in the course are licensed under the MIT license. A complete Unity project containing all the source code can be found here https://github.com/PaperPrototype/Voxel-Terrain-System
