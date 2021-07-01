@@ -1,5 +1,5 @@
-
-Temporary showcase video https://www.youtube.com/watch?v=HvpDE3eM6v4 (I will make a better video once the course is more finished and finalized, and I can showcase planet generation)
+Temporary showcase video https://www.youtube.com/watch?v=HvpDE3eM6v4 
+Planet terrain video https://www.youtube.com/watch?v=G5H7oRlr11s
 
 # Intro to Simplified Voxel Systems in Unity
 An open source introductory course on making a voxel terrain system in Unity. For beginners to Unity that already know how to code (what functions, pointers, arrays, and return types are). The goal is to use the simplest code to achieve an easy to understand voxel terrain system that still achieves high performance using the JobSystem.
@@ -26,3 +26,6 @@ If you want to contribute then read our [Guidelines](https://github.com/Nanite3D
 
 # Currently being made
 this course is still being written as you read this. Breaking changes may be introduced. Join the Discord for a changelog and one-on-one help from me https://discord.gg/Gp7YEUkVHC
+
+# License
+The content of all files ending in ".md" remain the sole property of Abdiel Lopez, unless otherwise specified. The code taught in the course is licensed under the MIT license. A complete Unity project containing all the source code can be found here https://github.com/PaperPrototype/Voxel-Terrain-System
