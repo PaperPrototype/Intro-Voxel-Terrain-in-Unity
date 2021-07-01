@@ -952,6 +952,8 @@ And now if you click play, edit some voxels, then stop the game, then play again
 # Mulithreading everything! (In the chunk code)
 Memory is historically one of the slowest processes of a computer. So we will be putting our file saving and loading into a Job to increase the amount of files we can load and save to disk. We will also be calculating the chunk's data in a Job. Lets do it!
 
+Make a new micro project called JobChunk2. This will be based off of the JobChunk micro project, except it will use the xovel data, and will have multithreaded saving.
+
 Don't worry I am working on writing this! Don't want to wait? You can download the working project for the upcoming section here https://github.com/PaperPrototype/Voxel-Terrain-System/blob/main/Assets/JobChunk2/BuildableChunk.cs
 
 NOTE: If your reading this I am still writing this lecture
