@@ -1,12 +1,12 @@
 TODOS
 - reduce ambiguity between the word voxel and cube
 
-Pixel's make up 2D pictures and worlds. The idea of Voxel's is to make everything in a game out of 3D pixel's or "voxel". 
+Pixels make up 2D pictures and worlds. The idea of Voxels is to make everything in a game out of 3D pixels or "voxels". 
 
-Minecraft, Astroneer, SpaceEngineers, and NoMansSky are all games that use voxel systems for their terrain
-The biggest problem's facing voxel technology have been
-- storing voxels takes a lot of space (picture formats are large enough)
-- most graphis cards have hardware triangle rasterization (rasterization means filling in three points to make a triangle) which is extremely fast. On the other hand there is no (or little) support for hardware voxel rasterization. Instead we have to use software voxel rasterization or make the voxels out of triangles. Most voxel engines use triangles.
+Minecraft, Astroneer, SpaceEngineers, and NoMansSky are all games that use voxel systems for their terrain.
+The biggest problems facing voxel technology:
+- Storing voxels takes a lot of space (picture formats are large enough).
+- Most graphics cards have hardware triangle rasterization (rasterization means filling in three points to make a triangle) which is extremely fast. On the other hand, there is no (or little) support for hardware voxel rasterization. Instead, we have to use software voxel rasterization or make the voxels out of triangles. Most voxel engines use triangles.
 
 Worthy mentions of pioneers in voxel technology are
 - VoxelBee - [Youtube (TODO)]()
@@ -14,18 +14,18 @@ Worthy mentions of pioneers in voxel technology are
 - Eucludean - Youtube TODO, Website TODO
 - Vox the game
 
-Most game engines rendering systems don't support 3D picture (voxel) formats. So we will be using many triangles put together to represent the voxel's. When we hold many triangles together this is often called a "Mesh". We will be learning about meshes in this lecture.
+Most game engines' rendering systems don't support 3D picture (voxel) formats. So we will be using many triangles put together to represent the voxels. When we hold many triangles together this is often called a "Mesh". We will be learning about meshes in this lecture.
 
-By the end of the lecture you will have made this.
+By the end of the lecture, you will have made this.
 
 ![final_voxel](Assets/final_voxel.png)
 
 ### Vertices
 (For really good definitions of the vocabulary and words used in this lecture open up the notes for this lecture. [Here's a quick link](https://github.com/PaperPrototype/Intro-Voxel-Terrain-in-Unity/blob/main/Week%200%20-%20Voxels%20%2B%20Triangles/Notes/english.md))
 
-A "mesh" is contains information on how to represent a shape. Most meshes use a sets of three positions, called a vertex, to make triangles. Why triangles? Well, since triangles are the simplest shape, we can make just baout any other shape suing triangles.
+A "mesh" contains information on how to represent a shape. Most meshes use a set of three positions, called a vertex, to make triangles. Why triangles? Well, since triangles are the simplest shape, we can make just about any other shape using triangles.
 
-For example you can make a square using 2 triangles, and you can make a *pretty good* circle using triangles a whole lot of triangles put together. 
+For example, you can make a square using 2 triangles, and you can make a *pretty good* circle using a whole lot of triangles put together. 
 
 Let's make a triangle using 3 *vertices* in some fake code. (Funny thing is, we also have another name for "position", called a "point").
 
@@ -42,16 +42,16 @@ If we make a simple graph with an `x` and `y` axis (much like the one you use fo
 
 
 ### Triangles ("connecting" our vertices)
-Now, if everything is a triangle how do we tell the computer to put them together? In code we can say get the first vertex, then the second one, and then the third one, then fill in the shape of a triangle using those vertices.
+Now, if everything is a triangle how do we tell the computer to put them together? In code, we can say get the first vertex, the second one, and the third one, then fill in the shape of a triangle using those vertices.
 
 ```
     mesh.vertices = { Vector3(-1, -1, 0), Vector3(-1, 1, 0), Vector3(1, 1, 0) }
     mesh.triangles = { 0, 1, 2 }
 ```
 
-If you look at the code that is exaclty what we did! Now as a note, these "triangles" are just numbers telling us, get the first vertex in the list of vertices, but since computers start counting at 0 rather than 1, the "first" vertex is at `0` in the list.
+If you look at the code that is exactly what we did! Now as a note, these "triangles" are just numbers telling us, get the first vertex in the list of vertices, but since computers start counting at 0 rather than 1, the "first" vertex is at `0` in the list.
 
-These "triangle" numbers, are rendered in sets of 3. So if had say `0, 1, 2, 1` the last number wouldn't belong to any "triangle", since it has to be part of a set of other numbers. We would also get an error from Unity.
+These "triangle" numbers are rendered in sets of 3. So if had say `0, 1, 2, 1` the last number wouldn't belong to any "triangle", since it has to be part of a set of other numbers. We would also get an error from Unity.
 
 Now if we used the "triangles" in our chart to build a triangle it would look like this.
 
@@ -62,7 +62,7 @@ To make a square shape (a "quad" in 3D jargon) we need one more vertex in the up
 
 ![four vertices](/Assets/four_vertices.png)
 
-Then to use the new vertex, and some of the old ones, to make another "triangle". For this we can add another 3 numbers to the triangles list.
+Then to use the new vertex, and some of the old ones, to make another "triangle". For this, we can add another 3 numbers to the triangles list.
 
 ```
     mesh.vertices = { Vector3(-1, -1, 0), Vector3(-1, 1, 0), Vector3(1, 1, 0), Vector3(1, -1, 0) }
@@ -79,7 +79,7 @@ If we rendered the resulting "mesh" it would look like this
 Remember a "mesh" is just the name for the idea of making shapes with triangles.
 
 ### Normals (which side of the triangle to render)
-We need a "direction" to tell the renderer which side of the quad is up and should be rendered. Also the opposite side that is not "upwards" doesn't get rendered. This is for performance reasons and is called "backface culling". 
+We need a "direction" to tell the renderer which side of the quad is up and should be rendered. Also, the opposite side that is not "upwards" doesn't get rendered. This is for performance reasons and is called "backface culling". 
 
 The direction that is upwards from a mesh is called a "normal." Usually a normal is angled at 90 degrees from a surface.
 
@@ -89,15 +89,15 @@ Here is what normals would look like on our quad.
 
 ![correct surface normal](/Assets/correct_normal.png)
 
-But what if the normals were aiming in a direction that is not 90 degrees angled from the surface?
+But what if the normals were aiming in a direction that is not a 90-degree angle from the surface?
 
-(We usually refer to the aim direction of a normal as, the direction a normal is "facing") 
+(We usually refer to the aim direction of a normal as the direction a normal is "facing") 
 
 The renderer will just smooth the surface's color so that the "angle" the surface is facing is consistent with the normals.
 
 ![incorrrect surface normal](/Assets/incorrect_normal.png)
 
-This could let us make surfaces are not smooth look as if they were smooth. This is used a lot on games, because it gives better performance to use normals to smooth a surface rather than a million detailed triangles.
+This could let us make surfaces that are not smooth look as if they were smooth. This is used a lot in games because it gives better performance to use normals to smooth a surface rather than a million detailed triangles.
 
 Each vertex on a mesh needs a normal.
 
@@ -109,17 +109,17 @@ Each vertex on a mesh needs a normal.
 
 If the distance a normal covers is 1, then it is called a "Unit" normal.
 
-![]() TODO add pic of Unit normal being measured
+![]() TODO add a pic of Unit normal being measured
 
-Normals are always just giving us a "direction", so they are not positioned near their vertex. Instead since all we care about is the direction they give us, they are actually positoned in the center of the world.
+Normals are always just giving us a "direction", so they are not positioned near their vertex. Instead since all we care about is the direction they give us, they are positioned in the center of the world.
 
-The distance from the beggining to the end of any normal (or any Vector3) is called it's Magnitude. 
+The distance from the beginning to the end of any normal (or any Vector3) is called its Magnitude. 
 
 ![magnitude of normal](/Assets/normal_magnitude.png)
 
 So we could say that a "Unit" normal, has a "magnitude" of 1 (I'm telling you all this because someone will probably use these words and you might want to know what they are talking about).
 
-Now calculating all the normals for a mesh can get complicated so Unity has a builtin function for generating normals for us called `RecalculateNormals`.
+Now calculating all the normals for a mesh can get complicated so Unity has a built-in function for generating normals for us called `RecalculateNormals`.
 
 ```
     mesh.vertices = { Vector3(-1, -1, 0), Vector3(-1, 1, 0), Vector3(1, 1, 0), Vector3(1, -1, 0) }
@@ -146,7 +146,7 @@ Clockwise will make the normals face us
 # Making the quad in Unity
 Make a new Unity project for this course. Make the project a 3D project using the Universal Render Pipeline.
 
-Once that loads, make a new folder under the Assets folder called "Qaud". In  the "Quad" folder put a new scene called Quad, as well as new script called `Quad`. The project should then look like the following.
+Once that loads, make a new folder under the Assets folder called "Quad". In the "Quad" folder put a new scene called Quad, as well as a new script called `Quad`. The project should then look like the following.
 
 ```
     Assets/
@@ -155,9 +155,9 @@ Once that loads, make a new folder under the Assets folder called "Qaud". In  th
     |   |___Quad.cs (Script)
 ```
 
-Open the scene we made by double clicking it. In the scene add an empty GameObject. 
+Open the scene we made by double-clicking it. In the scene add an empty GameObject. 
 
-Open the script by double clicking it. The gameObject will need a MeshRenderer component and a MeshFilter component. We can force Unity to have these on the GameObject by adding a `RequireComponent` attribute above the `Quad` class.
+Open the script by double-clicking it. The gameObject will need a MeshRenderer component and a MeshFilter component. We can force Unity to have these on the GameObject by adding a `RequireComponent` attribute above the `Quad` class.
 
 ```cs
 using UnityEngine;
@@ -172,7 +172,7 @@ Now make sure to save the script by clicking `cmd + s` on mac or `ctrl + s` on w
 
 Go back to the scene and drag the Quad script onto the empty GameObject. It should automatically also add the needed components since we added the `RequireComponent` attribute.
 
-Now in the `Quad` script we can actually make our mesh as before. In the `Start()` function add
+Now in the `Quad` script, we can make our mesh as before. In the `Start()` function add
 
 ```cs
     void Start()
@@ -192,7 +192,7 @@ Now we make a new `Mesh` object (a "class" is an object), and then as we did bef
     }
 ```
 
-There is actually a handy way to write making a mesh so that we don't have to say `mesh.vertices = ...etc`
+There is a handy way to write making a mesh so that we don't have to say `mesh.vertices = ...etc`
 
 ```cs
     void Start()
@@ -228,9 +228,9 @@ Then finally we set the gameObjects mesh by getting the `MeshFilter` component a
 
 Now hit play. And Voila! (If you get an error, make sure your triangles aren't trying to access vertices that don't exist, or just [join our Discord server](https://discord.gg/Gp7YEUkVHC) for help).
 
-If you cick on the gameObject we created and then click the `f` key to focus onto the gameObject (f stands for "focus"), you should then be able to hold the `option` key and orbit around it with the mouse.
+If you click on the gameObject we created and then click the `f` key to focus on the gameObject (f stands for "focus"), you should then be able to hold the `option` key and orbit around it with the mouse.
 
-You will see that the color of the quad is pink! That just means it has no material for it. Make a new a material we can use for all our meshes. Your project should look like this.
+You will see that the color of the quad is pink! That just means it has no material for it. Make a new material we can use for all our meshes. Your project should look like this.
 
 ```
     Assets/
@@ -240,31 +240,31 @@ You will see that the color of the quad is pink! That just means it has no mater
     |   |___Quad
 ```
 
-Add the material to the quad gameObject. Now when you hit play you should see a white colored square.
+Add the material to the quad gameObject. Now when you hit play you should see a white-colored square.
 
-# UV's and textures
+# UVs and textures
 Almost all terrains have textures for grass, dirt, and rocks.
 
 A texture is just an image. The renderer takes care of 'warping' the textures onto our triangles, all we have to do is tell it which vertex a specific part of our texture should "map" to. 
 
-The textures "UV size" in Unity is always from 0 to 1, regardless of the texures actuall size in pixels.
+The textures "UV size" in Unity is always from 0 to 1, regardless of the texture's actual size in pixels.
 
 ![2D uv texture](/Assets/2D_uv_texture.png)
 
-A UV in Unity's mesh format is represneted as a `Vector2`.
+A UV in Unity's mesh format is represented as a `Vector2`.
 
 A Value of `Vector2(0, 0)` in a UV would get the bottom left corner of our texture.
 
 ![2D uv texture coordinate](/Assets/2D_uv_texture_coordinate.png)
 
-How can we use this to map UV texture coordinates to a vertex? Well each vertex in the mesh gets a UV. So putting a UV at the 0 index of UV array would correspond to the first vertex in the mesh.
+How can we use this to map UV texture coordinates to a vertex? Well, each vertex in the mesh gets a UV. So putting a UV at the 0 index of the UV array would correspond to the first vertex in the mesh.
 
 ```
     mesh.vertices = { Vector3(-1, -1, 0) }
     mesh.uv       = { Vector2(0, 0) }
 ```
 
-Any subsequent UV's would reference the vertex with the same index.
+Any subsequent UVs would reference the vertex with the same index.
 
 ```
     mesh.vertices = { Vector3(-1, -1, 0), Vector3(-1, 1, 0), Vector3(1, 1, 0) }
@@ -295,8 +295,8 @@ To texture the quad we only have to add one more UV, since there is one UV per v
 
 ![2D textured quad](/Assets/2D_textured_quad.png)
 
-# Adding uv's to the quad in Unity
-From the Resources folder of this repository get the file called "Texture.png.zip". Unzip it and place it in the root of the Project.
+# Adding UVs to the quad in Unity
+From the Resources folder of this repository get the file called "Texture.png.zip". Unzip it and place it at the root of the Project.
 
 ```
     Assets/
@@ -305,9 +305,9 @@ From the Resources folder of this repository get the file called "Texture.png.zi
     |___Quad/
 ```
 
-Now double click the "White" material, and drag the texture onto the little square next to the "albedo" (color) property. This sets surface color of the mesh to be the texture. Also set the materials smoothness to be 0. This will make our meshes look less shiny. 
+Now double click the "White" material, and drag the texture onto the little square next to the "albedo" (color) property. This sets the surface color of the mesh to be the texture. Also, set the smoothness of the material to be 0. This will make our meshes look less shiny. 
 
-Now open up the Quad.cs script and add the code UV's for UV's of the quad. It is exactly the same as the code we showed in the explanation.
+Now open up the Quad.cs script and add the code UVs for UVs of the quad. It is the same as the code we showed in the explanation.
 
 ```cs
     Mesh mesh = new Mesh
@@ -318,7 +318,7 @@ Now open up the Quad.cs script and add the code UV's for UV's of the quad. It is
     };
 ```
 
-Run this new code and you should see a texured square!
+Run this new code and you should see a textured square!
 
 ![textured quad screenshot](/Assets/textured_quad_screenshot.png)
 
@@ -327,9 +327,9 @@ Voxel terrains are made of the surface of thousands of small voxels. If we just 
 
 ![2D voxel terrain unoptimized](/Assets/2D_voxel_terrain_unoptimized.png)
 
-You may notice the inefficiency here. The side of a cube or voxel that is not visible is still being generated and rendered. This will lead to horrible performance in a large world. 
+You may notice the inefficiency here. The side of a cube or voxel that is not visible is still being generated and rendered. This will lead to a horrible performance in a large world. 
 
-To fix this we can generate the individual sides of a voxel separately by checking if their is a neighbor voxel next to it, if there is a neighbor we don't generate that side of the voxel.
+To fix this we can generate the individual sides of a voxel separately by checking if there is a neighbor voxel next to it, if there is a neighbor we don't generate that side of the voxel.
 
 ![2D voxel terrain optimized](/Assets/2D_voxel_terrain_optimized.png)
 
@@ -344,7 +344,7 @@ Add a new "micro project", aka a new folder, to our Unity project, and add the f
     |   |___Voxel.cs     <- new script called "Voxel"
 ```
 
-Now open up the Voxel scene and add an empty GameObject. Open up Voxel.cs and force Unity to add the `MeshFilter` and `MeshRnederer` components as before (by using the RequireComponent attibute).
+Now open up the Voxel scene and add an empty GameObject. Open up Voxel.cs and force Unity to add the `MeshFilter` and `MeshRnederer` components as before (by using the RequireComponent attribute).
 
 This time instead of hard coding our vertices and triangles we are going to be smart. We will make an array of all 8 possible vertices for a cube, that we can always reference. We'll make a new script to contain all this called DataDefs.cs
 
@@ -356,7 +356,7 @@ This time instead of hard coding our vertices and triangles we are going to be s
     |___Voxel/
 ```
 
-Now add the a `Vertices` array to DataDefs.cs
+Now add the `Vertices` array to DataDefs.cs
 
 ```cs
 using UnityEngine;
@@ -401,9 +401,9 @@ To be able to get the vertices per side of a cube, we make a "lookup" table (a 2
 
 We've made the `BuildOrder` lookup table (for getting the vertices per side) so that the order we get the vertices works with a specific triangles pattern `0, 1, 2, 2, 1, 3`. When you see the phrase "left face" we are talking about the quad that makes up a particular side of the cube.
 
-We mark the class as well as the arrays `static` for a reason. Anything marked as `static` gets saved to a special part of our programs for data that will be accessed a lot and doesn't change. A result of this is there is only one copy of that data and data can be accessed really fast. Also the arrays are marked as `readonly`. This tells the compiler that the data can only be read and not modified. The correct word is "not mutated" or "immutable". This allows any Thread or Job to access the arrays since there is only one copy of them and they aren't allowed to be modified. A result of nothing being allowed to change is that the C# Job system won't complain when we use the lookup tables in a Job.
+We mark the class as well as the arrays `static` for a reason. Anything marked as `static` gets saved to a special part of our programs for data that will be accessed a lot and doesn't change. A result of this is there is only one copy of that data and data can be accessed fast. Also, the arrays are marked as `readonly. This tells the compiler that the data can only be read and not modified. The correct word is "not mutated" or "immutable". This allows any Thread or Job to access the arrays since there is only one copy of them and they aren't allowed to be modified. A result of nothing being allowed to change is that the C# Job system won't complain when we use the lookup tables in a Job.
 
-We will start simple and use the lookup tables to make one side of a voxel. For now open up the Quad.cs code and change so it uses the lookup tables for generating our vertices rather than, as we did before, "hard coding" the vertices ("hard coding" means that the code was written by hand with specific numbers, rather than using a lookup table or helpful function to do it for us).
+We will start simple and use the lookup tables to make one side of a voxel. For now, open up the Quad.cs code and change so it uses the lookup tables for generating our vertices rather than, as we did before, "hard coding" the vertices ("hard coding" means that the code was written by hand with specific numbers, rather than using a lookup table or helpful function to do it for us).
 
 ```cs
     // ... snipping irrelevant code
@@ -430,13 +430,13 @@ We will start simple and use the lookup tables to make one side of a voxel. For 
 
 We change the triangles to follow the triangle pattern that works with the `BuildOrder` pattern we mentioned before.
 
-The `Vertices` lookup table lets us put in a number to get a specific vertex. The `BuildOrder` table gives us the number to use to put into the `Vertices` table, based on the side of the cube we want. Currently we are asking for side `0` which is why you see all those `0`'s in the `BuildOrder` table. The `0, 1, 2, 3` gets the vertex for a corner of the face of the cube we want (Rememeber, when you see the phrase "left face" or "face 0" we are talking about the quad that makes up that particular side of the cube).
+The `Vertices` lookup table lets us put in a number to get a specific vertex. The `BuildOrder` table gives us the number to use to put into the `Vertices` table, based on the side of the cube we want. Currently, we are asking for side `0` which is why you see all those `0`'s in the `BuildOrder` table. The `0, 1, 2, 3` gets the vertex for a corner of the face of the cube we want (Remember, when you see the phrase "left face" or "face 0" we are talking about the quad that makes up that particular side of the cube).
 
 Also the uv's change from `(0, 0), (0, 1), (1, 1), (1, 0)` to `(0, 0), (0, 1), (1, 0), (1, 1)` since the positions of the vertices that they refer to have changed.
 
 Now if you run this you should see a side of a cube, aka a quad.
 
-# Actually making a voxel
+# making a voxel
 Open Voxel.cs and create a new mesh except we are going to use our lookup tables this time. We use a NativeArray to store the vertices and triangles. This is to get you used to using them since they are JobSystem friendly and you will need to know how to use them to use the JobSystem.
 
 ```cs
@@ -457,9 +457,9 @@ public class Voxel : MonoBehaviour
 }
 ```
 
-(We use the naming convention `m_variable` to represent private member class variables, this helps to distiniguish them from the meshes variable names. We recommend you copy us for an optimal course experience.)
+(We use the naming convention `m_variable` to represent private member class variables, this helps to distinguish them from the mesh variable names. We recommend you copy us for an optimal course experience.)
 
-The `m_vertexIndex` is used to keep track of the current newest vertex. That way new vertices being added don't overwrite eachother, but get added on after the already added vertices. You can visualize this as
+The `m_vertexIndex` is used to keep track of the current newest vertex. That way new vertices being added don't overwrite each other but get added on after the already added vertices. You can visualize this as
 
 ```
 vertexIndex = 4
@@ -471,7 +471,7 @@ vertices = [v0, v1, v2, v3, null, null, null, null]
 
 The m_triangleIndex serves the same purpose except for the triangles.
 
-Make a new function that uses the lookup tables to make a whole cube. The `side` variable looks up each side of the voxel in the lookup table. Also a voxel (AKA cube) has 6 sides, so we make a for loop to go through each side in the lookup table.
+Make a new function that uses the lookup tables to make a whole cube. The `side` variable looks up each side of the voxel in the lookup table. Also, a voxel (AKA cube) has 6 sides, so we make a for loop to go through each side in the lookup table.
 
 ```cs
 public class Voxel : MonoBehaviour
@@ -522,7 +522,7 @@ You should notice that when setting the triangles we set them to
 = m_vertexIndex + 3;
 ```
 
-We add the current vertexIndex to the triangles as an offset when setting the triangles to make sure that the triangles are refering to their set of vertices and not the previous set of vertices that are for another side of the voxel.
+We add the current vertexIndex to the triangles as an offset when setting the triangles to make sure that the triangles are referring to their set of vertices and not the previous set of vertices that are for another side of the voxel.
 
 We do a similar procedure when putting our vertices and triangles *into* the mesh arrays.
 
@@ -575,9 +575,9 @@ We then set our mesh variables data to the arrays we made, and convert the Nativ
 
 We then set the MeshFilters mesh to our `m_mesh` variable. We also make sure to Calculate the normals and Bounds.
 
-You might notice `Allocator.Temp` this is an enum (an enum lets us make a type of "options" system. WHen you make an enum you give the options it can represent). This is telling the Allocator to use a really fast memory fetch, but that memeopry can only exist for 4 frames (ever heard of frames per second? fps?). 
+You might notice `Allocator.Temp` this is an enum (an enum lets us make a type of "options" system. WHen you make an enum you give the options it can represent). This is telling the Allocator to use a really fast memory fetch, but that memory can only exist for 4 frames (ever heard of frames per second? fps?). 
 
-There are other enums like `Allocator.Persistent` that let us have the memory we want for as long as we need, but they take much longer to find the memory we want, so its better to use a `Temp` allocator. `Allocator.TempJob` is a special allocator for Job's and multithreading that is based on `Allocator.Temp` but is optimized specifically for multithreading.
+There are other enums like `Allocator.Persistent` that let us have the memory we want for as long as we need, but they take much longer to find the memory we want, so it's better to use a `Temp` allocator. `Allocator.TempJob` is a special allocator for Job's and multithreading that is based on `Allocator.Temp` but is optimized specifically for multithreading.
 
 Also since we are using NativeCollections we have to manually free our memory, much like in C or C++.
 
