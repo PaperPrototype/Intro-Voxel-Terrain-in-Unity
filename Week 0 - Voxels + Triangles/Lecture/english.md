@@ -377,7 +377,7 @@ public static class DataDefs
 }
 ```
 
-We remove the `: Monobehaviour` from the DataDefs class since we won't need this script to be a component of a gameObject. The vertices array (or as we call it "lookup table") has all 8 possible vertices for the corners of a cube or voxel.
+We remove the `: Monobehaviour` from the `DataDefs` class since we won't need this script to be a component of a gameObject. The vertices array (or as we call it "lookup table") has all 8 possible vertices for the corners of a cube or voxel.
 
 To be able to get the vertices per side of a cube, we make a "lookup" table (a 2D array) that gets 4 vertices based on the side of the cube we want.
 
