@@ -22,7 +22,7 @@ If something is broken we would love it if you created a new "issue" in the Issu
  - Folders named "Tutorial" contains tutorials for when you've finished a lecture and want to try out what you've learned!
 
 # Contributing
-If you want to contribute then read our [Guidelines](https://github.com/Nanite3D/Nanite-course-Guidelines) it shouldn't take you more than 1 minute to read. Seriously its super short.
+If you want to contribute then read our [Guidelines](https://github.com/Nanite3D/Nanite-course-Guidelines) it shouldn't take you more than 1 minute to read. Seriously it's super short.
 
 # Currently being made
 this course is still being written as you read this. Breaking changes may be introduced. Join the Discord for a changelog and one-on-one help from me https://discord.gg/Gp7YEUkVHC
