@@ -12,11 +12,11 @@ To make the terrain editable we have to store some sort of data. Say we remove a
 
 Instead we will create a 3D array of voxel data and set its values with the Noise. Then when drawing the chunk we reference the data to check if a voxel is solid or not.
 
-Whenever we want to remove a voxel we update the 3D arrays data, and then redraw the mesh. Since the mesh drawing code is referencing the array you will see the change in the resulting mesh.
+Whenever we want to remove a voxel we update the 3D arrays data, and then redraw the mesh. Since the mesh drawing code is referencing the array you will see the change in the resulting new mesh.
 
-We could use booleans (true or false) in the array, to represent solid or not solid voxel's, but it is likely we will want many different types of voxel's. So instead we can store a number that can represent all the different voxel types we might want. Then we can use the in the array as lookup numbers in a `VoxelType` lookup table. 
+We could use booleans (true or false) in the array, to represent solid or not solid voxel's, but it is likely we will want many different types of voxel's. So instead we can store a number that can represent all the different voxel types we might want. Then we can use the voxel type (aka number) in the array as lookup numbers in a `VoxelType` lookup table. 
 
-We will **not** be making a lookup table of different voxel types. For now the `IsSolid` function will check the data array to see if a voxel is solid or not.
+We will **not** be making a lookup table of different voxel types. For now there is only 2 types of voxels 0 = air (not solid (solid). The `IsSolid` function will check the data array to see if a voxel is solid or not.
 
 Make a new micro project called "Chunk2"
 
@@ -61,7 +61,7 @@ public class Chunk2 : MonoBehaviour
 
 ```
 
-We chose to use the smallest possible number type to hold our data, a byte. A byte can hold numbers between 0 and 255. That will give us a total of 256 possible voxel types. You might notice that `data` is a 1D array. We will have to learn how to index a 1D array as if it were a 3D array because later on to pass the data to a Job we have to use a `NativeArray`, and to my knowledge it is not possible to create a 3D `NativeArray`.
+We chose to use the smallest possible number type to hold our voxel data, a byte. A byte can hold numbers between 0 and 255. That will give us a total of 256 possible voxel types. You might notice that `data` is a 1D array. We will have to learn how to index a 1D array as if it were a 3D array because later on to pass the data to a Job we have to use a `NativeArray`, and to my knowledge it is not possible to create a 3D `NativeArray`.
 
 Now we need to make a function that we can call that will give us back a byte (number) for setting our voxel data.
 
@@ -104,7 +104,7 @@ Now we multiply the noise value to get terrain that is higher than 0 or 1. We ch
     }
 ```
 
-Now we can check if the y position is greater than the desired height we return 0, which we will say stands for air. Else we return 1 which could be dirt or grass. Currently 1 just stands for a solid voxel.
+If the y position is greater than the desired height we return 0, which we will say stands for air. Else we return 1 which could be dirt or grass. Currently 1 just stands for a solid voxel.
 
 ```cs
     private byte GetPerlinVoxel(float x, float y, float z)
@@ -122,14 +122,14 @@ Now we can check if the y position is greater than the desired height we return 
     }
 ```
 
-In the IsSolid function we *will* make it will just be doing...
+In the IsSolid function we *will* make (later) it will just be doing...
 
 ```
     if number = 0 
         return false // air
 ```
 
-Now we can go ahead and set the chunk data using the `GetPerlinVoxel()` function.
+Now we can go ahead and set the chunk's data using the `GetPerlinVoxel()` function.
 
 ```cs
 public class Chunk2 : MonoBehaviour
@@ -152,7 +152,7 @@ public class Chunk2 : MonoBehaviour
 }
 ```
 
-You might notice the `?` in the iterator of the data array. How are we going to fill up a 1D array with 3D data? Well, when we make a 3D array it's actually just linear (1D) in memory, but, the compiler takes care of indexing it as 3D for us. Now we don't have the compiler to help us anymore, so we have to learn how to index it as 3D ourselves. (The following is a cpoy/paste of week 2's tutorial).
+You might notice the `?` in the iterator of the data array. How are we going to fill up a 1D array with 3D data? Well, when we make a 3D array it's actually just linear (1D) in memory, but, the compiler takes care of indexing it as 3D for us. Now we don't have the compiler to help us anymore, so we have to learn how to index it as 3D ourselves. (The following is a cooy/paste of week 2's tutorial on indexing a 1D array as if it was a 3D array).
 
 ## Indexing 1D
 A 1D array in memory looks like this
@@ -261,13 +261,13 @@ public static class Utils
 
 The `GetIndex` function takes in 3 indexes that we would normally use for a 3D array. It multiplies these numbers appropriately and gives us a number that we can use to index into our data array.
 
-Now go to Chunk2.cs and change the data arrays indexing to.
+Now go to Chunk2.cs and replace the `?` with our new indexing function.
 
 ```cs
         data[Utils.GetIndex(x, y, z)] = GetPerlinVoxel(x, y, z);
 ```
 
-Now  we can make the IsSolid function.
+Finally we can make the IsSolid function.
 
 ```cs
 public class Chunk2 : MonoBehaviour
@@ -295,7 +295,7 @@ public class Chunk2 : MonoBehaviour
 
 We first make sure that we aren't trying to get an index that is outside of the array. If the index is outside of the array we would check neighbor chunks for their voxel data.
 
-Then if we are inside of the data array we get the voxelType (A byte). If it is 0 we return false (because 0 is air), otherwise we return true saying that the voxel is solid.
+Now, if we are inside of the data array, we get the voxelType (A byte number). If it is 0 we return false (because 0 is air), otherwise we return true saying that the voxel is solid.
 
 ```cs
     private bool IsSolid(int x, int y, int z)
@@ -417,7 +417,7 @@ Now we can change `Start()` to calculate the chunk data and draw the chunk
     }
 ```
 
-Now go into Unity and set up a Chunk GameObject as we have done before. If you hit play you should see a chunk!
+Now go into Unity and set up a Chunk GameObject (as we have done before). If you hit play you should see a chunk!
 
 # Player
 To build and edit the chunks voxel data first we need a player that can walk around, so that we can then build an interaction system with the terrain. We could also do this through the scene editor rather than using an in game player. 

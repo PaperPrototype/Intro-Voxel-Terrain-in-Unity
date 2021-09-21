@@ -14,7 +14,7 @@ Worthy mentions of pioneers in voxel technology are
 - Eucludean - Youtube TODO, Website TODO
 - Vox the game
 
-Most game engines' rendering systems don't support 3D picture (voxel) formats. So we will be using many triangles put together to represent the voxels. When we hold many triangles together this is often called a "Mesh". We will be learning about meshes in this lecture.
+Most game engines' rendering systems don't support 3D picture (voxel) formats. So we will be using many triangles put together to represent the voxels (aka Cubes). When we hold many triangles together this is often called a "Mesh". We will be learning about meshes in this lecture, and using them to make a single cube.
 
 By the end of the lecture, you will have made this.
 
