@@ -420,9 +420,9 @@ Now we can change `Start()` to calculate the chunk data and draw the chunk
 Now go into Unity and set up a Chunk GameObject (as we have done before). If you hit play you should see a chunk!
 
 # Player
-To build and edit the chunks voxel data first we need a player that can walk around, so that we can then build an interaction system with the terrain. We could also do this through the scene editor rather than using an in game player. 
+To build and edit the chunks voxel data first we need a player that can walk around, so that we can then build an interaction system with the terrain chunk data. We could also use the scene camera (the one you use without realizing when you edit a scene) as the player.
 
-For this course we are focused on teaching you the concepts you will need, and not on how to implement them in all the different cool ways.
+For this course we are focused on teaching you the concepts you will need, and not on how to implement them in all the different cool ways, so we'll stick with making a player.
 
 Lets make a simple player. Make a new folder called Player and make a PlayerContoller script in it.
 
@@ -433,7 +433,7 @@ Assets/
         |___PlayerController.cs
 ```
 
-Open up the script and we will first work on movement.
+Open up the script and we will first work on movement for our Player.
 
 ```cs
 using UnityEngine;
@@ -467,7 +467,7 @@ public class PlayerController : MonoBehaviour
 }
 ```
 
-First we force Unity to have the `Rigidbody` component attatched to the gameObject. We make a variable reference `m_rb` so we can access the `RigidBody` component. In start we set `m_rb` to the `RigidBody` component of the gameObject.
+First we force Unity to have the `Rigidbody` component attatched to the gameObject. We make a variable referencer `m_rb` so we can access the `RigidBody` component. In start we set `m_rb` to the `RigidBody` component of the gameObject.
 
 We make the `UpdateMovement` function to hold all of the movement code. In the `UpdateMovement` function we check if the space key is pressed. If it is, we add to the current velocity by using the players current up direction and multiplying it by the jumpVelocity. (This will help make sure the player controller code works with the planet tutorial from last week).
 
