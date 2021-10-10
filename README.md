@@ -3,13 +3,15 @@ Temporary showcase video https://www.youtube.com/watch?v=HvpDE3eM6v4
 Planet terrain video https://www.youtube.com/watch?v=G5H7oRlr11s
 
 # Note from author
-I am currently not developing this course as I am teaching a CS class. I will do more research and will update the course to include the missing sections:
-- Last part of week 4
-- weeks 5 to 7
+I am currently not developing this course as I am teaching an Intro to Coding and Computers class (which will become a pre-requisite for this course). I will do more research and finish section 4. Section 5 and onwards will probably become their own courses. Ideas for next courses are shown below (subject to change)
+- Voxel Terrain LOD + Planets in Unity (C#)
+- Voxel Terrain Multiplayer in Unity (C#)
+ - pre-requisite: Intro to Networking for Games
+- Voxel Terrain Smoothing + Marching Cubes
+- Voxel Terrain Inventory
+ - pre-requisite: Simple Inventory
 
 I have to figure out a simple reliable (and forward compatible) solution to storing the terrain data for multiplayer and LOD systems. I want to be extremely simple like a Database store for the terrain. Performance is important, but simplicity of implementation is the most important. Feel free to reach out with solutions you've made. A good resource is Eldermarkkis Marching Cubes project https://github.com/Eldemarkki/Marching-Cubes-Terrain
-
-The LOD section (week 5) may be added before the research is complete simply because it is hard to find tutorials on implementing Level of Detail (note it will be a cube based LOD system, not smooth terrain, but still cool).
 
 # Intro to Simplified Voxel Systems in Unity
 An open source introductory course on making a voxel terrain system in Unity. For beginners to Unity that already know how to code (what functions, pointers, arrays, and return types are). The goal is to use the simplest code to achieve an easy to understand voxel terrain system that still achieves high performance using the JobSystem.
@@ -18,8 +20,8 @@ Join our Discord to get any updates https://discord.gg/Gp7YEUkVHC
 View the source code of the courses projects https://github.com/PaperPrototype/VoxelSystem
 
 # Pre-requisites
-Basic coding and understanding of computers. 
-Basic understanding of Unity.
+Coding and understanding of computers. 
+Fundamental understanding of Unity.
 
 # Stuck? having Issues?
 Join our Discord server to get help https://discord.gg/Gp7YEUkVHC and report issues. I'm on there pretty regularly.
