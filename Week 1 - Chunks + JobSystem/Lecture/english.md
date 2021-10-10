@@ -135,9 +135,15 @@ If you look at the inside of the current chunk you will see something like this
 
 ![unoptimized chunk mesh](/Assets/unoptimized_chunk_mesh.png)
 
-To make it so voxel's don't draw their side if that side has a neighboring voxel, we need an algorithm to calculate where we want and don't want voxel's. For terrains the most popular option is to use Noise. Perlin Noise, Complex Noise, Value Noise... Noise is a way of getting smoothed random numbers. Most noise algorithms take in an offset in either 2D or 3D and then return a number between -1 to 1 (sometimes 0 to +1). If you saved the values of a noise function on a texture fading between black (-1) and white (1) it might look like this.
+To make it so voxel's don't draw their side if that side has a neighboring voxel, we need an "algorithm" (code that does something in a certain way) to calculate where we want and don't want voxel's. For terrains the most popular option is to use "Noise".
+ 
+Perlin Noise, Complex Noise, Value Noise... It's literally just a random number generator, but smoothed.... and if you put in (2,3,4) for XYZ, then you will get the same random number, every time for (2,3,4). So... like a predictable random number generator.
 
-![TODO textured greyscale perlin noise image]()
+Most noise algorithms take in an offset in either 2D (XY) or 3D (XYZ) and then return (give back) a number between -1 to 1 (sometimes 0 to +1). 
+
+And if you put all those numbers on a texture, with -1 representing black, and 1 representing white, then you will get the below picture.
+
+![2D perlin noise](/Assets/2D_perlin_noise.png)
 
 We could initialize a 3D grid array of data storing bools (true = solid, false = not solid) using a 3D version of this noise at the beginning of our chunk draw and then reference that as grid of "voxel" when building voxels to check if they have neighbors. This saves us on processing power at the trade off of using memory. We would have to do this if we wanted editable terrain, so wecould save the current chunk data as a 3D array grid.
 
