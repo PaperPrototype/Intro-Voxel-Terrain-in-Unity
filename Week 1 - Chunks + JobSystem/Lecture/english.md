@@ -145,7 +145,7 @@ And if you put all those numbers on a texture, with -1 representing black, and 1
 
 ![2D perlin noise](/Assets/2D_perlin_noise.png)
 
-We could initialize a 3D grid array of data storing bools (true = solid, false = not solid) using a 3D version of this noise at the beginning of our chunk draw and then reference that as grid of "voxel" when building voxels to check if they have neighbors. This saves us on processing power at the trade off of using memory. We would have to do this if we wanted editable terrain, so wecould save the current chunk data as a 3D array grid.
+We could initialize a 3D grid array of data storing bools (true = solid, false = not solid) using a 3D version of this noise at the beginning of our chunk draw and then reference that grid when building voxels to check if they have neighbors. This saves us on processing power (since we would do this once for every voxel) at the trade off of using some more memory to streo the data. We would have to do this if we wanted editable terrain.For this section we won't do this.
 
 There is a noise library in the Resources of this repositiory called FastNoiseLite.zip. It is taken from [here](https://github.com/Auburn/FastNoiseLite/tree/master/CSharp) Download our repo and open the prepared zip and drag the folder "FastNoiseLite" into your project so that your project looks like this.
 
