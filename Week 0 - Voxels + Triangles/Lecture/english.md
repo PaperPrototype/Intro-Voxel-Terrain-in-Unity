@@ -53,7 +53,7 @@ If you look at the code that is exactly what we did! Now as a note, these "trian
 
 These "triangle" numbers are rendered in sets of 3. So if had say `0, 1, 2, 1` the last number wouldn't belong to any "triangle", since it has to be part of a set of other numbers. We would also get an error from Unity.
 
-Now if we used the "triangles" in our chart to build a triangle it would look like this.
+Now if we used the "triangles" in our code to build a triangle it would look like this.
 
 ![triangle mesh](/Assets/triangle_mesh.png)
 
