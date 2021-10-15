@@ -344,7 +344,7 @@ Add a new "micro project", aka a new folder, to our Unity project, and add the f
     |   |___Voxel.cs     <- new script called "Voxel"
 ```
 
-Now open up the Voxel scene and add an empty GameObject. Open up Voxel.cs and force Unity to add the `MeshFilter` and `MeshRnederer` components as before (by using the RequireComponent attribute).
+Now open up the Voxel scene and add an empty GameObject. Open up Voxel.cs and force Unity to add the `MeshFilter` and `MeshRenderer` components as before (by using the RequireComponent attribute).
 
 This time instead of hard coding our vertices and triangles we are going to be smart. We will make an array of all 8 possible vertices for a cube, that we can always reference. We'll make a new script to contain all this called DataDefs.cs
 
