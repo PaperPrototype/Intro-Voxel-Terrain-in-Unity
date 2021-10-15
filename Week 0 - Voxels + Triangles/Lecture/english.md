@@ -18,7 +18,7 @@ Most game engines' rendering systems don't support 3D picture (voxel) formats. S
 
 By the end of the lecture, you will have made this.
 
-![final_voxel](Assets/final_voxel.png)
+![final_voxel](/Assets/final_voxel.png)
 
 ### Vertices
 (For really good definitions of the vocabulary and words used in this lecture open up the notes for this lecture. [Here's a quick link](https://github.com/PaperPrototype/Intro-Voxel-Terrain-in-Unity/blob/main/Week%200%20-%20Voxels%20%2B%20Triangles/Notes/english.md))
