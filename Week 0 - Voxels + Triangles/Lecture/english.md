@@ -127,7 +127,7 @@ Now calculating all the normals for a mesh can get complicated so Unity has a bu
     mesh.RecalculateNormals()
 ```
 
-Don't worry this is still fake code so you don't have to worry about adding this to a script. Although the `RecalculateNormals` function is a real function in Unity.
+Don't worry this is still fake code so you don't have to worry about adding this to a script (yet). Although the `RecalculateNormals` function is a real function in Unity.
 
 To use the `RecalculateNormals` function it requires us to already have the `vertices` and `triangles` set in the mesh.
 
