@@ -155,7 +155,7 @@ Once that loads, make a new folder under the Assets folder called "Quad". In the
     |   |___Quad.cs (Script)
 ```
 
-Open the scene we made by double-clicking it. In the scene add an empty GameObject. 
+Open the scene we made by double-clicking it. In the "Quad" scene add an empty GameObject. 
 
 Open the script by double-clicking it. The gameObject will need a MeshRenderer component and a MeshFilter component. We can force Unity to have these on the GameObject by adding a `RequireComponent` attribute above the `Quad` class.
 
