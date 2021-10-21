@@ -1,5 +1,5 @@
 TODOS
-- reduce ambiguity between the word voxel and cube
+- reduce ambiguity between the word "voxel" and "cube"
 
 Pixels make up 2D pictures and worlds. The idea of Voxels is to make everything in a game out of 3D pixels or "voxels". 
 
