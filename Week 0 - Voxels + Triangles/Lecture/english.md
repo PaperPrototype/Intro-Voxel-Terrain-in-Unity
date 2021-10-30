@@ -1,5 +1,5 @@
 TODOS
-- reduce ambiguity between the word voxel and cube
+- reduce ambiguity between the word "voxel" and "cube"
 
 Pixels make up 2D pictures and worlds. The idea of Voxels is to make everything in a game out of 3D pixels or "voxels". 
 
@@ -18,7 +18,7 @@ Most game engines' rendering systems don't support 3D picture (voxel) formats. S
 
 By the end of the lecture, you will have made this.
 
-![final_voxel](Assets/final_voxel.png)
+![final_voxel](/Assets/final_voxel.png)
 
 ### Vertices
 (For really good definitions of the vocabulary and words used in this lecture open up the notes for this lecture. [Here's a quick link](https://github.com/PaperPrototype/Intro-Voxel-Terrain-in-Unity/blob/main/Week%200%20-%20Voxels%20%2B%20Triangles/Notes/english.md))
@@ -53,7 +53,7 @@ If you look at the code that is exactly what we did! Now as a note, these "trian
 
 These "triangle" numbers are rendered in sets of 3. So if had say `0, 1, 2, 1` the last number wouldn't belong to any "triangle", since it has to be part of a set of other numbers. We would also get an error from Unity.
 
-Now if we used the "triangles" in our chart to build a triangle it would look like this.
+Now if we used the "triangles" in our code to build a triangle it would look like this.
 
 ![triangle mesh](/Assets/triangle_mesh.png)
 
@@ -127,7 +127,7 @@ Now calculating all the normals for a mesh can get complicated so Unity has a bu
     mesh.RecalculateNormals()
 ```
 
-Don't worry this is still fake code so you don't have to worry about adding this to a script. Although the `RecalculateNormals` function is a real function in Unity.
+Don't worry this is still fake code so you don't have to worry about adding this to a script (yet). Although the `RecalculateNormals` function is a real function in Unity.
 
 To use the `RecalculateNormals` function it requires us to already have the `vertices` and `triangles` set in the mesh.
 
@@ -155,7 +155,7 @@ Once that loads, make a new folder under the Assets folder called "Quad". In the
     |   |___Quad.cs (Script)
 ```
 
-Open the scene we made by double-clicking it. In the scene add an empty GameObject. 
+Open the scene we made by double-clicking it. In the "Quad" scene add an empty GameObject. 
 
 Open the script by double-clicking it. The gameObject will need a MeshRenderer component and a MeshFilter component. We can force Unity to have these on the GameObject by adding a `RequireComponent` attribute above the `Quad` class.
 
@@ -344,7 +344,7 @@ Add a new "micro project", aka a new folder, to our Unity project, and add the f
     |   |___Voxel.cs     <- new script called "Voxel"
 ```
 
-Now open up the Voxel scene and add an empty GameObject. Open up Voxel.cs and force Unity to add the `MeshFilter` and `MeshRnederer` components as before (by using the RequireComponent attribute).
+Now open up the Voxel scene and add an empty GameObject. Open up Voxel.cs and force Unity to add the `MeshFilter` and `MeshRenderer` components as before (by using the RequireComponent attribute).
 
 This time instead of hard coding our vertices and triangles we are going to be smart. We will make an array of all 8 possible vertices for a cube, that we can always reference. We'll make a new script to contain all this called DataDefs.cs
 
@@ -401,7 +401,7 @@ To be able to get the vertices per side of a cube, we make a "lookup" table (a 2
 
 We've made the `BuildOrder` lookup table (for getting the vertices per side) so that the order we get the vertices works with a specific triangles pattern `0, 1, 2, 2, 1, 3`. When you see the phrase "left face" we are talking about the quad that makes up a particular side of the cube.
 
-We mark the class as well as the arrays `static` for a reason. Anything marked as `static` gets saved to a special part of our programs for data that will be accessed a lot and doesn't change. A result of this is there is only one copy of that data and data can be accessed fast. Also, the arrays are marked as `readonly. This tells the compiler that the data can only be read and not modified. The correct word is "not mutated" or "immutable". This allows any Thread or Job to access the arrays since there is only one copy of them and they aren't allowed to be modified. A result of nothing being allowed to change is that the C# Job system won't complain when we use the lookup tables in a Job.
+We mark the class as well as the arrays `static` for a reason. Anything marked as `static` gets saved to a special part of our programs for data that will be accessed a lot and doesn't change. A result of this is there is only one copy of that data and data can be accessed fast. Also, the arrays are marked as `readonly. This tells the compiler that the data can only be read and not modified. The correct word is "not mutated" or "immutable". This allows any Thread or Job (when multithreading later on) to access the arrays since there is only one copy of them and they aren't allowed to be modified. A result of nothing being allowed to change is that the C# Job system won't complain when we use the lookup tables in a Job.
 
 We will start simple and use the lookup tables to make one side of a voxel. For now, open up the Quad.cs code and change so it uses the lookup tables for generating our vertices rather than, as we did before, "hard coding" the vertices ("hard coding" means that the code was written by hand with specific numbers, rather than using a lookup table or helpful function to do it for us).
 
