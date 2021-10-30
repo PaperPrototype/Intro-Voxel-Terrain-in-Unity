@@ -1,5 +1,7 @@
 This tutorial assumes you've finished week 2's lecture. You can view the final code (aka source code) for this project in the "Intro-to-Voxel-Terrain-in-Unity" repo linked in the README file.
 
+![simple planet](./Assets/planet.png)
+
 To make a planet first we have to figure out how to calculate where a voxel should be, and where it shouldn't be.
 
 Make a new micro project in the course project. Don't make a separate Unity project because we will be reusing code from previous lectures).
