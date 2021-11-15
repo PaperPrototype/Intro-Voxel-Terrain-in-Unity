@@ -16,7 +16,7 @@ Whenever we want to remove a voxel we update the 3D arrays data, and then redraw
 
 We could use booleans (true or false) in the array, to represent solid or not solid voxel's, but it is likely we will want many different types of voxel's. So instead we can store a number that can represent all the different voxel types we might want. Then we can use the voxel type (aka number) in the array as lookup numbers in a `VoxelType` lookup table. 
 
-We will **not** be making a lookup table of different voxel types. For now there is only 2 types of voxels 0 = air (not solid (solid). The `IsSolid` function will check the data array to see if a voxel is solid or not.
+We will **not** be making a lookup table of different voxel types. For now there is only 2 types of voxels 0 = air (not solid) and 1 = dirt (solid). The `IsSolid` function will check the data array to see if a voxel is solid or not.
 
 Make a new micro project called "Chunk2"
 
