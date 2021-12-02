@@ -42,3 +42,6 @@ this course is still being written as you read this. Breaking changes may be int
 
 # License
 The content of all files ending in ".md" remain the sole property of Abdiel Lopez, unless otherwise specified. The source code snippets in the course are licensed under the MIT license. A complete Unity project containing all the source code can be found here https://github.com/PaperPrototype/Voxel-Terrain-System
+
+# TODO
+Make static funtion for savename (also include chunksize in savename) to prevent from loading chunk files with different chunksize.
