@@ -3,7 +3,9 @@ Temporary showcase video https://www.youtube.com/watch?v=HvpDE3eM6v4
 Planet terrain video https://www.youtube.com/watch?v=G5H7oRlr11s
 
 # Note from author
-I am currently not developing this course as I am teaching an Intro to Coding and Computers class (which will become a pre-requisite for this course). I will do more research and finish section 4. Section 5 and onwards will probably become their own courses. Ideas for next courses are shown below (subject to change)
+I am currently not developing this course as I am teaching an Intro to Coding and Computers class (which will become a pre-requisite for this course)... EDIT I am now restarting after much feedback, the "Intro to Coding and Computers" course is now being scrapped.
+
+I will also do more research and finish section 4. Section 5 and onwards will probably become their own courses. Ideas for next courses are shown below (subject to change)
 - Voxel Terrain LOD + Planets in Unity (C#)
 - Voxel Terrain Multiplayer in Unity (C#)
     - pre-requisite: Intro to Networking for Games
