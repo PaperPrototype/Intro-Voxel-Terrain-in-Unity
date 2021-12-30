@@ -597,6 +597,6 @@ C# normally makes copies of everything to make our code "safe", as well as using
 
 If you hit play you should have a voxel! (Make sure to set your Material) 
 
-![final_voxel](Assets/final_voxel.png)
+![final_voxel](/Assets/final_voxel.png)
 
 See you next week!
