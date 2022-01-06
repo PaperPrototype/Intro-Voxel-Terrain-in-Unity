@@ -1,6 +1,5 @@
-Temporary showcase video https://www.youtube.com/watch?v=HvpDE3eM6v4
-
-Planet terrain video https://www.youtube.com/watch?v=G5H7oRlr11s
+You can now view the course on my website!!! (IT'S FREE!)
+https://spark3d.herokuapp.com/view/4/section/86
 
 # Note from author
 I am currently not developing this course as I am teaching an Intro to Coding and Computers class (which will become a pre-requisite for this course)... EDIT I am now restarting after much feedback, the "Intro to Coding and Computers" course is now being scrapped.
