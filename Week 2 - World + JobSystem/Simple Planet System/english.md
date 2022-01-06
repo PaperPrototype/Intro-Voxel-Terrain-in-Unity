@@ -1,6 +1,6 @@
 This tutorial assumes you've finished week 2's lecture. You can view the final code (aka source code) for this project in the "Intro-to-Voxel-Terrain-in-Unity" repo linked in the README file.
 
-![simple planet](./Assets/planet.png)
+![simple planet](/Assets/planet.png)
 
 To make a planet first we have to figure out how to calculate where a voxel should be, and where it shouldn't be.
 
@@ -406,7 +406,7 @@ Now if you hit play you can mess around with the values to get some pretty inter
 
 But at some point you may ask yoursefl? How is it possible that we can get something like this...
 
-![planet blob floating](./Assets/planet_floating_blob.png)
+![planet blob floating](/Assets/planet_floating_blob.png)
 
 ...by only adding and subtracting from the distance to the center of the planet? Wouldn't that only give us varying height values for mountians, and not any overhangs?
 
@@ -432,7 +432,7 @@ Look at the IsSolid funciton for a sec
 
 If voxel `A` (in the picture below) added noise to the distance, that would make the if statement true in the `IsSolid` function. While if voxel `B` subtracts noise from the distance, it would make the if statement false in `IsSolid`.
 
-![floating terrain explained](./Assets/planet_floating_blob_explained.png) 
+![floating terrain explained](/Assets/planet_floating_blob_explained.png) 
 
 The reason this is happening is becuase we are sampling the noise per voxel position, and not per positon on the surface of the terrain, giving us varying results depending on our voxel position rather than its height.
 
@@ -484,7 +484,7 @@ Then initlaize the reference in the constructor function. Then after finishing t
 
 For gravity we need to add a force to the player. That force needs to push the player towards the planet. If the planet is in the center of the world, then we can get a direction that give us an upwards direction from the planet, by simply using the players position as a vector.
 
-![player pos for planet upDirection](./Assets/planet_up_direction.png)
+![player pos for planet upDirection](/Assets/planet_up_direction.png)
 
 And then putting a negative sign in front of the direction (aka `-updDirection`) and use it for adding a gravity force to the player!
 
@@ -521,7 +521,7 @@ We also run the `Normalize` function to make the vectors magnitude = 1. A vector
 
 And currently our planets negative `upDirection` has a massive magnitude!
 
-![negative planet up direction magnitude](./Assets/planet_up_direction_normalized.png)
+![negative planet up direction magnitude](/Assets/planet_up_direction_normalized.png)
 
 Add a reference to get the players RigidBody so we can add our planet gravity force to it. Then set it in start.
 
@@ -654,7 +654,7 @@ We then make sure that the `curentAffectAmount` never goes below zero. This can 
 
 Now open the Planet scene and change the AnimationCruve in the player gameObject to look like this. (Click on the empty curve in the editor, then click on a preset curve and edit it to look like the one in the picture)
 
-![orientation animation curve](./Assets/curve_edit.png)
+![orientation animation curve](/Assets/curve_edit.png)
 
 Now we can apply this smoothing to the player using a Lerp function
 
