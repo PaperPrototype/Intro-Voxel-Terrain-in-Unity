@@ -1,22 +1,6 @@
-TODOS
-- reduce ambiguity between the word "voxel" and "cube"
-
-Pixels make up 2D pictures and worlds. The idea of Voxels is to make everything in a game out of 3D pixels or "voxels". 
-
-Minecraft, Astroneer, SpaceEngineers, and NoMansSky are all games that use voxel systems for their terrain.
-The biggest problems facing voxel technology:
-- Storing voxels takes a lot of space (picture formats are large enough).
-- Most graphics cards have hardware triangle rasterization (rasterization means filling in three points to make a triangle) which is extremely fast. On the other hand, there is no (or little) support for hardware voxel rasterization. Instead, we have to use software voxel rasterization or make the voxels out of triangles. Most voxel engines use triangles.
-
-Worthy mentions of pioneers in voxel technology are
-- VoxelBee - [Youtube (TODO)]()
-- VoxelFarm - [Blog](https://procworld.blogspot.com/), [Website (TODO)]()
-- Eucludean - Youtube TODO, Website TODO
-- Vox the game
-
 Most game engines' rendering systems don't support 3D picture (voxel) formats. So we will be using many triangles put together to represent the voxels (aka Cubes). When we hold many triangles together this is often called a "Mesh". We will be learning about meshes in this lecture, and using them to make a single cube.
 
-By the end of the lecture, you will have made this.
+By the end of this lecture, you will have made a cube.
 
 ![final_voxel](/Assets/final_voxel.png)
 
