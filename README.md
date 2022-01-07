@@ -2,7 +2,7 @@ You can now view the course on my website!!! (IT'S FREE!)
 https://spark3d.herokuapp.com/view/4/section/86
 
 # Note from author
-I am currently not developing this course as I am teaching an Intro to Coding and Computers class (which will become a pre-requisite for this course)... EDIT I am now restarting after much feedback, the "Intro to Coding and Computers" course is now being scrapped.
+I am currently not developing this course as I am teaching an Intro to Coding and Computers class (which will become a pre-requisite for this course)... EDIT I am now restarting after much feedback, the "Intro to Coding and Computers" course is now being scrapped and replaced by https://github.com/PaperPrototype/Intro-to-Scripting-Games-Java/ and by https://github.com/PaperPrototype/Intro-to-Software-Fundamentals
 
 I will also do more research and finish section 4. Section 5 and onwards will probably become their own courses. Ideas for next courses are shown below (subject to change)
 - Voxel Terrain LOD + Planets in Unity (C#)
