@@ -19,6 +19,7 @@ Triangle(s)
 
 Normal(s)
 > The direction that is 90 degrees "upwards" from a surface, for lighting purposes. Also the side of a triangle to render. Each vertex has a normal.
+> 
 > [Normals Wikpiedia](https://en.wikipedia.org/wiki/Normal_(geometry))
 > [Vertex Normal Wikipedia](https://en.wikipedia.org/wiki/Vertex_normal)
 
@@ -36,6 +37,7 @@ Bounds
 
 UV(s)
 > The position on a texture to map to a specific vertex of a triangle. A UV of `Vector2(0, 0)` gets the bottom left of a texture. 
+> 
 > ![2D uv texture coordinate](/Assets/2D_uv_texture_coordinate.png)
 
 Array
