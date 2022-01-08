@@ -49,6 +49,7 @@ Array vs List
 
 Unit Vector
 > A vector who's magnitude is 1. The megnitude of a vector is just the distance from the start, or origin, to the "end" position that the vector is giving.
+> 
 > ![magnitude of a vector](/Assets/normal_magnitude.png)
 
 Enum
