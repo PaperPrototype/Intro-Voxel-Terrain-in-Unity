@@ -24,8 +24,8 @@ and we can do this for every cube.
 
 ```
 for (i = 0; i < numCubes; i++) {
-    if (player.x > cube[i].x) {
-        cube.x += numCubes
+    if (player.x > cubes[i].x) {
+        cubes[i].x += numCubes
     }
 }
 ```
@@ -34,8 +34,8 @@ and then we can check in the other direction by adding to the player's x positio
 
 ```
 for (i = 0; i < numCubes; i++) {
-    if (player.x + numCubes < cube[i].x) {
-        cube.x -= numCubes
+    if (player.x + numCubes < cubes[i].x) {
+        cubes[i].x -= numCubes
     }
 }
 ```
@@ -46,11 +46,11 @@ and if we do it in both directions the cubes will "follow" the player.
 
 ```
 for (i = 0; i < numCubes; i++) {
-    if (player.x > cube[i].x) {
-        cube.x += numCubes
+    if (player.x > cubes[i].x) {
+        cubes[i].x += numCubes
     }
-    if (player.x + numCubes < cube[i].x) {
-        cube.x -= numCubes
+    if (player.x + numCubes < cubes[i].x) {
+        cubes[i].x -= numCubes
     }
 }
 ```
@@ -61,11 +61,11 @@ to place the player in the center we can add / subtract an offset in the if stat
 offset = numCubes / 2
 
 for (i = 0; i < numCubes; i++) {
-    if (player.x - offset > cube[i].x) {
-        cube.x += numCubes
+    if (player.x - offset > cubes[i].x) {
+        cubes[i].x += numCubes
     }
-    if (player.x + offset < cube[i].x) {
-        cube.x -= numCubes
+    if (player.x + offset < cubes[i].x) {
+        cubes[i].x -= numCubes
     }
 }
 ```

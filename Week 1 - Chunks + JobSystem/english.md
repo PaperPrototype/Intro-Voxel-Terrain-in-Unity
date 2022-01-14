@@ -89,7 +89,7 @@ Our vertex and triangle arrays will need to be larger, since we will be making a
 
 Tada! Now the rest of the code is exactly the same as before! I'll let you copy paste that from Voxel.cs. 
 
-Make a new empty gameObject in the Chunk scene (Chunk.unity) and add Chunk.cs to it as a component. Also don't forget to set the material. If you click play you'll see a chunk drawn! If not then get help from me in the Discord. (Link in README file).
+Make a new empty gameObject in the Chunk scene (Chunk.unity) and add Chunk.cs to it as a component. Also don't forget to set the material. If you click play you'll see a chunk drawn! If not then get help from me in the Discord here 
 
 ![firstchunk](/Assets/first_chunk.png)
 
