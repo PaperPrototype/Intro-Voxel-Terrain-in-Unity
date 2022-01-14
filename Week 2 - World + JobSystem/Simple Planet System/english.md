@@ -1,4 +1,4 @@
-This tutorial assumes you've finished week 2's lecture. You can view the final code (aka source code) for this project in the "Intro-to-Voxel-Terrain-in-Unity" repo linked in the README file.
+This tutorial assumes you've finished week 2's lecture. You can view the final code (aka source code) for this project here https://github.com/PaperPrototype/Voxel-Terrain-System.
 
 ![simple planet](/Assets/planet.png)
 

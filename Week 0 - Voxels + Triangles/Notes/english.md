@@ -19,6 +19,7 @@ Triangle(s)
 
 Normal(s)
 > The direction that is 90 degrees "upwards" from a surface, for lighting purposes. Also the side of a triangle to render. Each vertex has a normal.
+> 
 > [Normals Wikpiedia](https://en.wikipedia.org/wiki/Normal_(geometry))
 > [Vertex Normal Wikipedia](https://en.wikipedia.org/wiki/Vertex_normal)
 
@@ -36,6 +37,7 @@ Bounds
 
 UV(s)
 > The position on a texture to map to a specific vertex of a triangle. A UV of `Vector2(0, 0)` gets the bottom left of a texture. 
+> 
 > ![2D uv texture coordinate](/Assets/2D_uv_texture_coordinate.png)
 
 Array
@@ -49,7 +51,8 @@ Array vs List
 
 Unit Vector
 > A vector who's magnitude is 1. The megnitude of a vector is just the distance from the start, or origin, to the "end" position that the vector is giving.
-> ![magnitude of a vector](/Resources/assets/normal_magnitude.png)
+> 
+> ![magnitude of a vector](/Assets/normal_magnitude.png)
 
 Enum
 > An enum lets us make a predefined set of options for a variable.

@@ -1,9 +1,8 @@
-Temporary showcase video https://www.youtube.com/watch?v=HvpDE3eM6v4
-
-Planet terrain video https://www.youtube.com/watch?v=G5H7oRlr11s
+You can now view the course on my website!!! (IT'S FREE!)
+https://spark3d.herokuapp.com/view/4/section/86
 
 # Note from author
-I am currently not developing this course as I am teaching an Intro to Coding and Computers class (which will become a pre-requisite for this course)... EDIT I am now restarting after much feedback, the "Intro to Coding and Computers" course is now being scrapped.
+I am currently not developing this course as I am teaching an Intro to Coding and Computers class (which will become a pre-requisite for this course)... EDIT I am now restarting after much feedback, the "Intro to Coding and Computers" course is now being scrapped and replaced by https://github.com/PaperPrototype/Intro-to-Scripting-Games-Java/ and by https://github.com/PaperPrototype/Intro-to-Software-Fundamentals
 
 I will also do more research and finish section 4. Section 5 and onwards will probably become their own courses. Ideas for next courses are shown below (subject to change)
 - Voxel Terrain LOD + Planets in Unity (C#)
@@ -37,7 +36,7 @@ If something is broken we would love it if you created a new "issue" in the Issu
  - Folders named "Tutorial" contains tutorials for when you've finished a lecture and want to try out what you've learned!
 
 # Contributing
-If you want to contribute then read our [Guidelines](https://github.com/Nanite3D/Nanite-course-Guidelines) it shouldn't take you more than 1 minute to read. Seriously, it's super short.
+If you want to contribute then read our [Guidelines](https://github.com/PaperPrototype/Course-Guidebook) it shouldn't take you more than 1 minute to read. Seriously, it's super short.
 
 # Currently being made
 this course is still being written as you read this. Breaking changes may be introduced. Join the Discord for a changelog and one-on-one help from me https://discord.gg/Gp7YEUkVHC
