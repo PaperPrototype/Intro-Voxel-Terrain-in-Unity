@@ -149,7 +149,9 @@ We can then say (if the number we get back is less than 0, the block at that pos
 
 We could initialize a 3D grid array of data storing bools (true = solid, false = not solid) using a 3D version of this noise at the beginning of our chunk draw and then reference that grid when building voxels to check if they have neighbors. This saves us on processing power (since we would do this once for every voxel) at the trade off of using some more memory to streo the data. We would have to do this if we wanted editable terrain.For this section we won't do this.
 
-There is a noise library in the Resources of this repositiory called FastNoiseLite.zip. It is taken from [here](https://github.com/Auburn/FastNoiseLite/tree/master/CSharp) Download our repo and open the prepared zip and drag the folder "FastNoiseLite" into your project so that your project looks like this.
+There is a noise library in the Resources of the course repo called FastNoiseLite.zip https://github.com/PaperPrototype/Intro-Voxel-Terrain-in-Unity/blob/main/Resources/FastNoiseLite.zip click on that link to download it.
+
+Open the prepared zip and drag the folder "FastNoiseLite" into your project so that your project looks like this.
 
 ```
     Assets/
@@ -162,6 +164,8 @@ There is a noise library in the Resources of this repositiory called FastNoiseLi
     |___Voxel/
     |___Chunk/
 ```
+
+The library is taken from [here](https://github.com/Auburn/FastNoiseLite/tree/master/CSharp) and is made by Jordan Peck.
 
 We will make a function that takes in a voxel's position and returns `true` or `false` using the FastNoiseLite class. First we need to add a member variable to the Chunk class to hold an instance of a FastNoiseLite.
 
