@@ -129,7 +129,7 @@ using UnityEngine;
 public class SimplePlanet : MonoBehaviour
 {
     public Material material;
-    public JobWorldChunk1[,,] chunks = new JobWorldChunk1[DataDefs.chunkNum, DataDefs.chunkNum, DataDefs.chunkNum];
+    public SimplePlanetChunk[,,] chunks = new SimplePlanetChunk[DataDefs.chunkNum, DataDefs.chunkNum, DataDefs.chunkNum];
     public Transform player;
     public float planetRadius = 100;
 }
