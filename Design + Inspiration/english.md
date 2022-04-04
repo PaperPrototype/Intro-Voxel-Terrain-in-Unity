@@ -1,5 +1,3 @@
-TODO add links to all resources used to make this course
-
 Voxel Farm blog for my original inspiration in massive voxel terrains https://procworld.blogspot.com
 
 Jordan Peck for the FastNoiseLite library https://github.com/Auburn/FastNoiseLite
@@ -10,3 +8,5 @@ b3agz for the voxel types and voxel lookup tables https://www.youtube.com/watch?
 
 SimonDev for the Octree LOD system and his inspirational terrain videos! https://www.youtube.com/watch?v=hHGshzIXFWY&list=PLRL3Z3lpLmH3PNGZuDNf2WXnLTHpN9hXy
 
+And finally an inspiring photo for you guys :)
+![planet](/Assets/planet.png)

@@ -500,10 +500,9 @@ But if we have a separate loop for scheduling and then another loop for completi
             }
         }
     }
-
 ```
 
-![threading timeline efficient](/Assets/thrading_timeline_efficient.png)
+![threading timeline efficient](/Assets/threading_timeline_efficient.png)
 
 And it turns out that Unity provides us with a live timeline viewer! To open it go to Window -> Analysis -> Profiler
 
