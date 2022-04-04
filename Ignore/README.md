@@ -1,0 +1,1 @@
+This contains the affinity designer project files.
