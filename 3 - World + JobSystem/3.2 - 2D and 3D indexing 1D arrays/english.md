@@ -74,10 +74,10 @@ level 2 (y) =  [   1   ][   2   ][   3   ][   1   ][   2   ][   3   ][   1   ][ 
 level 3 (z) =  [1][2][3][1][2][3][1][2][3][1][2][3][1][2][3][1][2][3][1][2][3][1][2][3][1][2][3]
 ```
 
-the compiler jumps 3 * 3 (which is 9) times every time level 1 (x) is increased. And the compiler jumps 3 times every time level 2 (y) is increased, and 1 time every time level 3 (z) is increased.
+the compiler jumps 9 times every time level 1 (x) is increased. And the compiler jumps 3 times every time level 2 (y) is increased, and 1 time every time level 3 (z) is increased.
 
 ```
-array1D[(x * 3 * 3) + (y * 3) + z]
+array1D[(x * 9) + (y * 3) + z]
 
 array3D[x, y, z]
 ```
