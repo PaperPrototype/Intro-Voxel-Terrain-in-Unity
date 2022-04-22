@@ -229,7 +229,7 @@ Now when drawing voxel's in the for loop we can check if we should draw it or no
 
 And we have terrain!
 
-![first noise chunk](/Assets/first_noise_chunk.png)
+If you don't have terrain then use the chat in the top right in sparker3d.com, and ask for help in the help channel.
 
 But we still aren't checking if a voxel has a neighbor!
 
