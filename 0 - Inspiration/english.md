@@ -10,3 +10,5 @@ SimonDev for the Octree LOD system and his inspirational terrain videos! https:/
 
 And finally an inspiring photo for you guys :)
 ![planet](/Assets/planet.png)
+
+If your wondering where that came from check out section 3.3 :P
