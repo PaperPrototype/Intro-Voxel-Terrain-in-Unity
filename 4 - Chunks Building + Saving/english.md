@@ -2,10 +2,9 @@
 This lecture is still being written expect breaking changes
 
 # Overview
-- Data + Buildable = Chunk2
-- File saving = Chunk2
-- CalcDataJob + DrawDataJob = JobChunk2
-- SaveDataJob + LoadDataJob = JobChunk2
+- Storing voxel data + building = Chunk2
+- saving voxel data to file = also Chunk2
+- multithreading noise and meshing into 2 separate jobs = JobChunk2
 
 # Intro
 To make the terrain editable we have to store some sort of data. Say we remove a block. If we want to see the change we have to "update" the mesh to show the change. One way is to just redraw the whole chunk's mesh and account for the change. But when we redraw the chunk's mesh we can't still use the Noise for checking where there are or aren't voxels since it will not have acounted for the change that we made to the data.
@@ -626,8 +625,6 @@ We can subtract half of the normal from the hitPoint to get a positon that is in
 
 Then we can use the voxel position, round it to an `int`, and use it as an index into the array of data in the chunk.
 
-![hit point rounded to array index](/Assets/)
-
 The voxel are `1 x 1 x 1` so rounding the postion to an index is fine. If the cubes were `0.5 x 0.5 x 0.5` then we wuld have to multiply the voxel position we got by 2 to convert it to an index that corresponds to the correct voxel.
 
 Make a new script called `PlayerBuilding` in the micro project.
@@ -948,3 +945,5 @@ Then the `Start` function changes to try to load the chunk data. If there was a 
 ```
 
 And now if you click play, edit some voxels, then stop the game, then play again. The changes should still be there! WHOOP WHOOP!
+
+# Multithreading voxel data.
