@@ -948,24 +948,3 @@ Then the `Start` function changes to try to load the chunk data. If there was a 
 ```
 
 And now if you click play, edit some voxels, then stop the game, then play again. The changes should still be there! WHOOP WHOOP!
-
-# Mulithreading everything! (In the chunk code)
-Memory is historically one of the slowest processes of a computer. So we will be putting our file saving and loading into a Job to increase the amount of files we can load and save to disk. We will also be calculating the chunk's data in a Job. Lets do it!
-
-Make a new micro project called JobChunk2. This will be based off of the JobChunk micro project, except it will use the xovel data, and will have multithreaded saving.
-
-Don't worry I am working on writing this! Don't want to wait? You can download the working project for the upcoming section here https://github.com/PaperPrototype/Voxel-Terrain-System/blob/main/Assets/JobChunk2/BuildableChunk.cs
-
-NOTE: If your reading this I am still writing this lecture
-NOTE: To see current changes for what will come in the course you can view this repo https://github.com/PaperPrototype/VoxelSystem (Although I often forget to push my changes to that repo)
-
-TODO once I get to the saving part
-We will change the `byte[,,]` array to be inside of a struct called `ChunkData`. <-- not working for Jobs, since we cannot wrap a nullable type in a struct in a NativeArray. AKA `NativeArray<ChunkData>` with chunkdata having a `byte[,,]`
-
-This is because if we tried to put a `byte[,,]` array into a NativeArray in a Job we will get an error (outside of a Job you won't get any errors) 
-"The type `byte[*,*,*]` must be a non-nullable value type in order to be used as a parameter `T` in the generic type or method `NativeArray<T>`". 
-This just mean's that in a Job a native array can't take a "nullable" type". The type may be "null" (not set to anything) because it is an array. This is because arrays are actually always pointers to memory unless marked as static which would make them more like a lookup table and not a pointer to some memory (it would end up in a special part of our program where all the const's, statics, and globals live).
-
-TODO When deserializing and loading
-Also when we Deserialize the file we could try and cast the deserialization to a `byte[,,]` and then do `chunkData.data = (byte[,,])formatter.Deserialize(fileStream);` which would mean we could get rid of the ChunkData struct altogether... except that this won't work and will throw an error. So we will just stick with casting to the ChunkData. Also don't forget that structs can be stored in a NativeArray and be passed to a Job through the NativeArray as long as they don't have a nullable type in them.
-
