@@ -1,10 +1,6 @@
-# NOTE
-This lecture is still being written expect breaking changes
-
 # Overview
-- Storing voxel data + building = Chunk2
-- saving voxel data to file = also Chunk2
-- multithreading noise and meshing into 2 separate jobs = JobChunk2
+- Storing voxel data + building
+- Saving voxel data changes to file and loading them again
 
 # Intro
 To make the terrain editable we have to store some sort of data. Say we remove a block. If we want to see the change we have to "update" the mesh to show the change. One way is to just redraw the whole chunk's mesh and account for the change. But when we redraw the chunk's mesh we can't still use the Noise for checking where there are or aren't voxels since it will not have acounted for the change that we made to the data.
@@ -945,5 +941,3 @@ Then the `Start` function changes to try to load the chunk data. If there was a 
 ```
 
 And now if you click play, edit some voxels, then stop the game, then play again. The changes should still be there! WHOOP WHOOP!
-
-# Multithreading voxel data.
