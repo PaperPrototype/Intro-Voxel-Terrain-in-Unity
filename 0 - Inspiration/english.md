@@ -1,3 +1,5 @@
+You can find the github repository of this course and its markdown files here https://github.com/PaperPrototype/Intro-Voxel-Terrain-in-Unity
+
 Voxel Farm blog for my original inspiration in massive voxel terrains https://procworld.blogspot.com
 
 Jordan Peck for the FastNoiseLite library https://github.com/Auburn/FastNoiseLite
