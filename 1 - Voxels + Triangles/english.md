@@ -559,11 +559,11 @@ We then set our mesh variables data to the arrays we made, and convert the Nativ
 
 We then set the MeshFilters mesh to our `m_mesh` variable. We also make sure to Calculate the normals and Bounds.
 
-You might notice `Allocator.Temp` this is an enum (an enum lets us make a type of "options" system. WHen you make an enum you give the options it can represent). This is telling the Allocator to use a really fast memory fetch, but that memory can only exist for 4 frames (ever heard of frames per second? fps?). 
+You might notice `Allocator.Temp`, this is telling the Allocator to use a really fast memory allocator, but that memory can only exist for 1 frame.
 
-There are other enums like `Allocator.Persistent` that let us have the memory we want for as long as we need, but they take much longer to find the memory we want, so it's better to use a `Temp` allocator. `Allocator.TempJob` is a special allocator for Job's and multithreading that is based on `Allocator.Temp` but is optimized specifically for multithreading.
+There are other options like `Allocator.Persistent` that let us have the memory we want for as long as we need, but it takes much longer to find the memory we want, so it's better to use a `Temp` allocator. `Allocator.TempJob` can exist for 4 frames, it is a special allocator for Job's and multithreading that is like the `Allocator.Temp` but is optimized specifically for multithreading. 
 
-Also since we are using NativeCollections we have to manually free our memory, much like in C or C++.
+Also since we are using NativeCollections we have to manually free our memory, much like you would in C or C++.
 
 "native" means it uses actual pointers (AKA references) to memory and not copies of everything.
 
@@ -577,7 +577,7 @@ Also since we are using NativeCollections we have to manually free our memory, m
     }
 ```
 
-C# normally makes copies of everything to make our code "safe", as well as using a "Garbage Collector" (or GC for short). A GC is code in your program automatically added by C# that goes automatically goes through memory and free's memory you are done using.
+C# normally makes copies of everything to make our code "safe", as well as using a "Garbage Collector" (or GC for short). A GC (automatically added by C#) goes through memory and free's it when you are no longer using it.
 
 If you hit play you should have a voxel! (Make sure to set your Material) 
 
